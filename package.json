@@ -1,0 +1,25 @@
+{
+  "name": "offisito",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "xdfghjkop["
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/offisito/server.git"
+  },
+  "author": "Michael Nusair",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/offisito/server/issues"
+  },
+  "homepage": "https://github.com/offisito/server#readme",
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
