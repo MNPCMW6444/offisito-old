@@ -1,13 +1,7 @@
-import { AppName } from "@failean/shared-types";
-
-const name: AppName = {
-  low: "failean",
-  up: "Failean",
-  special: "fAIlean",
-  allUp: "FAILEAN",
-  //more after type...
+const name = {
+    low: "offisito",
+    up: "Offisito",
+    caps: "OFFISITO",
 };
-
-// package.name
 
 export default name;
