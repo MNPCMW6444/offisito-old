@@ -6,7 +6,6 @@ dotenv.config();
 
 export const sendEmail = async (to: string, subject: string, html: string) => {
     sgMail.setApiKey(process.env.SENDGRID + "");
-
     return await sgMail.send({
         from: {
             email: "service@failean.com",

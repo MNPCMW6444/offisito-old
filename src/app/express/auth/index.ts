@@ -1,5 +1,5 @@
 import express from "express";
-import signRouter from "./routers/signRouter";
+import signRouter from "./routers/logRouter";
 
 const router = express.Router();
 
