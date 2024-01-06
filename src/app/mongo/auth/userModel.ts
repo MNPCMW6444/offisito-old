@@ -1,5 +1,5 @@
 import {connection} from "../connection";
-import mongoose from "mongoose"
+import mongoose, {Model} from "mongoose"
 import {versioning} from "@mnpcmw6444/mongoose-auto-versioning";
 
 
@@ -10,22 +10,20 @@ export default () => {
         {
             phone: {
                 type: String,
-                required: true,
                 unique: true,
             },
             email: {
-                type: String
+                type: String,
+                unique: true,
             },
             passwordHash: {type: String, required: false},
-            rnd: {type: Boolean, required: false},
             name: {
                 type: String,
                 required: false,
             },
-            subscription: {
-                type: String,
-                required: true,
-                default: "free",
+            type: {
+                type: String, enum: ["admin", "host", "member"],
+                required: true
             },
         },
         {
@@ -36,7 +34,7 @@ export default () => {
 
     if (!connection) throw new Error("Database not initialized");
 
-    let userModelR;
+    let userModelR: Model<any>;
     if (mongoose.models.user) {
         userModelR = connection.model(name);
     } else {
