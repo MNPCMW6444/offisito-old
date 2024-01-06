@@ -2,10 +2,9 @@ import swaggerAutogen from 'swagger-autogen';
 
 const doc = {
     info: {
-        title: 'Offisito API',
-        description: 'Auth'
+        title: 'Offisito Auth API',
     },
-    host: 'localhost:5556'
+    host: 'localhost:5556/auth/sign'
 };
 
 const outputFile = './swagger-output.json';

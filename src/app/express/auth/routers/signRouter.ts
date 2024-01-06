@@ -17,11 +17,11 @@ router.get("/in", async (req, res) => {
         try {
             const user = await authUser(req.cookies.jsonwebtoken);
             if (!user) {
-                return res.status(401).json({clientMessage: "Unauthorized. Try to sign in (post)"});
+                return res.status(401).send( "Unauthorized. Try to sign in (post)");
             }
             return res.json(await User.findById(user._id));
         } catch (err) {
-            return res.status(401).json({errorMessage: "Unauthorized. Try to sign in (post)"});
+            return res.status(401).send( "Unauthorized. Try to sign in (post)");
         }
     else return res.status(500).json({errorMessage: "Server Error nichal todo api"});
 });
