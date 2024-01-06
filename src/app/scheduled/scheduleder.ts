@@ -1,12 +1,9 @@
 import {getEmailModel} from "../mongo-models/abtest/emailModel";
-import {sendEmail} from "../util/emailUtil";
+import {sendEmail} from "../sendgrid/sendEmail";
 import {waitListReady} from "../../content/email-templates/authEmails";
 import {getAITaskModel} from "../mongo-models/tasks/openAITaskModel";
 import axios from "axios";
-import {getUserModel} from "../mongo-models/auth/userModel";
-import {getTokenModel} from "../mongo-models/accounts/tokenModel";
-import {WhiteModels} from "@failean/shared-types";
-import subscription from "../resolvers/subscription";
+
 
 const ONE_WEEK_IN_MS = 1000 * 60 * 60 * 24 * 7;
 const TEN_MINUTES_IN_MS = 1000 * 60 * 10;

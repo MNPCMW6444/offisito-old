@@ -1,5 +1,5 @@
 import stripe from "stripe";
-import settings from "../settings";
+import settings from "../config";
 import eventModel from "../mongo/stripe/eventModel";
 
 export default (async (request, response) => {
@@ -700,7 +700,7 @@ export default (async (request, response) => {
             const subscriptionScheduleUpdated = event.data.object;
             console.log(subscriptionScheduleUpdated)
             break;
-        case 'tax.settings.updated':
+        case 'tax.config.updated':
             const taxSettingsUpdated = event.data.object;
             console.log(taxSettingsUpdated)
             break;

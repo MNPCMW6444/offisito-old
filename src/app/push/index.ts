@@ -1,5 +1,5 @@
 import webpush from 'web-push';
-import settings from "../settings";
+import settings from "../config";
 
 // VAPID keys should be generated once and stored securely
 const vapidKeys = {

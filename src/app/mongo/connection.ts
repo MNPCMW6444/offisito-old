@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import settings from "../settings";
+import settings from "../../config";
 
 export let connection: mongoose.Connection | null = null;
 

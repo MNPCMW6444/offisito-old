@@ -7,7 +7,7 @@ import {v4 as keyv4} from "uuid";
 import {clientDomain} from "../../setup/config";
 import {authUser} from "../../util/authUtil";
 import {passreset, signupreq} from "../../../assets/email-templates/authEmails";
-import settings from "../../../settings";*/
+import config from "../../../config";*/
 
 
 const router = express.Router();
@@ -15,46 +15,46 @@ const router = express.Router();
 
 // @ts-ignore
 router.post<any, any>("/signupreq", async (req, res) => {
-  /*  const userModel = getUserModel();
-    const RequestForAccount = getRequestForAccountModel();
-    if (userModel && RequestForAccount)*/
-      /*  try {
-            const {email, idea} = req.body;
-            if (!email)
-                return res.status(400).json({
-                    clientError: "The email is missing",
-                });
-            const existingUser = await userModel.findOne({email});
-            if (existingUser)
-                return res.status(400).json({
-                    clientError: "An account with this email already exists",
-                });
+    /*  const userModel = getUserModel();
+      const RequestForAccount = getRequestForAccountModel();
+      if (userModel && RequestForAccount)*/
+    /*  try {
+          const {email, idea} = req.body;
+          if (!email)
+              return res.status(400).json({
+                  clientError: "The email is missing",
+              });
+          const existingUser = await userModel.findOne({email});
+          if (existingUser)
+              return res.status(400).json({
+                  clientError: "An account with this email already exists",
+              });
 
-            const key = keyv4();
+          const key = keyv4();
 
-            await new RequestForAccount({
-                email,
-                key,
-                idea,
-            }).save();
+          await new RequestForAccount({
+              email,
+              key,
+              idea,
+          }).save();
 
-            const url = `${clientDomain}/register?key=${key}`;
+          const url = `${clientDomain}/register?key=${key}`;
 
-            const {subject, body} = signupreq(url);
+          const {subject, body} = signupreq(url);
 
-            sendEmail(email, subject, body)
-                .then(() => console.log("sent registration email - " + body))
-                .catch((err) => console.error(err));
+          sendEmail(email, subject, body)
+              .then(() => console.log("sent registration email - " + body))
+              .catch((err) => console.error(err));
 
-            return res.json({result: "email successfully sent to " + email});
-        } catch (err) {
-            console.error(err);
+          return res.json({result: "email successfully sent to " + email});
+      } catch (err) {
+          console.error(err);
 
-            return res.status(500).json({
-                serverError:
-                    "Unexpected error occurred in the server" + JSON.stringify(err),
-            });
-        }*/
+          return res.status(500).json({
+              serverError:
+                  "Unexpected error occurred in the server" + JSON.stringify(err),
+          });
+      }*/
 });
 
 // @ts-ignore
@@ -127,19 +127,19 @@ router.post<any, any>("/signupreq", async (req, res) => {
                 {
                     id: savedUser._id,
                 },
-                settings?.jwtSecret+ ""
+                config?.jwtSecret+ ""
             );
             res
                 .cookie("jsonwebtoken", token, {
                     httpOnly: true,
                     sameSite:
-                        settings.nodeEnv === "development"
+                        config.nodeEnv === "development"
                             ? "lax"
-                            : settings.nodeEnv === "production" && "none",
+                            : config.nodeEnv === "production" && "none",
                     secure:
-                        settings.nodeEnv === "development"
+                        config.nodeEnv === "development"
                             ? false
-                            : settings.nodeEnv === "production" && true,
+                            : config.nodeEnv === "production" && true,
                 })
                 .send();
         } catch (err) {
@@ -207,13 +207,13 @@ router.post<any, any>("/signin", async (req, res) => {
                 .cookie("jsonwebtoken", token, {
                     httpOnly: true,
                     sameSite:
-                        settings.nodeEnv === "development"
+                        config.nodeEnv === "development"
                             ? "lax"
-                            : settings.nodeEnv === "production" && "none",
+                            : config.nodeEnv === "production" && "none",
                     secure:
-                        settings.nodeEnv === "development"
+                        config.nodeEnv === "development"
                             ? false
-                            : settings.nodeEnv === "production" && true,
+                            : config.nodeEnv === "production" && true,
                 })
                 .send();
         } catch (err) {
@@ -294,13 +294,13 @@ router.get<any, any>("/signout", async (req, res) => {
                 .cookie("jsonwebtoken", "", {
                     httpOnly: true,
                     sameSite:
-                        settings.nodeEnv === "development"
+                        config.nodeEnv === "development"
                             ? "lax"
-                            : settings.nodeEnv === "production" && "none",
+                            : config.nodeEnv === "production" && "none",
                     secure:
-                        settings.nodeEnv === "development"
+                        config.nodeEnv === "development"
                             ? false
-                            : settings.nodeEnv === "production" && true,
+                            : config.nodeEnv === "production" && true,
                     expires: new Date(0),
                 })
                 .send();

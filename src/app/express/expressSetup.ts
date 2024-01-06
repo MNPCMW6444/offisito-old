@@ -33,7 +33,7 @@ export default async () => {
         middlewares.forEach((middleware) => app.use(middleware));
 
         app.use("/auth", authRouter);
-        //  app.use("/analytics", settings.nodeEnv === "production" && process.env.WHITE_ENV === "prod" ? analyticsRouter : (_, res) => res.status(200).send());
+        //  app.use("/analytics", config.nodeEnv === "production" && process.env.WHITE_ENV === "prod" ? analyticsRouter : (_, res) => res.status(200).send());
 
 
         const {version} = pack;

@@ -1,5 +1,5 @@
 import twilio from 'twilio';
-import settings from "../settings";
+import settings from "../../config";
 
 const client = twilio(settings?.smsSid, settings?.smsSecret);
 
