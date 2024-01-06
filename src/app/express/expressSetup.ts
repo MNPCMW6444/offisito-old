@@ -1,20 +1,14 @@
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import routers from "./routers";
-import pack from "../../package.json";
 import express from "express";
+import auth from "./auth";
+import pack from "../../../package.json";
+
 
 const app = express();
 const port = 5556;
 
 
-const {
-    authRouter,
-
-} = routers;
-/*const axiosLogger = (/!*req: Request, res: Response,*!/ next: NextFunction) => {
-    next();
-};*/
 
 const middlewares = [
     cookieParser(),
@@ -32,7 +26,7 @@ export default async () => {
     try {
         middlewares.forEach((middleware) => app.use(middleware));
 
-        app.use("/auth", authRouter);
+        app.use("/auth", auth);
         //  app.use("/analytics", config.nodeEnv === "production" && process.env.WHITE_ENV === "prod" ? analyticsRouter : (_, res) => res.status(200).send());
 
 

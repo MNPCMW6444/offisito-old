@@ -9,16 +9,16 @@ import {versioning} from "@mnpcmw6444/mongoose-auto-versioning";
 
 export default () => {
 
-    const name = "code"
+    const name = "otp"
 
 
-    const codeModel = new mongoose.Schema(
+    const otpModel = new mongoose.Schema(
         {
             user:{
                 type: mongoose.Schema.Types.ObjectId,
                 required: true,
             },
-            code: {
+            otp: {
                 type: Number,
                 required: true,
             }
@@ -31,12 +31,12 @@ export default () => {
 
     if (!connection) throw new Error("Database not initialized");
 
-    let codeModelR;
-    if (mongoose.models.code) {
-        codeModelR = connection.model(name);
+    let otpModelR;
+    if (mongoose.models.otp) {
+        otpModelR = connection.model(name);
     } else {
-        codeModelR = connection.model(name, codeModel);
+        otpModelR = connection.model(name, otpModel);
     }
 
-    return codeModelR// connection.model("code", codeModel);
+    return otpModelR// connection.model("otp", otpModel);
 };

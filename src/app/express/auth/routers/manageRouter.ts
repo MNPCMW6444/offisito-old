@@ -1,64 +1,55 @@
-import express from "express";
-/*import bcrypt from "bcrypt";
-import jsonwebtoken from "jsonwebtoken";
-import zxcvbn from "zxcvbn";
-import {sendEmail} from "../../util/emailUtil";
-import {v4 as keyv4} from "uuid";
-import {clientDomain} from "../../setup/config";
-import {authUser} from "../../util/authUtil";
-import {passreset, signupreq} from "../../../assets/email-templates/authEmails";
-import config from "../../../config";*/
+router.get<any, any>("/req", async (req, res) => {
+    /!*  const userModel = getUserModel();
+    const RequestForAccount = getRequestForAccountModel();
+    if (userModel && RequestForAccount)*
+    ! /
+    /!*  try {
+    const {email, idea} = req.body;
+    if (!email)
+        return res.status(400).json({
+            clientError: "The email is missing",
+        });
+    const existingUser a= await userModel.findOne({email});
+    if (existingUser)
+        return res.status(400).json({
+            clientError: "An account with this email already exists",
+        });
+
+    const key = keyv4();
+
+    await new RequestForAccount({
+        email,
+        key,
+        idea,
+    }).save();
+
+    const url = `${clientDomain}/register?key=${key}`;
+
+    const {subject, body} = signupreq(url);
+
+    sendEmail(email, subject, body)
+        .then(() => console.log("sent registration email - " + body))
+        .catch((err) => console.error(err));
+
+    return res.json({result: "email successfully sent to " + email});
+}
+catch
+(err)
+{
+    console.error(err);
+
+    return res.status(500).json({
+        serverError:
+            "Unexpected error occurred in the server" + JSON.stringify(err),
+    });
+}
+*
+! /
+})
+;
 
 
-const router = express.Router();
-//const MIN_PASSWORD_STRENGTH = 3;
-
-// @ts-ignore
-router.post<any, any>("/signupreq", async (req, res) => {
-    /*  const userModel = getUserModel();
-      const RequestForAccount = getRequestForAccountModel();
-      if (userModel && RequestForAccount)*/
-    /*  try {
-          const {email, idea} = req.body;
-          if (!email)
-              return res.status(400).json({
-                  clientError: "The email is missing",
-              });
-          const existingUser = await userModel.findOne({email});
-          if (existingUser)
-              return res.status(400).json({
-                  clientError: "An account with this email already exists",
-              });
-
-          const key = keyv4();
-
-          await new RequestForAccount({
-              email,
-              key,
-              idea,
-          }).save();
-
-          const url = `${clientDomain}/register?key=${key}`;
-
-          const {subject, body} = signupreq(url);
-
-          sendEmail(email, subject, body)
-              .then(() => console.log("sent registration email - " + body))
-              .catch((err) => console.error(err));
-
-          return res.json({result: "email successfully sent to " + email});
-      } catch (err) {
-          console.error(err);
-
-          return res.status(500).json({
-              serverError:
-                  "Unexpected error occurred in the server" + JSON.stringify(err),
-          });
-      }*/
-});
-
-// @ts-ignore
-/*router.post<any, any>("/signupfin", async (req, res) => {
+router.post<any, any>("/signupfin", async (req, res) => {
     const userModel = getUserModel();
     const RequestForAccount = getRequestForAccountModel();
     if (userModel && RequestForAccount)
@@ -118,16 +109,17 @@ router.post<any, any>("/signupreq", async (req, res) => {
             } catch (err) {
             }
 
-           // const userCount = (await userModel.find()).length;
+            // const userCount = (await userModel.find()).length;
 
-           /!* if (userCount < 50)
-                amendTokens(savedUser, (await (await getEmailModel()).find()).some(({email}) => email === savedUser.email) ? 10000 : 1000, `freeforfirst50-the${userCount}`);
-*!/
+            /!* if (userCount < 50)
+            amendTokens(savedUser, (await (await getEmailModel()).find()).some(({email}) => email === savedUser.email) ? 10000 : 1000, `freeforfirst50-the${userCount}`);
+        *
+            ! /
             const token = jsonwebtoken.sign(
                 {
                     id: savedUser._id,
                 },
-                config?.jwtSecret+ ""
+                config?.jwtSecret + ""
             );
             res
                 .cookie("jsonwebtoken", token, {
@@ -150,88 +142,6 @@ router.post<any, any>("/signupreq", async (req, res) => {
         }
 });
 
-// @ts-ignore
-router.post<any, any>("/signin", async (req, res) => {
-    const userModel = getUserModel();
-    const RequestForAccount = getRequestForAccountModel();
-    if (userModel && RequestForAccount) {
-     /!*   const log = (
-            successfull: boolean,
-            userEmail: string,
-            time: Date,
-            reason: string | undefined = undefined
-        ) =>
-          post("/log/logSignin", {
-                reqUUID: safeStringify(req),
-                successfull,
-                userEmail,
-                time,
-                reason,
-            },)
-                .catch((err) => console.error(err));*!/
-        try {
-            const {email, password} = req.body;
-            if (!email || !password) {
-             //   log(false, email, new Date(), "Missing email or password");
-                res.status(400).json({clientError: "Wrong email or password"});
-            }
-            const existingUser = await userModel.findOne({email});
-            if (!existingUser) {
-               // log(false, email, new Date(), "Wrong email");
-                return res.status(401).json({
-                    clientError: "Wrong email or password",
-                });
-            }
-
-            const correctPassword = await bcrypt.compare(
-                password,
-                existingUser.passwordHash
-            );
-
-            if (!correctPassword) {
-               // log(false, email, new Date(), "Wrong password");
-                return res.status(401).json({
-                    clientError: "Wrong email or password",
-                });
-            }
-
-            const token = jsonwebtoken.sign(
-                {
-                    id: existingUser._id,
-                },
-                process.env.JWT + ""
-            );
-           // log(true, email, new Date());
-
-            res
-                .cookie("jsonwebtoken", token, {
-                    httpOnly: true,
-                    sameSite:
-                        config.nodeEnv === "development"
-                            ? "lax"
-                            : config.nodeEnv === "production" && "none",
-                    secure:
-                        config.nodeEnv === "development"
-                            ? false
-                            : config.nodeEnv === "production" && true,
-                })
-                .send();
-        } catch (err) {
-            console.error(err);
-         /!*   log(
-                false,
-                req.body.email,
-                new Date(),
-                "Server error: " + JSON.stringify(err)
-            );*!/
-            res
-                .status(500)
-                .json({serverError: "Unexpected error occurred in the server"});
-        }
-    }
-});
-
-// @ts-ignore
 router.post<any, any>("/updatename", async (req, res) => {
     const userModel = getUserModel();
     const RequestForAccount = getRequestForAccountModel();
@@ -253,7 +163,7 @@ router.post<any, any>("/updatename", async (req, res) => {
         }
 });
 
-// @ts-ignore
+
 router.post<any, any>("/updatepassword", async (req, res) => {
     const userModel = getUserModel();
     const RequestForAccount = getRequestForAccountModel();
@@ -284,34 +194,7 @@ router.post<any, any>("/updatepassword", async (req, res) => {
         }
 });
 
-// @ts-ignore
-router.get<any, any>("/signout", async (req, res) => {
-    const userModel = getUserModel();
-    const RequestForAccount = getRequestForAccountModel();
-    if (userModel && RequestForAccount)
-        try {
-            res
-                .cookie("jsonwebtoken", "", {
-                    httpOnly: true,
-                    sameSite:
-                        config.nodeEnv === "development"
-                            ? "lax"
-                            : config.nodeEnv === "production" && "none",
-                    secure:
-                        config.nodeEnv === "development"
-                            ? false
-                            : config.nodeEnv === "production" && true,
-                    expires: new Date(0),
-                })
-                .send();
-        } catch (err) {
-            return res
-                .status(500)
-                .json({errorMessage: "Server Error nichal todo api"});
-        }
-});
 
-// @ts-ignore
 router.post<any, any>("/passresreq", async (req, res) => {
     const userModel = getUserModel();
     const RequestForAccount = getRequestForAccountModel();
@@ -354,7 +237,7 @@ router.post<any, any>("/passresreq", async (req, res) => {
         }
 });
 
-// @ts-ignore
+
 router.post<any, any>("/passresfin", async (req, res) => {
     const userModel = getUserModel();
     const RequestForAccount = getRequestForAccountModel();
@@ -399,7 +282,7 @@ router.post<any, any>("/passresfin", async (req, res) => {
         }
 });
 
-// @ts-ignore
+
 router.post<any, any>("/updaten", async (req, res) => {
     const userModel = getUserModel();
     const RequestForAccount = getRequestForAccountModel();
@@ -429,23 +312,3 @@ router.post<any, any>("/updaten", async (req, res) => {
                 .json({serverError: "Unexpected error occurred in the server"});
         }
 });
-
-// @ts-ignore
-router.get<any, any>("/signedin", async (req, res) => {
-    const userModel = getUserModel();
-    const RequestForAccount = getRequestForAccountModel();
-    if (userModel && RequestForAccount)
-        try {
-            const user = await authUser(req.cookies.jsonwebtoken);
-
-            if (!user) {
-                return res.status(401).json({clientMessage: "Unauthorized"});
-            }
-
-            res.json(await userModel.findById(user._id));
-        } catch (err) {
-            return res.status(401).json({errorMessage: "Unauthorized."});
-        }
-});*/
-
-export default router;
