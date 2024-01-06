@@ -8,7 +8,8 @@
     "dev": "nodemon --watch './src/**/*' --ext js,mjs,cjs,json,ts src/dev.cjs",
     "update": "npx npm-check-updates -u && npm i",
     "start": "npm i && npm run dev",
-    "prod": "npm i --omit-dev && npm run build"
+    "prod": "npm i --omit-dev && npm run build",
+    "gendocs": "ts-node swaggerScript.ts"
   },
   "repository": {
     "type": "git",
@@ -31,6 +32,8 @@
     "@types/zxcvbn": "^4.4.4",
     "esbuild": "^0.19.11",
     "esbuild-register": "^3.5.0",
+    "swagger-autogen": "^2.23.7",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
   "dependencies": {
