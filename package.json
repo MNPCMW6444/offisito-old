@@ -35,7 +35,7 @@
     "url-loader": "^4.1.1"
   },
   "dependencies": {
-    "@mnpcmw6444/mongoose-auto-versioning": "^2.0.1",
+    "@mnpcmw6444/mongoose-auto-versioning": "^4.0.0",
     "@sendgrid/mail": "^8.1.0",
     "axios": "^1.0.0",
     "bcrypt": "^5.1.1",
