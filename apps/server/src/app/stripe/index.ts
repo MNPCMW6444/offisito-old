@@ -1,9 +1,7 @@
-import stripe from "stripe";
-import settings from "../config";
-import eventModel from "../mongo/stripe/eventModel";
+//import stripe from "stripe";
 
 export default (async (request, response) => {
-    const sig = request.headers['stripe-signature'];
+  /*  const sig = request.headers['stripe-signature'];
     let event;
     try {
         event = stripe.webhooks.constructEvent(request.body, sig, settings.stripeSecret);
@@ -775,5 +773,5 @@ export default (async (request, response) => {
         default:
             console.log(`Unhandled event type ${event.type}`);
     }
-    response.send();
+    response.send();*/
 })
