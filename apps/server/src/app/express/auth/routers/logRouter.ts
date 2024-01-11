@@ -60,9 +60,9 @@ router.post("/in", async (req, res) => {
                 .cookie("jsonwebtoken", token, {
                     httpOnly: true,
                     sameSite:
-                        settings.nodeEnv === "development"
+                       ( settings.nodeEnv === "development"
                             ? "lax"
-                            : settings.nodeEnv === "production" && "none",
+                            : settings.nodeEnv === "production" && "none") || false,
                     secure:
                         settings.nodeEnv === "development"
                             ? false
@@ -86,9 +86,9 @@ router.get("/out", async (_, res) => {
                 .cookie("jsonwebtoken", "", {
                     httpOnly: true,
                     sameSite:
-                        settings.nodeEnv === "development"
+                        (settings.nodeEnv === "development"
                             ? "lax"
-                            : settings.nodeEnv === "production" && "none",
+                            : settings.nodeEnv === "production" && "none") || false,
                     secure:
                         settings.nodeEnv === "development"
                             ? false

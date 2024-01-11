@@ -2,7 +2,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import express from "express";
 import auth from "./auth";
-import pack from "../../../package.json";
+import pack from "../../../../../package.json";
 
 
 const app = express();
