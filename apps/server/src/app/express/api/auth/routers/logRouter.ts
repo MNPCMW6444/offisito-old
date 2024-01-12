@@ -1,7 +1,7 @@
 import { Router } from "express";
-import userModel from "../../../mongo/auth/userModel";
-import requestForAccountModel from "../../../mongo/auth/requestForAccountModel";
-import settings from "../../../../config";
+import userModel from "../../../../mongo/auth/userModel";
+import requestForAccountModel from "../../../../mongo/auth/requestForAccountModel";
+import settings from "../../../../../config";
 import bcrypt from "bcrypt";
 import jsonwebtoken from "jsonwebtoken";
 import {authUser} from "../authUtil";

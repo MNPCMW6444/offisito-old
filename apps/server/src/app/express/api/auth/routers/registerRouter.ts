@@ -1,9 +1,9 @@
 import { Router } from "express";
-import userModel from "../../../mongo/auth/userModel";
-import requestForAccountModel from "../../../mongo/auth/requestForAccountModel";
-import {sendEmail} from "../../../sendgrid/sendEmail";
-import {signupreq} from "../../../../assets/email-templates/authEmails";
-import settings from "../../../../config";
+import userModel from "../../../../mongo/auth/userModel";
+import requestForAccountModel from "../../../../mongo/auth/requestForAccountModel";
+import {sendEmail} from "../../../../sendgrid/sendEmail";
+import {signupreq} from "../../../../../assets/email-templates/authEmails";
+import settings from "../../../../../config";
 import {v4} from "uuid";
 
 const router = Router();

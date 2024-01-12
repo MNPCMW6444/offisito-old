@@ -1,7 +1,7 @@
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import express from "express";
-import auth from "./auth";
+import api from "./api";
 import pack from "../../../../../package.json";
 
 
@@ -26,14 +26,14 @@ export default async () => {
     try {
         middlewares.forEach((middleware) => app.use(middleware));
 
-        app.use("/auth", auth);
-        //  app.use("/analytics", config.nodeEnv === "production" && process.env.WHITE_ENV === "prod" ? analyticsRouter : (_, res) => res.status(200).send());
+        app.use("/api", api);
+
 
 
         const {version} = pack;
 
-        app.get("/areyoualive", (_, res) => {
-            res.json({answer: "yes", version});
+        app.get("/", (_, res) => {
+            res.json({status: "Im alive", version});
         });
 
         app.listen(port, "0.0.0.0", () => {
