@@ -1,4 +1,4 @@
-import express from "express";
+import { Router } from "express";
 import userModel from "../../../mongo/auth/userModel";
 import requestForAccountModel from "../../../mongo/auth/requestForAccountModel";
 import settings from "../../../../config";
@@ -7,7 +7,7 @@ import jsonwebtoken from "jsonwebtoken";
 import {authUser} from "../authUtil";
 
 
-const router = express.Router();
+const router = Router();
 //const MIN_PASSWORD_STRENGTH = 3;
 
 

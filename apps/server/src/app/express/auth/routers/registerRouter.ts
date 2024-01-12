@@ -1,4 +1,4 @@
-import express from "express";
+import { Router } from "express";
 import userModel from "../../../mongo/auth/userModel";
 import requestForAccountModel from "../../../mongo/auth/requestForAccountModel";
 import {sendEmail} from "../../../sendgrid/sendEmail";
@@ -6,7 +6,7 @@ import {signupreq} from "../../../../assets/email-templates/authEmails";
 import settings from "../../../../config";
 import {v4} from "uuid";
 
-const router = express.Router();
+const router = Router();
 
 router.post("/req", async (req, res) => {
     const User = userModel();
