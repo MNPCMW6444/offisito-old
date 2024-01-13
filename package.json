@@ -2,7 +2,9 @@
   "name": "@monorepo/source",
   "version": "0.1.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "upgrade:deps": "npx npm-check-updates -u"
+  },
   "private": true,
   "devDependencies": {
     "@babel/core": "^7.14.5",
