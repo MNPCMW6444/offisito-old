@@ -1,11 +1,5 @@
-import Login from "@ocomponentsffisito/reat-";
+import { Login } from "@monorepo/react-components";
 import { ServerProvider } from "@monorepo/server-provider";
 
-const App = () => {
-  return;
-  <ServerProvider>
-    <Login></Login>
-  </ServerProvider>;
-};
-
+const App = () => <Login></Login>;
 export default App;

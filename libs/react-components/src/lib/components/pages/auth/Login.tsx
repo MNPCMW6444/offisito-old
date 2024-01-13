@@ -12,7 +12,6 @@ import UserContext from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Grid, Paper, Typography } from "@mui/material";
-import img from "../../assets/x.png";
 import useMobile from "../../../hooks/useMobile";
 import axios from "axios";
 
@@ -38,7 +37,7 @@ export const LABELS: LabelsConstants = {
   },
 };
 
-const Login = () => {
+export const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [buttonLabel] = useState<keyof LabelsConstants>("IDLE");
@@ -114,7 +113,7 @@ const Login = () => {
             >
               <Grid item>
                 <Button
-                  color="secondary"
+                  color="primary"
                   type="submit"
                   data-testid="login-button"
                   variant="contained"
@@ -145,22 +144,10 @@ const Login = () => {
               minWidth: "600px",
               overflow: "hidden",
             }}
-          >
-            <img
-              src={img}
-              alt="Descriptive Alt Text"
-              style={{
-                width: "100%",
-                height: "auto",
-                objectFit: "contain",
-              }}
-            />
-          </Box>
+          ></Box>
         </Grid>
       )}
       {loginForm}
     </Grid>
   );
 };
-
-export default Login;
