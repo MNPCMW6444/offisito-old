@@ -1,7 +1,5 @@
-import SpaceCard from "./components/sapce-card/SpaceCard";
-
 const App = () => {
-  return <SpaceCard />;
+  return null;
 };
 
 export default App;
