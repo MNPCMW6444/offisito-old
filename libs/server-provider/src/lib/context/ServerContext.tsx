@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useState,
   useRef,
+  useCallback,
 } from "react";
 import { Typography } from "@mui/material";
 import axios, { AxiosInstance } from "axios";
@@ -37,15 +38,19 @@ export const ServerProvider = ({
     interval / 1000
   } seconds.`;
 
-  const checkServerAvailability = async (axiosInstance: AxiosInstance) => {
-    try {
-      return (await axiosInstance.get("areyoualive")).data.status === "Im alive"
-        ? GOOD_STATUS
-        : BAD_MESSAGE;
-    } catch (err) {
-      return BAD_MESSAGE;
-    }
-  };
+  const checkServerAvailability = useCallback(
+    async (axiosInstance: AxiosInstance) => {
+      try {
+        return (await axiosInstance.get("areyoualive")).data.status ===
+          "Im alive"
+          ? GOOD_STATUS
+          : BAD_MESSAGE;
+      } catch (err) {
+        return BAD_MESSAGE;
+      }
+    },
+    [BAD_MESSAGE],
+  );
 
   const [status, setStatus] = useState<string>(IDLE);
   const [version, setVersion] = useState<string>();
@@ -97,7 +102,7 @@ export const ServerProvider = ({
     if (statusRef.current === IDLE) {
       setStatusAsyncly().then();
     }
-  }, [axiosInstance, tryInterval]);
+  }, [axiosInstance, tryInterval, checkServerAvailability, interval]);
 
   if (status === GOOD_STATUS) {
     return (
@@ -106,6 +111,6 @@ export const ServerProvider = ({
       ></ServerContext.Provider>
     );
   } else {
-    return <>{customErrorTSX}</> || <Typography>{status}</Typography>;
+    return customErrorTSX || <Typography>{status}</Typography>;
   }
 };
