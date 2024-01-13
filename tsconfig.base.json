@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@monorepo/react-components": ["libs/react-components/src/index.ts"],
       "@monorepo/server-provider": ["libs/server-provider/src/index.ts"],
       "@monorepo/theme-provider": ["libs/theme-provider/src/index.ts"],
       "@monorepo/types": ["libs/types/src/index.ts"],
