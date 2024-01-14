@@ -60,7 +60,7 @@ export const Login = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response: any = await axios.post("/api/login", { email, password });
+      await axios.post("/api/login", { email, password });
       refreshUserData();
     } catch (error) {
       toast.error((error as any)?.response?.data?.message);
