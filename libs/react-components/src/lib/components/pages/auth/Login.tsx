@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 import { Grid, Paper, Typography } from "@mui/material";
 import useMobile from "../../../hooks/useMobile";
 import axios from "axios";
-
+import { ServerContext } from "@monorepo/server-provider";
 export interface LabelsConstants {
   IDLE: {
     LOGIN: string;
@@ -43,6 +43,9 @@ export const Login = () => {
   const [buttonLabel] = useState<keyof LabelsConstants>("IDLE");
   const { refreshUserData } = useContext(UserContext);
 
+  const x = useContext(ServerContext);
+  const axiosInstance = x?.axiosInstance;
+
   const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
@@ -60,7 +63,8 @@ export const Login = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post("/api/login", { email, password });
+      if (axiosInstance)
+        await axiosInstance.post("/api/auth/sign/in", { email, password });
       refreshUserData();
     } catch (error) {
       toast.error((error as any)?.response?.data?.message);

@@ -29,6 +29,7 @@ export const ServerProvider = ({
   tryInterval,
   env,
   customErrorTSX,
+  children,
 }: ServerProviderProps) => {
   const interval = tryInterval || DEFAULT_TRY_INTERVAL;
   const IDLE = "IDLE";
@@ -41,8 +42,7 @@ export const ServerProvider = ({
   const checkServerAvailability = useCallback(
     async (axiosInstance: AxiosInstance) => {
       try {
-        return (await axiosInstance.get("areyoualive")).data.status ===
-          "Im alive"
+        return (await axiosInstance.get("")).data.status === "Im alive"
           ? GOOD_STATUS
           : BAD_MESSAGE;
       } catch (err) {
@@ -59,7 +59,7 @@ export const ServerProvider = ({
 
   const baseURL =
     process.env.NODE_ENV === "development"
-      ? "http://localhost:6555/"
+      ? "http://localhost:5556/"
       : `https://${env || ""}server.offisito.com/`;
 
   const axiosInstance = axios.create({
@@ -82,7 +82,7 @@ export const ServerProvider = ({
 
         const newStatus = await checkServerAvailability(axiosInstance);
         if (newStatus === "good") {
-          const { data } = await axiosInstance.get("areyoualive");
+          const { data } = await axiosInstance.get("");
           setVersion(data.version);
         }
         setStatus(newStatus);
@@ -106,11 +106,11 @@ export const ServerProvider = ({
 
   if (status === GOOD_STATUS) {
     return (
-      <ServerContext.Provider
-        value={{ version: version || "", axiosInstance }}
-      ></ServerContext.Provider>
+      <ServerContext.Provider value={{ version: version || "", axiosInstance }}>
+        {children}
+      </ServerContext.Provider>
     );
   } else {
-    return customErrorTSX || <Typography>{status}</Typography>;
+    return <>customErrorTSX</> || <Typography>{status}</Typography>;
   }
 };
