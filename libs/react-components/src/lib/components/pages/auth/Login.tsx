@@ -6,14 +6,13 @@ import {
   useState,
 } from "react";
 import Box from "@mui/material/Box";
+import Imgi from "apps/host/src/assets/Copy of Offisito Weekly Dec 4.jpg";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import UserContext from "../../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Grid, Paper, Typography } from "@mui/material";
 import useMobile from "../../../hooks/useMobile";
-import axios from "axios";
 import { ServerContext } from "@monorepo/server-provider";
 export interface LabelsConstants {
   IDLE: {
@@ -144,9 +143,11 @@ export const Login = () => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              backgroundColor: "black",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundImage:
+                "https://hbr.org/resources/images/article_assets/2020/07/BI_OFFICE_Gavett-HERO.jpg",
               minWidth: "600px",
-              overflow: "hidden",
             }}
           ></Box>
         </Grid>
