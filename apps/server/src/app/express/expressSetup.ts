@@ -30,16 +30,13 @@ swaggerAutogen()(
     },
     host: "server.offisito.com or localhost...",
   },
-).then(() => {
-  // eslint-disable-next-line @nx/enforce-module-boundaries
-  import("../../../../../swagger-output.json")
-    .then((swaggerDocument) => {
-      app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-    })
-    .catch((error) => {
-      console.error("Failed to load swagger document:", error);
-    });
-});
+)
+  .then((x) => {
+    if (x) app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(x?.data));
+  })
+  .catch((error) => {
+    console.error("Failed to load swagger document:", error);
+  });
 
 export default async () => {
   try {
