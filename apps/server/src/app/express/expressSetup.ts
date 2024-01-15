@@ -23,7 +23,10 @@ const middlewares = [
 
 swaggerAutogen()(
   "./swagger-output.json",
-  ["apps/server/src/app/express/api/index.ts"],
+  [
+    "./src/app/express/api/auth/routers/logRouter.ts",
+    "./src/app/express/api/auth/routers/registerRouter.ts",
+  ],
   {
     info: {
       title: "Offisito API",
