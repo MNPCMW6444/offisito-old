@@ -12,7 +12,7 @@ import axios, { AxiosInstance } from "axios";
 interface ServerProviderProps {
   children: ReactNode;
   tryInterval?: number;
-  env?: "preprod";
+  env?: "preprod" | "local";
   customErrorTSX?: ReactNode;
 }
 
@@ -58,7 +58,7 @@ export const ServerProvider = ({
   const statusRef = useRef(status);
 
   const baseURL =
-    process.env.NODE_ENV === "development"
+    process.env.NODE_ENV === "local"
       ? "http://localhost:6555/"
       : `https://${env || ""}server.offisito.com/`;
 
@@ -111,6 +111,10 @@ export const ServerProvider = ({
       ></ServerContext.Provider>
     );
   } else {
-    return customErrorTSX || <Typography>{status}</Typography>;
+    return (
+      <>
+        {customErrorTSX} || <Typography>{status}</Typography>
+      </>
+    );
   }
 };
