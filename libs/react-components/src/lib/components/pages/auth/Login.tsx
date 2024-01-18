@@ -6,7 +6,8 @@ import {
   useState,
 } from "react";
 import Box from "@mui/material/Box";
-import Imgi from "apps/host/src/assets/Copy of Offisito Weekly Dec 4.jpg";
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import image from "../../../../../../../apps/host/src/assets/backgroundOffice.jpg";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import UserContext from "../../../context/AuthContext";
@@ -14,6 +15,8 @@ import toast from "react-hot-toast";
 import { Grid, Paper, Typography } from "@mui/material";
 import useMobile from "../../../hooks/useMobile";
 import { ServerContext } from "@monorepo/server-provider";
+import { AxiosError } from "axios";
+
 export interface LabelsConstants {
   IDLE: {
     LOGIN: string;
@@ -66,7 +69,7 @@ export const Login = () => {
         await axiosInstance.post("/api/auth/sign/in", { email, password });
       refreshUserData();
     } catch (error) {
-      toast.error((error as any)?.response?.data?.message);
+      toast.error((error as AxiosError)?.message);
     }
   };
 
@@ -145,11 +148,11 @@ export const Login = () => {
               alignItems: "center",
               backgroundSize: "cover",
               backgroundPosition: "center",
-              backgroundImage:
-                "https://hbr.org/resources/images/article_assets/2020/07/BI_OFFICE_Gavett-HERO.jpg",
               minWidth: "600px",
             }}
-          ></Box>
+            src={image}
+            component="img"
+          />
         </Grid>
       )}
       {loginForm}
