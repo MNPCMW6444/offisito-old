@@ -13,7 +13,7 @@ router.post("/req", async (req, res) => {
   const RequestForAccount = requestForAccountModel();
   if (User && RequestForAccount)
     try {
-      const { email } = req.body;
+      const { email, client } = req.body;
       if (!email)
         return res.status(400).json({
           clientError: "The email is missing",
@@ -31,7 +31,7 @@ router.post("/req", async (req, res) => {
         key,
       }).save();
 
-      const url = `${settings.clientDomain}/register?key=${key}`;
+      const url = `${client === "guest" ? settings.clientDomains.guest : client === "host" ? settings.clientDomains.host : settings.clientDomains.admin}/register?key=${key}`;
 
       const { subject, body } = signupreq(url);
 
