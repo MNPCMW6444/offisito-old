@@ -1,7 +1,10 @@
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import express from "express";
+import swaggerUi from "swagger-ui-express";
+import swaggerAutogen from "swagger-autogen";
 import api from "./api";
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import pack from "../../../../../package.json";
 
 const app = express();
@@ -12,11 +15,28 @@ const middlewares = [
   express.json({ limit: "50mb" }),
   express.urlencoded({ limit: "50mb", extended: true }),
   cors({
-    origin: ["http://localhost:4200", "https://scailean.com"],
+    origin: ["https://failean.com", "https://scailean.com"],
     credentials: true,
   }),
   //axiosLogger,
 ];
+
+swaggerAutogen()(
+  "./swagger-output.json",
+  ["apps/server/src/app/express/api/index.ts"],
+  {
+    info: {
+      title: "Offisito API",
+    },
+    host: "server.offisito.com or localhost...",
+  },
+)
+  .then((x) => {
+    if (x) app.use("/docs", swaggerUi.serve, swaggerUi.setup(x?.data));
+  })
+  .catch((error) => {
+    console.error("Failed to load swagger document:", error);
+  });
 
 export default async () => {
   try {
