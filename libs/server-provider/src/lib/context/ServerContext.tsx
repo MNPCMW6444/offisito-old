@@ -12,7 +12,7 @@ import axios, { AxiosInstance } from "axios";
 interface ServerProviderProps {
   children: ReactNode;
   tryInterval?: number;
-  env?: "preprod";
+  env?: "preprod" | "local";
   customErrorTSX?: ReactNode;
 }
 
@@ -29,7 +29,6 @@ export const ServerProvider = ({
   tryInterval,
   env,
   customErrorTSX,
-  children,
 }: ServerProviderProps) => {
   const interval = tryInterval || DEFAULT_TRY_INTERVAL;
   const IDLE = "IDLE";
@@ -42,7 +41,8 @@ export const ServerProvider = ({
   const checkServerAvailability = useCallback(
     async (axiosInstance: AxiosInstance) => {
       try {
-        return (await axiosInstance.get("")).data.status === "Im alive"
+        return (await axiosInstance.get("areyoualive")).data.status ===
+          "Im alive"
           ? GOOD_STATUS
           : BAD_MESSAGE;
       } catch (err) {
@@ -58,8 +58,8 @@ export const ServerProvider = ({
   const statusRef = useRef(status);
 
   const baseURL =
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:5556/"
+    process.env.NODE_ENV === "local"
+      ? "http://localhost:6555/"
       : `https://${env || ""}server.offisito.com/`;
 
   const axiosInstance = axios.create({
@@ -82,7 +82,7 @@ export const ServerProvider = ({
 
         const newStatus = await checkServerAvailability(axiosInstance);
         if (newStatus === "good") {
-          const { data } = await axiosInstance.get("");
+          const { data } = await axiosInstance.get("areyoualive");
           setVersion(data.version);
         }
         setStatus(newStatus);
@@ -106,11 +106,15 @@ export const ServerProvider = ({
 
   if (status === GOOD_STATUS) {
     return (
-      <ServerContext.Provider value={{ version: version || "", axiosInstance }}>
-        {children}
-      </ServerContext.Provider>
+      <ServerContext.Provider
+        value={{ version: version || "", axiosInstance }}
+      ></ServerContext.Provider>
     );
   } else {
-    return <>customErrorTSX</> || <Typography>{status}</Typography>;
+    return (
+      <>
+        {customErrorTSX} || <Typography>{status}</Typography>
+      </>
+    );
   }
 };
