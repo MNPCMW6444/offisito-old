@@ -1,8 +1,7 @@
 import { Router } from "express";
-import assetsRouter from "./assets";
 
 const router = Router();
 
-router.use("/assets", assetsRouter);
+router.post("/create", (req, res) => {});
 
 export default router;

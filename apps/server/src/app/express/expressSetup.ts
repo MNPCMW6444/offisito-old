@@ -23,10 +23,7 @@ const middlewares = [
 
 swaggerAutogen()(
   "./swagger-output.json",
-  [
-    "./src/app/express/api/auth/routers/logRouter.ts",
-    "./src/app/express/api/auth/routers/registerRouter.ts",
-  ],
+  ["apps/server/src/app/express/api/index.ts"],
   {
     info: {
       title: "Offisito API",
@@ -35,7 +32,7 @@ swaggerAutogen()(
   },
 )
   .then((x) => {
-    if (x) app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(x?.data));
+    if (x) app.use("/docs", swaggerUi.serve, swaggerUi.setup(x?.data));
   })
   .catch((error) => {
     console.error("Failed to load swagger document:", error);

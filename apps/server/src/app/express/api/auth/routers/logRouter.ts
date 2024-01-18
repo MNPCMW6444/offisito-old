@@ -5,12 +5,12 @@ import settings from "../../../../../config";
 import bcrypt from "bcrypt";
 import jsonwebtoken from "jsonwebtoken";
 import { authUser } from "../authUtil";
-import { GetInReq, GetInRes, PostInReq, PostInRes } from "@monorepo/types";
+// import { GetInReq, GetInRes, PostInReq, PostInRes } from "@monorepo/types";
 
 const router = Router();
 //const MIN_PASSWORD_STRENGTH = 3;
 
-router.get<GetInReq, GetInRes>("/in", async (req, res) => {
+router.get("/in", async (req, res) => {
   const User = userModel();
   if (User)
     try {
@@ -32,7 +32,7 @@ router.get<GetInReq, GetInRes>("/in", async (req, res) => {
       .json({ errorMessage: "Server Error nichal todo api" });
 });
 
-router.post<PostInReq, PostInRes>("/in", async (req, res) => {
+router.post("/in", async (req, res) => {
   const User = userModel();
   const RequestForAccount = requestForAccountModel();
   if (User && RequestForAccount) {
