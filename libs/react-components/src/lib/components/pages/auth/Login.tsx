@@ -1,10 +1,4 @@
-import {
-  ChangeEvent,
-  FormEvent,
-  KeyboardEvent,
-  useContext,
-  useState,
-} from "react";
+import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -49,12 +43,6 @@ export const Login = () => {
     setPassword(e.target.value);
   };
 
-  const handleKeyPress = (e: KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSubmit(e as unknown as FormEvent);
-    }
-  };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
@@ -81,48 +69,60 @@ export const Login = () => {
     >
       <Grid item>
         <Paper style={{ padding: 20, maxWidth: 400, margin: "0 auto" }}>
-          <Typography variant="h6" textAlign="center">
-            Login
-          </Typography>
-          <TextField
-            margin="dense"
-            label="Email"
-            type="email"
-            fullWidth
-            variant="outlined"
-            value={email}
-            onChange={handleEmailChange}
-          />
-          <TextField
-            margin="dense"
-            label="Password"
-            type="password"
-            fullWidth
-            variant="outlined"
-            value={password}
-            onChange={handlePasswordChange}
-            onKeyPress={handleKeyPress}
-          />
-          <Box mt={2}>
-            <Grid
-              container
-              direction="column"
-              alignItems="center"
-              rowSpacing={2}
-            >
-              <Grid item>
-                <Button
-                  color="primary"
-                  type="submit"
-                  data-testid="login-button"
-                  variant="contained"
-                  onClick={handleSubmit}
-                >
-                  {LABELS[buttonLabel].LOGIN}
-                </Button>
-              </Grid>
+          <Grid container direction="column" alignItems="center">
+            <Grid item>
+              <Typography variant="h6" textAlign="center">
+                Welcome to
+              </Typography>
             </Grid>
-          </Box>
+            <Grid item>
+              <Typography variant="h6" textAlign="center">
+                Offisito
+              </Typography>
+            </Grid>
+            <Grid item>
+              <TextField
+                margin="dense"
+                label="Email"
+                type="email"
+                fullWidth
+                variant="outlined"
+                value={email}
+                onChange={handleEmailChange}
+              />
+              <TextField
+                margin="dense"
+                label="Password"
+                type="password"
+                fullWidth
+                variant="outlined"
+                value={password}
+                onChange={handlePasswordChange}
+              />
+            </Grid>
+            <Grid item>
+              <Box mt={2}>
+                <Grid
+                  container
+                  direction="column"
+                  alignItems="center"
+                  rowSpacing={2}
+                >
+                  <Grid item>
+                    <Button
+                      color="primary"
+                      type="submit"
+                      data-testid="login-button"
+                      variant="contained"
+                      onClick={handleSubmit}
+                    >
+                      {LABELS[buttonLabel].LOGIN}
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Grid>
+          </Grid>
         </Paper>
       </Grid>
     </Grid>
