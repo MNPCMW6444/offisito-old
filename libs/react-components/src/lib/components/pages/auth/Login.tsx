@@ -6,8 +6,7 @@ import {
   useState,
 } from "react";
 import Box from "@mui/material/Box";
-// eslint-disable-next-line @nx/enforce-module-boundaries
-import image from "../../../../../../../apps/host/src/assets/backgroundOffice.jpg";
+import image from "../../../../assets/backgroundOffice.jpg";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import UserContext from "../../../context/AuthContext";

@@ -6,6 +6,7 @@ import swaggerAutogen from "swagger-autogen";
 import api from "./api";
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import pack from "../../../../../package.json";
+import settings from "../../config";
 
 const app = express();
 const port = 5556;
@@ -15,7 +16,10 @@ const middlewares = [
   express.json({ limit: "50mb" }),
   express.urlencoded({ limit: "50mb", extended: true }),
   cors({
-    origin: ["https://failean.com", "https://scailean.com"],
+    origin:
+      settings.nodeEnv === "development"
+        ? ["http://localhost:4200"]
+        : ["https://host.offisito.com", "https://offisito.com"],
     credentials: true,
   }),
   //axiosLogger,
