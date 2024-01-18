@@ -22,22 +22,23 @@ const middlewares = [
   //axiosLogger,
 ];
 
-swaggerAutogen()(
-  "./swagger-output.json",
-  ["apps/server/src/app/express/api/index.ts"],
-  {
-    info: {
-      title: "Offisito API",
+settings.whiteEnv !== "prod" &&
+  swaggerAutogen()(
+    "./swagger-output.json",
+    ["apps/server/src/app/express/api/index.ts"],
+    {
+      info: {
+        title: "Offisito API",
+      },
+      host: "server.offisito.com or localhost...",
     },
-    host: "server.offisito.com or localhost...",
-  },
-)
-  .then((x) => {
-    if (x) app.use("/docs", swaggerUi.serve, swaggerUi.setup(x?.data));
-  })
-  .catch((error) => {
-    console.error("Failed to load swagger document:", error);
-  });
+  )
+    .then((x) => {
+      if (x) app.use("/docs", swaggerUi.serve, swaggerUi.setup(x?.data));
+    })
+    .catch((error) => {
+      console.error("Failed to load swagger document:", error);
+    });
 
 export default async () => {
   try {
@@ -48,7 +49,7 @@ export default async () => {
     const { version } = pack;
 
     app.get("/", (_, res) => {
-      res.json({ status: "Im alive", version });
+      res.json({ status: "Im alive", version, whiteEnv: settings.whiteEnv });
     });
 
     app.listen(port, "0.0.0.0", () => {
