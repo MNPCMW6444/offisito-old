@@ -16,10 +16,7 @@ const middlewares = [
   express.json({ limit: "50mb" }),
   express.urlencoded({ limit: "50mb", extended: true }),
   cors({
-    origin:
-      settings.nodeEnv === "development"
-        ? ["http://localhost:4200"]
-        : ["https://host.offisito.com", "https://offisito.com"],
+    origin: Object.values(settings.clientDomains),
     credentials: true,
   }),
   //axiosLogger,
