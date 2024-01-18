@@ -6,12 +6,12 @@ import {
   useState,
 } from "react";
 import Box from "@mui/material/Box";
-import image from "../../../../assets/backgroundOffice.jpg";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import { Grid, Paper, Typography } from "@mui/material";
+import image from "../../../../assets/backgroundOffice.jpg";
 import UserContext from "../../../context/AuthContext";
 import toast from "react-hot-toast";
-import { Grid, Paper, Typography } from "@mui/material";
 import useMobile from "../../../hooks/useMobile";
 import { ServerContext } from "@monorepo/server-provider";
 import { AxiosError } from "axios";
@@ -19,22 +19,16 @@ import { AxiosError } from "axios";
 export interface LabelsConstants {
   IDLE: {
     LOGIN: string;
-    REGISTER: string;
-    RESET: string;
   };
   DOING: {
     LOGIN: string;
-    REGISTER: string;
-    RESET: string;
   };
 }
 
 export const LABELS: LabelsConstants = {
-  IDLE: { LOGIN: "Login", REGISTER: "Register", RESET: "Reset" },
+  IDLE: { LOGIN: "Login" },
   DOING: {
     LOGIN: "Logging in...",
-    REGISTER: "Registering...",
-    RESET: "Resetting...",
   },
 };
 
