@@ -7,7 +7,8 @@ import {
   useCallback,
 } from "react";
 import { Typography } from "@mui/material";
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
+import { Api } from "@monorepo/types";
 
 interface ServerProviderProps {
   children: ReactNode;
@@ -19,7 +20,7 @@ interface ServerProviderProps {
 const DEFAULT_TRY_INTERVAL = 3000;
 
 interface ServerContextProps {
-  axiosInstance: AxiosInstance;
+  api: Api<unknown>;
   version: string;
 }
 
@@ -70,6 +71,30 @@ export const ServerProvider = ({
     },
   });
 
+  const fetchWrapper: any = (url: string, init: RequestInit) => {
+    const config: unknown = {
+      url,
+      method: init?.method || "GET",
+      headers: init?.headers,
+      data: init?.body,
+    };
+
+    return axiosInstance
+      .request(config as never)
+      .then((response: AxiosResponse<any>) => {
+        return new Response(JSON.stringify(response.data), {
+          status: response.status,
+          statusText: response.statusText,
+          headers: new Headers((response as any).headers),
+        });
+      });
+  };
+
+  const api = new Api({
+    baseUrl: baseURL,
+    customFetch: fetchWrapper,
+  });
+
   useEffect(() => {
     statusRef.current = status;
   }, [status]);
@@ -78,7 +103,7 @@ export const ServerProvider = ({
     const setStatusAsyncly = async () => {
       try {
         setStatus(CHECKING_MESSAGE);
-        console.log("Checking server availability..."); // Log for starting server check
+        console.log("Checking server availability...");
 
         const newStatus = await checkServerAvailability(axiosInstance);
         if (newStatus === "good") {
@@ -87,15 +112,15 @@ export const ServerProvider = ({
         }
         setStatus(newStatus);
 
-        console.log(`Server check complete. Status: ${newStatus}`); // Log for completion of server check
+        console.log(`Server check complete. Status: ${newStatus}`);
 
         if (newStatus !== GOOD_STATUS) {
-          console.log("Setting up the next check..."); // Log for setting up next server check
+          console.log("Setting up the next check...");
           setTimeout(setStatusAsyncly, interval);
         }
       } catch (error) {
-        console.error("An error occurred while checking the server: ", error); // Log for any error during server check
-        // After an error, we can setup the next server check too
+        console.error("An error occurred while checking the server: ", error);
+
         setTimeout(setStatusAsyncly, interval);
       }
     };
@@ -106,7 +131,7 @@ export const ServerProvider = ({
 
   if (status === GOOD_STATUS) {
     return (
-      <ServerContext.Provider value={{ version: version || "", axiosInstance }}>
+      <ServerContext.Provider value={{ version: version || "", api }}>
         {children}
       </ServerContext.Provider>
     );
