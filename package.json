@@ -40,6 +40,7 @@
     "@types/react-dom": "18.2.18",
     "@types/swagger-ui-express": "^4.1.6",
     "@types/uuid": "^9.0.7",
+    "@types/zxcvbn": "^4.4.4",
     "@typescript-eslint/eslint-plugin": "^6.18.1",
     "@typescript-eslint/parser": "^6.18.1",
     "@vitejs/plugin-react": "^4.2.1",
@@ -83,6 +84,7 @@
     "swagger-ui-express": "^5.0.0",
     "tslib": "^2.6.2",
     "twilio": "^5.0.0-rc.1",
-    "web-push": "^3.6.6"
+    "web-push": "^3.6.6",
+    "zxcvbn": "^4.4.2"
   }
 }
