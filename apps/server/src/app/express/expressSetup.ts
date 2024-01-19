@@ -36,17 +36,17 @@ settings.whiteEnv !== "prod" &&
   )
     .then((x) => {
       if (x) {
-        console.log(JSON.stringify(x.data, null, 2)); // Add this line to print the Swagger data
         app.use("/docs", swaggerUi.serve, swaggerUi.setup(x?.data));
-        generateTSFiles(
-          x.data, // This can be either a file containing the Swagger json or the Swagger object itself
-          {
-            modelFolder: "libs/types/src/api/auto/models", // Adjust to your preferred models directory
-            enumTSFile: "libs/types/src/api/auto/models/enums.ts", // Adjust to your preferred enums file location
+        settings.whiteEnv === "local" &&
+          generateTSFiles(
+            x.data, // This can be either a file containing the Swagger json or the Swagger object itself
+            {
+              modelFolder: "libs/types/src/api/auto/models", // Adjust to your preferred models directory
+              enumTSFile: "libs/types/src/api/auto/models/enums.ts", // Adjust to your preferred enums file location
 
-            // + optionally more configuration
-          },
-        );
+              // + optionally more configuration
+            },
+          );
       }
     })
     .catch((error) => {
