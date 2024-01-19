@@ -53,7 +53,9 @@ export default async () => {
     });
 
     app.listen(port, "0.0.0.0", () => {
-      console.log(`Server is ready at ${"http://localhost"}:${port}`);
+      console.log(
+        `Server is ready at http${settings.whiteEnv === "local" ? "://localhost:" + port + "/docs" : "s://" + settings.whiteEnv + "server.offisito.com" + settings.whiteEnv !== "prod" ? "/docs" : ""}`,
+      );
     });
   } catch (e) {
     throw new Error("Express setup failed: " + e);
