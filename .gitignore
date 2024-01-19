@@ -42,4 +42,4 @@ Thumbs.db
 
 .env
 package-lock.json
-swagger-output.json
+swagger.json

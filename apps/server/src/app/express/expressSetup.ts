@@ -8,8 +8,6 @@ import api from "./api";
 import pack from "../../../../../package.json";
 import settings from "../../config";
 
-import { generateTemplates } from "swagger-typescript-api";
-
 const app = express();
 const port = 5556;
 
@@ -26,7 +24,7 @@ const middlewares = [
 
 settings.whiteEnv !== "prod" &&
   swaggerAutogen()(
-    "./swagger-output.json",
+    "swagger.json",
     ["apps/server/src/app/express/api/index.ts"],
     {
       info: {
@@ -35,20 +33,9 @@ settings.whiteEnv !== "prod" &&
       host: "server.offisito.com or localhost...",
     },
   )
-    .then((x) => {
-      if (x) {
-        app.use("/docs", swaggerUi.serve, swaggerUi.setup(x?.data));
-        if (settings.whiteEnv === "local") {
-          generateTemplates({
-            cleanOutput: false,
-            output: "./",
-            httpClientType: "fetch",
-            modular: false,
-            silent: false,
-          });
-        }
-      }
-    })
+    .then(
+      (x) => x && app.use("/docs", swaggerUi.serve, swaggerUi.setup(x?.data)),
+    )
     .catch((error) => {
       console.error("Failed to load swagger document:", error);
     });

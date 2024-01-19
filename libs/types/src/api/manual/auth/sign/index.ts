@@ -1,4 +1,4 @@
-import { User } from "../../../mongo/auth";
+import { User } from "../../../../mongo/auth";
 
 export interface GetInReq {}
 
