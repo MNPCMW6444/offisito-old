@@ -1,7 +1,18 @@
-import { createContext, useState, useEffect, Children } from "react";
-import axios from "axios";
+import {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  ReactNode,
+  useCallback,
+} from "react";
 import { Typography, Grid } from "@mui/material";
 import { styled } from "@mui/system";
+import { ServerContext } from "@monorepo/server-provider";
+
+interface AuthContextProps {
+  children: ReactNode;
+}
 
 export const WhiteTypography = styled(Typography)(({ theme }) => ({
   fontWeight: "bold",
@@ -25,7 +36,7 @@ const loadingMessage = (
   </Grid>
 );
 
-const UserContext = createContext({
+const AuthContext = createContext({
   user: undefined,
   myRoles: [],
   refreshUserData: () => {},
@@ -33,32 +44,34 @@ const UserContext = createContext({
   signout: () => {},
 });
 
-export const UserContextProvider = ({ children }: any) => {
+export const AuthContextProvider = ({ children }: AuthContextProps) => {
   const [user, setUser] = useState();
   const [myRoles, setMyRoles] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const refreshUserData = async () => {
+  const serverContext = useContext(ServerContext);
+
+  const refreshUserData = useCallback(async () => {
     try {
-      const response = await axios.get("/api/user");
-      setUser(response.data);
+      const response = await serverContext?.axiosInstance.get("/api/user");
+      setUser(response?.data);
     } catch (error) {
       console.error("Error fetching user data", error);
     }
-  };
+  }, [serverContext?.axiosInstance]);
 
-  const refetchI = async () => {
+  const refetchI = useCallback(async () => {
     try {
-      const response = await axios.get("/api/inventory");
-      setMyRoles(response.data);
+      const response = await serverContext?.axiosInstance.get("/api/inventory");
+      setMyRoles(response?.data);
     } catch (error) {
       console.error("Error fetching inventory", error);
     }
-  };
+  }, [serverContext?.axiosInstance]);
 
   const signout = async () => {
     try {
-      await axios.post("/api/signout");
+      await serverContext?.axiosInstance.post("/api/signout");
       setUser(user);
       setMyRoles([]);
     } catch (error) {
@@ -74,10 +87,10 @@ export const UserContextProvider = ({ children }: any) => {
     };
 
     initializeData();
-  }, []);
+  }, [refreshUserData, refetchI]);
 
   return (
-    <UserContext.Provider
+    <AuthContext.Provider
       value={{
         user,
         myRoles,
@@ -87,8 +100,8 @@ export const UserContextProvider = ({ children }: any) => {
       }}
     >
       {loading ? loadingMessage : children}
-    </UserContext.Provider>
+    </AuthContext.Provider>
   );
 };
 
-export default UserContext;
+export default AuthContext;
