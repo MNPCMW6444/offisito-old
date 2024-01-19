@@ -7,7 +7,11 @@ import api from "./api";
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import pack from "../../../../../package.json";
 import settings from "../../config";
-import { generateTSFiles } from "swagger-ts-generator";
+
+import path from "path";
+import fs from "fs";
+
+import { generateApi, generateTemplates } from "swagger-typescript-api";
 
 const app = express();
 const port = 5556;
@@ -24,7 +28,7 @@ const middlewares = [
 ];
 
 settings.whiteEnv !== "prod" &&
-  swaggerAutogen({ openapi: "3.0.0" })(
+  swaggerAutogen()(
     "./swagger-output.json",
     ["apps/server/src/app/express/api/index.ts"],
     {
@@ -37,16 +41,78 @@ settings.whiteEnv !== "prod" &&
     .then((x) => {
       if (x) {
         app.use("/docs", swaggerUi.serve, swaggerUi.setup(x?.data));
-        settings.whiteEnv === "local" &&
-          generateTSFiles(
-            x.data, // This can be either a file containing the Swagger json or the Swagger object itself
-            {
-              modelFolder: "libs/types/src/api/auto/models", // Adjust to your preferred models directory
-              enumTSFile: "libs/types/src/api/auto/models/enums.ts", // Adjust to your preferred enums file location
-
-              // + optionally more configuration
+        if (settings.whiteEnv === "local") {
+          generateApi({
+            name: "MySuperbApi.ts",
+            // set to `false` to prevent the tool from writing to disk
+            output: path.resolve(process.cwd(), "./src/__generated__"),
+            url: "http://api.com/swagger.json",
+            input: path.resolve(process.cwd(), "./foo/swagger.json"),
+            lates: path.resolve(process.cwd(), "./api-templates"),
+            httpClientType: "axios", // or "fetch"
+            defaultResponseAsSuccess: false,
+            generateClient: true,
+            generateRouteTypes: false,
+            generateResponses: true,
+            toJS: false,
+            extractRequestParams: false,
+            extractRequestBody: false,
+            extractEnums: false,
+            unwrapResponseData: false,
+            prettier: {
+              // By default prettier config is load from your project
+              printWidth: 120,
+              tabWidth: 2,
+              trailingComma: "all",
+              parser: "typescript",
             },
-          );
+            defaultResponseType: "void",
+            singleHttpClient: true,
+            cleanOutput: false,
+            enumNamesAsValues: false,
+            moduleNameFirstTag: false,
+            generateUnionEnums: false,
+            typePrefix: "",
+            typeSuffix: "",
+            enumKeyPrefix: "",
+            enumKeySuffix: "",
+            addReadonly: false,
+            sortTypes: false,
+            sortRouters: false,
+            extractingOptions: {
+              requestBodySuffix: ["Payload", "Body", "Input"],
+              requestParamsSuffix: ["Params"],
+              responseBodySuffix: ["Data", "Result", "Output"],
+              responseErrorSuffix: [
+                "Error",
+                "Fail",
+                "Fails",
+                "ErrorData",
+                "HttpError",
+                "BadResponse",
+              ],
+            },
+            /** allow to generate extra files based with this extra templates, see more below */
+            extraTemplates: [],
+            anotherArrayType: false,
+            fixInvalidTypeNamePrefix: "Type",
+          })
+            .then(({ files, configuration }) => {
+              files.forEach(({ content, name }) => {
+                fs.writeFile(path, content);
+              });
+            })
+            .catch((e) => console.error(e));
+
+          generateTemplates({
+            cleanOutput: false,
+            output: PATH_TO_OUTPUT_DIR,
+            httpClientType: "fetch",
+            modular: false,
+            silent: false,
+            rewrite: false,
+          });
+        }
       }
     })
     .catch((error) => {
