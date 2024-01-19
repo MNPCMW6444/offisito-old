@@ -38,42 +38,29 @@ const loadingMessage = (
 
 const AuthContext = createContext({
   user: undefined,
-  myRoles: [],
   refreshUserData: () => {},
-  refetchI: () => {},
   signout: () => {},
 });
 
 export const AuthContextProvider = ({ children }: AuthContextProps) => {
   const [user, setUser] = useState();
-  const [myRoles, setMyRoles] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const serverContext = useContext(ServerContext);
 
   const refreshUserData = useCallback(async () => {
     try {
-      const response = await serverContext?.axiosInstance.get("/api/user");
-      setUser(response?.data);
+      const response = await serverContext?.api.auth.logInList();
+      response?.data && setUser(response?.data);
     } catch (error) {
       console.error("Error fetching user data", error);
     }
-  }, [serverContext?.axiosInstance]);
-
-  const refetchI = useCallback(async () => {
-    try {
-      const response = await serverContext?.axiosInstance.get("/api/inventory");
-      setMyRoles(response?.data);
-    } catch (error) {
-      console.error("Error fetching inventory", error);
-    }
-  }, [serverContext?.axiosInstance]);
+  }, [serverContext?.api]);
 
   const signout = async () => {
     try {
-      await serverContext?.axiosInstance.post("/api/signout");
+      await serverContext?.api.auth.logOutList();
       setUser(user);
-      setMyRoles([]);
     } catch (error) {
       console.error("Error during sign out", error);
     }
@@ -82,19 +69,16 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
   useEffect(() => {
     const initializeData = async () => {
       await refreshUserData();
-      await refetchI();
       setLoading(false);
     };
 
     initializeData();
-  }, [refreshUserData, refetchI]);
+  }, [refreshUserData]);
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        myRoles,
-        refetchI,
         refreshUserData,
         signout,
       }}
