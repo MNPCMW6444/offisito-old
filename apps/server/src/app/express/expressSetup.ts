@@ -40,8 +40,8 @@ settings.whiteEnv !== "prod" &&
         generateTSFiles(
           x.data, // This can be either a file containing the Swagger json or the Swagger object itself
           {
-            modelFolder: "./apps/server/src/models", // Adjust to your preferred models directory
-            enumTSFile: "./apps/server/src/models/enums.ts", // Adjust to your preferred enums file location
+            modelFolder: "libs/types/src/api/auto/models", // Adjust to your preferred models directory
+            enumTSFile: "libs/types/src/api/auto/models/enums.ts", // Adjust to your preferred enums file location
 
             // + optionally more configuration
           },
