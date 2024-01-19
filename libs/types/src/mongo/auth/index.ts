@@ -7,3 +7,13 @@ export interface User extends Schema {
   name?: string;
   type: "admin" | "host" | "member";
 }
+
+export interface RequestForAccount extends Schema {
+  email: string;
+  key: string;
+}
+
+export interface Otp extends Schema {
+  user: User;
+  otp: string;
+}

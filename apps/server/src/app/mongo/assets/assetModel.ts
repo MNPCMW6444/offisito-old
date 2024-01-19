@@ -1,6 +1,7 @@
 import { connection } from "../connection";
 import mongoose from "mongoose";
 import { versioning } from "@mnpcmw6444/mongoose-auto-versioning";
+import { Asset } from "@monorepo/types";
 
 export default () => {
   const name = "asset";
@@ -41,9 +42,9 @@ export default () => {
 
   let assetModelR;
   if (mongoose.models.asset) {
-    assetModelR = connection.model(name);
+    assetModelR = connection.model<Asset>(name);
   } else {
-    assetModelR = connection.model(name, assetModel);
+    assetModelR = connection.model<Asset>(name, assetModel);
   }
 
   return assetModelR; // connection.model("asset", assetModel);
