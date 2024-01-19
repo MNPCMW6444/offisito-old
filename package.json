@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
-    "clean": "rm -rf node_modules dist package-lock.json ./.nx/cache",
+    "clean": "rm -rf node_modules dist package-lock.json swagger.json ./.nx/cache",
     "upgrade:deps": "npx npm-check-updates -u",
     "swagger:gen-ts": "npx swagger-typescript-api -p ./swagger.json -o ./libs/types/src/api/auto -n autoApi.ts\n"
   },
