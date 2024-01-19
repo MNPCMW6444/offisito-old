@@ -61,8 +61,7 @@
       },
       "library": {
         "style": "@emotion/styled",
-        "linter": "eslint",
-        "unitTestRunner": "none"
+        "linter": "eslint"
       }
     }
   }
