@@ -24,7 +24,7 @@ const middlewares = [
 ];
 
 settings.whiteEnv !== "prod" &&
-  swaggerAutogen()(
+  swaggerAutogen({ openapi: "3.0.0" })(
     "./swagger-output.json",
     ["apps/server/src/app/express/api/index.ts"],
     {
@@ -36,6 +36,7 @@ settings.whiteEnv !== "prod" &&
   )
     .then((x) => {
       if (x) {
+        console.log(JSON.stringify(x.data, null, 2)); // Add this line to print the Swagger data
         app.use("/docs", swaggerUi.serve, swaggerUi.setup(x?.data));
         generateTSFiles(
           x.data, // This can be either a file containing the Swagger json or the Swagger object itself
