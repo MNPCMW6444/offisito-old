@@ -33,7 +33,7 @@ export const Login = () => {
   const { refreshUserData } = useContext(UserContext);
 
   const x = useContext(ServerContext);
-  const axiosInstance = x?.axiosInstance;
+  const api = x?.api;
 
   const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -46,8 +46,7 @@ export const Login = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      if (axiosInstance)
-        await axiosInstance.post("/api/auth/sign/in", { email, password });
+      if (api) await api.auth.logInCreate({ email, password });
       refreshUserData();
     } catch (error) {
       toast.error((error as AxiosError)?.message);

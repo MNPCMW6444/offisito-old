@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@monorepo/react-components": ["libs/react-components/src/index.ts"],
+      "@monorepo/react-styles": ["libs/react-styles/src/index.ts"],
       "@monorepo/server-provider": ["libs/server-provider/src/index.ts"],
       "@monorepo/types": ["libs/types/src/index.ts"],
       "@monorepo/utils": ["libs/utils/src/index.ts"]
