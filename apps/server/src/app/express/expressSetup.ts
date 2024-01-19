@@ -41,11 +41,10 @@ settings.whiteEnv !== "prod" &&
         if (settings.whiteEnv === "local") {
           generateTemplates({
             cleanOutput: false,
-            //  output: PATH_TO_OUTPUT_DIR,
+            output: "./",
             httpClientType: "fetch",
             modular: false,
             silent: false,
-            // rewrite: false,
           });
         }
       }
