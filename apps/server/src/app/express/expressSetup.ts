@@ -7,6 +7,7 @@ import api from "./api";
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import pack from "../../../../../package.json";
 import settings from "../../config";
+import { generateTSFiles } from "swagger-ts-generator";
 
 const app = express();
 const port = 5556;
@@ -34,7 +35,18 @@ settings.whiteEnv !== "prod" &&
     },
   )
     .then((x) => {
-      if (x) app.use("/docs", swaggerUi.serve, swaggerUi.setup(x?.data));
+      if (x) {
+        app.use("/docs", swaggerUi.serve, swaggerUi.setup(x?.data));
+        generateTSFiles(
+          x.data, // This can be either a file containing the Swagger json or the Swagger object itself
+          {
+            modelFolder: "./apps/server/src/models", // Adjust to your preferred models directory
+            enumTSFile: "./apps/server/src/models/enums.ts", // Adjust to your preferred enums file location
+
+            // + optionally more configuration
+          },
+        );
+      }
     })
     .catch((error) => {
       console.error("Failed to load swagger document:", error);
