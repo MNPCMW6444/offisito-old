@@ -23,4 +23,5 @@ export interface Asset extends Schema {
     sat: boolean;
   };
   photoURLs: string[];
+  status: "pending" | "active" | "paused" | "archived";
 }

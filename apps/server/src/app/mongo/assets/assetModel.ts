@@ -32,6 +32,7 @@ export default () => {
         sat: Boolean,
       },
       photoURLs: [String],
+      status: { type: String, required: true },
     },
     {
       timestamps: true,

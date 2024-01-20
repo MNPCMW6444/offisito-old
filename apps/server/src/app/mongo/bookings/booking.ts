@@ -36,6 +36,7 @@ export default () => {
       endDate: {
         type: Date,
       },
+      status: { type: String, required: true },
     },
     {
       timestamps: true,

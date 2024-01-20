@@ -17,4 +17,5 @@ export interface Booking extends Schema {
   //payment: Payment TODO: Add the Payment model interface when ready
   startDate: Date;
   endDate: Date;
+  status: "pending" | "active" | "paused" | "archived";
 }
