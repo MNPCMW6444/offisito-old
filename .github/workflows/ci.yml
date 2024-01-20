@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  main:
+  prepare_with_nx:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,8 +26,8 @@ jobs:
       - run: npx nx-cloud record -- nx format:check
       - run: npx nx affected -t lint,test,build --parallel=3
 
-  deploy:
-    needs: main
+  build_and_push:
+    needs: prepare_with_nx
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
