@@ -37,7 +37,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git remote set-url origin https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ github.repository }}
+          git remote set-url origin https://${{ secrets.X_T }}@github.com/${{ github.repository }}
           git push origin HEAD:${{ github.ref_name }}
         working-directory: apps/server
 
