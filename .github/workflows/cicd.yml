@@ -29,6 +29,7 @@ jobs:
   build_and_push:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+    needs: prepare_with_nx
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -50,20 +51,8 @@ jobs:
           ECR_REPOSITORY: offisito
           IMAGE_TAG: latest
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f apps/server/Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ecs-task-definition.json
-          container-name: YOUR_CONTAINER_NAME
-          image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+      # ... remaining steps for ECS task definition and deployment ...
 
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          service: YOUR_ECS_SERVICE_NAME
-          cluster: YOUR_ECS_CLUSTER_NAME
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
