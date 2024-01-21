@@ -38,7 +38,7 @@ jobs:
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
           npm version patch -m "chore(release): bump version to %s [skip ci]"
-          git push --follow-tags https://${{ secrets.X_T }}@github.com/offisito/monorepo.git
+          git push https://${{ secrets.X_T }}@github.com/${{ github.repository }} HEAD:${{ github.ref }}
         working-directory: apps/server
 
       - name: Configure AWS credentials
