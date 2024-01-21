@@ -34,6 +34,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Bump version and push tag
+        if: github.ref == 'refs/heads/main'
+        uses: phips28/gh-action-bump-version@v6.x
+        with:
+          tag-prefix: '' # Set this to your preference
+        env:
+          GITHUB_TOKEN: ${{ secrets.ITHUB_TOKEN }}
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -69,5 +77,5 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f apps/guest/Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-      # ... remaining steps for ECS task definition and deployment ...
+        # ... remaining steps for ECS task definition and deployment ...
 
