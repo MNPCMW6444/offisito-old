@@ -1,4 +1,4 @@
-FROM node:lts as BUILDER
+FROM node:lts as builder
 WORKDIR /app
 COPY package*.json nx.json ./
 COPY libs/ libs/
@@ -9,7 +9,7 @@ RUN nx build server
 
 FROM node:lts-slim
 WORKDIR /app
-COPY --from=build /app .
+COPY --from=builder /app .
 CMD ["node", "apps/server/dist/main.js"]
 EXPOSE 6025
 
