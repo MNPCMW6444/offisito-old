@@ -33,14 +33,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Bump version
+      - name: Push changes
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          npm version patch -m "chore(release): bump version to %s [skip ci]"
-          git push https://${{ secrets.X_T }}@github.com/${{ github.repository }} HEAD:${{ github.ref }}
-        working-directory: apps/server
+          git push https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref }}
 
+        working-directory: apps/server
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
