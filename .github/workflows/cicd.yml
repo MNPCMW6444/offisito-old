@@ -10,26 +10,26 @@ permissions:
   contents: read
 
 jobs:
-  #prepare_with_nx:
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #    - uses: actions/checkout@v4
-  #      with:
-  #        fetch-depth: 0
-  #    - uses: actions/setup-node@v3
-  #      with:
-  #        node-version: '20.11.0'
-  #        cache: 'npm'
-  #    - run: npm ci
-  #    - uses: nrwl/nx-set-shas@v3#
+  prepare_with_nx:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20.11.0'
+          cache: 'npm'
+      - run: npm ci
+      - uses: nrwl/nx-set-shas@v3
 
-  #    - run: npx nx-cloud record -- nx format:check
-  #    - run: npx nx affected -t lint,test,build --parallel=3
+      - run: npx nx-cloud record -- nx format:check
+      - run: npx nx affected -t lint,test,build --parallel=3
 
   build_and_push:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    needs: prepare_with_nx
+    #needs: prepare_with_nx
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
