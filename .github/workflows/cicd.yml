@@ -37,7 +37,7 @@ jobs:
         run: |
           git config user.name 'github-actions'
           git config user.email 'github-actions@github.com'
-          git remote set-url origin https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ github.repository }}
+          git remote set-url origin https://x-access-token:${{ secrets.X_T }}@github.com/${{ github.repository }}
           git commit --allow-empty -m "Test Push"
           git push origin HEAD:${{ github.ref_name }}
 
