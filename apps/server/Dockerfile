@@ -4,7 +4,7 @@ COPY package*.json nx.json ./
 COPY libs/ libs/
 COPY apps/server/ apps/server/
 RUN npm ci
-RUN nx build server
+RUN npx nx build server
 
 FROM node:lts-slim
 WORKDIR /app
