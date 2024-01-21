@@ -28,7 +28,7 @@ jobs:
   build_and_push:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    needs: prepare_with_nx
+    #needs: prepare_with_nx
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
