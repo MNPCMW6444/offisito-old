@@ -31,7 +31,9 @@ jobs:
     #needs: prepare_with_nx
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
+        with:
+          ssh-key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
