@@ -1,0 +1,153 @@
+import { ChangeEvent, FormEvent, useContext, useState } from "react";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import { Grid, Paper, Typography } from "@mui/material";
+import image from "../../../../assets/backgroundOffice.jpg";
+import UserContext from "../../../context/AuthContext";
+import toast from "react-hot-toast";
+import useMobile from "../../../hooks/useMobile";
+import { ServerContext } from "@monorepo/server-provider";
+import { AxiosError } from "axios";
+
+export interface LabelsConstants {
+  IDLE: {
+    LOGIN: string;
+  };
+  DOING: {
+    LOGIN: string;
+  };
+}
+
+export const LABELS: LabelsConstants = {
+  IDLE: { LOGIN: "Login" },
+  DOING: {
+    LOGIN: "Logging in...",
+  },
+};
+
+export const Login = () => {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [buttonLabel] = useState<keyof LabelsConstants>("IDLE");
+  const { refreshUserData } = useContext(UserContext);
+
+  const x = useContext(ServerContext);
+  const api = x?.api;
+
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      if (api) await api.auth.logInCreate({ email, password });
+      refreshUserData();
+    } catch (error) {
+      toast.error((error as AxiosError)?.message);
+    }
+  };
+
+  const { isMobileOrTabl } = useMobile();
+
+  const loginForm = (
+    <Grid
+      item
+      container
+      justifyContent="center"
+      alignItems="center"
+      width={isMobileOrTabl ? "100vw" : "30vw"}
+      height="100vh"
+      position="fixed"
+      right={0}
+    >
+      <Grid item>
+        <Paper style={{ padding: 20, maxWidth: 400, margin: "0 auto" }}>
+          <Grid container direction="column" alignItems="center">
+            <Grid item>
+              <Typography variant="h6" textAlign="center">
+                Welcome to
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography variant="h6" textAlign="center">
+                Offisito
+              </Typography>
+            </Grid>
+            <Grid item>
+              <TextField
+                margin="dense"
+                label="Email"
+                type="email"
+                fullWidth
+                variant="outlined"
+                value={email}
+                onChange={handleEmailChange}
+              />
+              <TextField
+                margin="dense"
+                label="Password"
+                type="password"
+                fullWidth
+                variant="outlined"
+                value={password}
+                onChange={handlePasswordChange}
+              />
+            </Grid>
+            <Grid item>
+              <Box mt={2}>
+                <Grid
+                  container
+                  direction="column"
+                  alignItems="center"
+                  rowSpacing={2}
+                >
+                  <Grid item>
+                    <Button
+                      color="primary"
+                      type="submit"
+                      data-testid="login-button"
+                      variant="contained"
+                      onClick={handleSubmit}
+                    >
+                      {LABELS[buttonLabel].LOGIN}
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Grid>
+          </Grid>
+        </Paper>
+      </Grid>
+    </Grid>
+  );
+
+  return (
+    <Grid container>
+      {!isMobileOrTabl && (
+        <Grid item width="70vw" height="100vh">
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              minWidth: "600px",
+            }}
+            src={image}
+            component="img"
+          />
+        </Grid>
+      )}
+      {loginForm}
+    </Grid>
+  );
+};

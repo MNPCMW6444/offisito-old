@@ -65,5 +65,13 @@
         "unitTestRunner": "none"
       }
     }
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx-cloud",
+      "options": {
+        "accessToken": "MjQ5MzNjZmMtMmJjNi00ZGRmLWFkY2QtNWUxNGRlZjUyNzA3fHJlYWQtd3JpdGU="
+      }
+    }
   }
 }

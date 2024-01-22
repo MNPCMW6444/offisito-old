@@ -1,8 +1,9 @@
-import webpush from 'web-push';
-import settings from "../../config";
+/*
+import webpush from "web-push";
+//import settings from "../../config";
 
 // VAPID keys should be generated once and stored securely
-const vapidKeys = {
+/!*const vapidKeys = {
     publicKey: 'BOX9mgkzgqKdn0j6vi-86nqWXoo24Ir4NAPwLe3M-lHgZpBLT153asOtuX1ocALmL3aRzBWgoRhjDAC80-llb6g',
     privateKey: settings?.pushPrivate
 };
@@ -13,13 +14,21 @@ webpush.setVapidDetails(
     vapidKeys.privateKey || (() => {
         throw new Error('No private key set')
     })()
-);
+);*!/
 
-export const sendPushNotification = async (subscription: any, payload: { title: string, body: string }, data = {}) => {
-    try {
-        await webpush.sendNotification(subscription, JSON.stringify({...payload, ...data}));
-        console.log('Notification sent successfully.');
-    } catch (error) {
-        console.error('Error sending notification:', error);
-    }
+export const sendPushNotification = async (
+  subscription: any,
+  payload: { title: string; body: string },
+  data = {},
+) => {
+  try {
+    await webpush.sendNotification(
+      subscription,
+      JSON.stringify({ ...payload, ...data }),
+    );
+    console.log("Notification sent successfully.");
+  } catch (error) {
+    console.error("Error sending notification:", error);
+  }
 };
+*/

@@ -1,10 +1,11 @@
 import { Router } from "express";
-import signRouter from "./routers/logRouter";
+import logRouter from "./routers/logRouter";
+import registerRouter from "./routers/registerRouter";
 
 const router = Router();
 
-router.use("/sign", signRouter);
+router.use("/log", logRouter);
 //router.use("/manage", manageRouter);
-
+router.use("/register", registerRouter);
 
 export default router;

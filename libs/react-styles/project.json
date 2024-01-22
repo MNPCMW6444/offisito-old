@@ -1,7 +1,7 @@
 {
-  "name": "theme-provider",
+  "name": "react-styles",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/theme-provider/src",
+  "sourceRoot": "libs/react-styles/src",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -14,7 +14,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/libs/theme-provider"
+        "outputPath": "dist/libs/react-styles"
       },
       "configurations": {
         "development": {

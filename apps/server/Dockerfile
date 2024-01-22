@@ -1,17 +1,14 @@
-FROM node:lts as BUILDER
-#?ARG NPM
+FROM node:lts as builder
 WORKDIR /app
-COPY package.json /app/package.json
-COPY tsconfig.json /app/tsconfig.json
-#?COPY .npmrc /app/.npmrc
-COPY src /app/src
-RUN npm run prod
-#?RUN npm run clean:prod
-#RUN npm i --omit=dev
-#?RUN rm -rf .npmrc
+COPY package*.json nx.json tsconfig.base.json ./
+COPY libs/ libs/
+COPY apps/server/ apps/server/
+RUN npm i
+RUN npx nx build server
 
 FROM node:lts-slim
 WORKDIR /app
-COPY --from=builder /app/dist /app/dist
-CMD ["node", "./dist/index.cjs"]
-EXPOSE 6005
+COPY --from=builder /app .
+CMD ["node", "dist/apps/server/main.js"]
+EXPOSE 6025
+
