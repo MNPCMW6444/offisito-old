@@ -34,7 +34,7 @@ if (
     process.env.WHITE_ENV === "prod"
   )
 )
-  throw new Error("NODE_ENV must be 'development' or 'production'");
+  throw new Error("WHITE_ENV must be 'local' or 'preprod' or 'prod'");
 
 const settings: Settings = {
   ...(process.env.NODE_ENV === "production"
