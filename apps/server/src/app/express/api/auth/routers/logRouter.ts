@@ -38,14 +38,12 @@ router.post("/in", async (req, res) => {
   if (User && RequestForAccount) {
     try {
       const { email, password } = req.body;
-      if (!email || !password) {
-        return res
-          .status(400)
-          .json({ errorMessage: "Wrong email or password" });
+      if (!email) {
+        return res.status(400).json({ errorMessage: "Must pass an email" });
       }
       const existingUser = await User.findOne({ email });
       if (!existingUser) {
-        return res.status(401).json({
+        return res.status(402).json({
           errorMessage: "please register",
         });
       }

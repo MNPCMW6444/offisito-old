@@ -46,20 +46,20 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
 
-  const serverContext = useContext(ServerContext);
+  const server = useContext(ServerContext);
 
   const refreshUserData = useCallback(async () => {
     try {
-      const response = await serverContext?.api.auth.logInList();
+      const response = await server?.api.api.authLogInList();
       response?.data && setUser(response?.data);
     } catch (error) {
       console.error("Error fetching user data", error);
     }
-  }, [serverContext?.api]);
+  }, [server?.api]);
 
   const signout = async () => {
     try {
-      await serverContext?.api.auth.logOutList();
+      await server?.api.api.authLogOutList();
       setUser(user);
     } catch (error) {
       console.error("Error during sign out", error);
