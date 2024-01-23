@@ -1,4 +1,4 @@
-import { Login } from "@monorepo/react-components";
+import { AuthPage } from "@monorepo/react-components";
 import { ServerProvider } from "@monorepo/server-provider";
 
 const tenv =
@@ -6,7 +6,7 @@ const tenv =
 
 const App = () => (
   <ServerProvider env={tenv}>
-    <Login />
+    <AuthPage />
   </ServerProvider>
 );
 
