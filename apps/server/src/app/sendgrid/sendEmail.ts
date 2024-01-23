@@ -1,18 +1,19 @@
-import sgMail from "@sendgrid/mail";
-import dotenv from "dotenv";
-import * as process from "process";
+import sgMail from '@sendgrid/mail';
+import dotenv from 'dotenv';
+import settings from '../../config';
+import Name from '../../assets/name';
 
 dotenv.config();
 
 export const sendEmail = async (to: string, subject: string, html: string) => {
-  sgMail.setApiKey(process.env.SENDGRID + "");
+  sgMail.setApiKey(settings.sendgridApiKey);
   return await sgMail.send({
     from: {
-      email: "service@offisito.com",
-      name: "name.up",
+      email: 'service@offisito.com',
+      name: Name.up
     },
     to,
     subject,
-    html,
+    html
   });
 };
