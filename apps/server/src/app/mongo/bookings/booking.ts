@@ -36,7 +36,10 @@ export default () => {
       endDate: {
         type: Date,
       },
-      status: { type: String, required: true },
+      status: {
+        enum: ["pending", "active", "paused", "archived"],
+        required: true,
+      },
     },
     {
       timestamps: true,

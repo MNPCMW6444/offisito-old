@@ -30,7 +30,7 @@ settings.whiteEnv !== "prod" &&
       info: {
         title: "Offisito API",
       },
-      host: "server.offisito.com or localhost...",
+      host: "localhost:5556/api",
     },
   )
     .then(

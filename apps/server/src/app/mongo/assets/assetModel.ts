@@ -12,7 +12,10 @@ export default () => {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
       },
-      officeName: String,
+      officeName: {
+        String,
+        unique: true,
+      },
       desc: String,
       amenities: {
         freeWiFi: Boolean,
@@ -32,7 +35,10 @@ export default () => {
         sat: Boolean,
       },
       photoURLs: [String],
-      status: { type: String, required: true },
+      status: {
+        enum: ["pending", "active", "paused", "archived"],
+        required: true,
+      },
     },
     {
       timestamps: true,
