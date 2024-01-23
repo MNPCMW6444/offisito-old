@@ -1,8 +1,8 @@
-import { useContext } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Box, useTheme } from "@mui/material";
-import useMobile from "../../../../../libs/react-components/src/lib/hooks/useMobile";
-import { AuthContext, AuthPage } from "@monorepo/react-components";
+import { useContext } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Box, useTheme } from '@mui/material';
+import useMobile from '../../../../../libs/react-components/src/lib/hooks/useMobile';
+import { AuthContext, AuthPage } from '@monorepo/react-components';
 
 const Router = () => {
   const { user } = useContext(AuthContext);
@@ -21,13 +21,13 @@ const Router = () => {
             sx={
               !isMobile
                 ? {
-                    flexGrow: 1,
-                    p: 3,
-                    backgroundColor,
-                    pt: (theme) => theme.spacing(1),
-                    pl: (theme) => theme.spacing(32),
-                  }
-                : { pt: "5vh" }
+                  flexGrow: 1,
+                  p: 3,
+                  backgroundColor,
+                  pt: (theme) => theme.spacing(1),
+                  pl: (theme) => theme.spacing(32)
+                }
+                : { pt: '5vh' }
             }
           >
             <Routes>
@@ -48,7 +48,7 @@ const Router = () => {
           </Box>
         </Box>
       ) : (
-        <AuthPage />
+        <AuthPage client="guest" />
       )}
     </BrowserRouter>
   );

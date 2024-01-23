@@ -46,7 +46,11 @@ export const LABELS: LabelsConstants = {
   }
 };
 
-export const AuthPage = () => {
+interface AuthPageProps {
+  client: 'host' | 'guest';
+}
+
+export const AuthPage = ({ client }: AuthPageProps) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [passwordAgain, setPasswordAgain] = useState<string>('');
@@ -120,8 +124,7 @@ export const AuthPage = () => {
                   <Typography>Check your email</Typography>
                 ) : (
                   <>
-                    {' '}
-                    <TextField
+                    {step !== Step.registerFin && <TextField
                       margin="dense"
                       label="Email"
                       type="email"
@@ -129,7 +132,7 @@ export const AuthPage = () => {
                       variant="outlined"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                    />
+                    />}
                     {(step === Step.login || step === Step.registerFin) && (
                       <TextField
                         margin="dense"
@@ -223,7 +226,7 @@ export const AuthPage = () => {
                                     api.api
                                       .authRegisterReqCreate({
                                         email,
-                                        client: 'guest'
+                                        client
                                       })
                                       .then(() => setStep(Step.checkEmail))
                                       .catch((error) =>
@@ -246,7 +249,7 @@ export const AuthPage = () => {
                                             password,
                                             passwordAgain,
                                             fullName,
-                                            type: 'guest'
+                                            type: client === 'guest' ? 'member' : 'host'
                                           })
                                           .then(() => refreshUserData())
                                           .catch((error) =>
