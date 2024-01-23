@@ -60,7 +60,7 @@ export const ServerProvider = ({
 
   const baseURL =
     env === "local"
-      ? "http://localhost:5556/api"
+      ? "http://localhost:5556"
       : `https://${env || ""}server.offisito.com/api`;
 
   const axiosInstance = axios.create({

@@ -1,44 +1,80 @@
-import { useContext, useState } from "react";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import { Grid, Paper, Typography } from "@mui/material";
-import image from "../../../../assets/backgroundOffice.jpg";
-import UserContext from "../../../context/AuthContext";
-import toast from "react-hot-toast";
-import useMobile from "../../../hooks/useMobile";
-import { ServerContext } from "@monorepo/server-provider";
-import { AxiosError } from "axios";
+import { useContext, useEffect, useState } from 'react';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import { Grid, Paper, Typography } from '@mui/material';
+import image from '../../../../assets/backgroundOffice.jpg';
+import { AuthContext } from '../../../context';
+import toast from 'react-hot-toast';
+import useMobile from '../../../hooks/useMobile';
+import { ServerContext } from '@monorepo/server-provider';
+import { AxiosError } from 'axios';
+import { doNothing } from '@monorepo/utils';
+import { useLocation } from 'react-router-dom';
 
-export interface LabelsConstants {
-  IDLE: {
-    LOGIN: string;
-  };
-  DOING: {
-    LOGIN: string;
-  };
+enum Step {
+  init,
+  login,
+  registerReq,
+  registerFin,
+  checkEmail,
+}
+
+type Labels = {
+  [key in Step]: string;
+};
+
+interface LabelsConstants {
+  IDLE: Labels;
+  DOING: Labels;
 }
 
 export const LABELS: LabelsConstants = {
-  IDLE: { LOGIN: "Login" },
-  DOING: {
-    LOGIN: "Logging in...",
+  IDLE: {
+    [Step.init]: 'Continue',
+    [Step.login]: 'Login',
+    [Step.registerReq]: 'Send Email',
+    [Step.registerFin]: 'Register',
+    [Step.checkEmail]: ''
   },
+  DOING: {
+    [Step.init]: 'Checking email...',
+    [Step.login]: 'Checking password...',
+    [Step.registerReq]: 'Sending email...',
+    [Step.registerFin]: 'Registering...',
+    [Step.checkEmail]: ''
+  }
 };
 
-export const AuthPage = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [passwordAgain, setPasswordAgain] = useState<string>("");
-  const [signUpCode, setSignUpCode] = useState<number>(0);
-  const [fullName, setFullName] = useState<string>("");
-  const [buttonLabel, setButtonLabel] = useState<keyof LabelsConstants>("IDLE");
-  const { refreshUserData } = useContext(UserContext);
+interface AuthPageProps {
+  client: 'host' | 'guest';
+}
+
+export const AuthPage = ({ client }: AuthPageProps) => {
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [passwordAgain, setPasswordAgain] = useState<string>('');
+  const [signUpCode, setSignUpCode] = useState<string>();
+  const [fullName, setFullName] = useState<string>('');
+  const [buttonLabel, setButtonLabel] = useState<keyof LabelsConstants>('IDLE');
+  const [step, setStep] = useState<Step>(Step.init);
+  const { refreshUserData } = useContext(AuthContext);
 
   const { isMobileOrTabl } = useMobile();
 
   const server = useContext(ServerContext);
   const api = server?.api;
+
+  const useQuery = () => new URLSearchParams(useLocation().search);
+  const query = useQuery();
+
+  useEffect(() => {
+    const code = query.get('code');
+    if (code) {
+      setSignUpCode(code);
+      setStep(Step.registerFin);
+    }
+  }, [query]);
 
   return (
     <Grid container>
@@ -46,32 +82,32 @@ export const AuthPage = () => {
         <Grid item width="70vw" height="100vh">
           <Box
             sx={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              minWidth: "600px",
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              minWidth: '600px'
             }}
             src={image}
             component="img"
           />
         </Grid>
-      )}{" "}
+      )}
       <Grid
         item
         container
         justifyContent="center"
         alignItems="center"
-        width={isMobileOrTabl ? "100vw" : "30vw"}
+        width={isMobileOrTabl ? '100vw' : '30vw'}
         height="100vh"
         position="fixed"
         right={0}
       >
         <Grid item>
-          <Paper style={{ padding: 20, maxWidth: 400, margin: "0 auto" }}>
+          <Paper style={{ padding: 20, maxWidth: 400, margin: '0 auto' }}>
             <Grid container direction="column" alignItems="center">
               <Grid item>
                 <Typography variant="h6" textAlign="center">
@@ -84,24 +120,53 @@ export const AuthPage = () => {
                 </Typography>
               </Grid>
               <Grid item>
-                <TextField
-                  margin="dense"
-                  label="Email"
-                  type="email"
-                  fullWidth
-                  variant="outlined"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <TextField
-                  margin="dense"
-                  label="Password"
-                  type="password"
-                  fullWidth
-                  variant="outlined"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                {step === Step.checkEmail ? (
+                  <Typography>Check your email</Typography>
+                ) : (
+                  <>
+                    {step !== Step.registerFin && <TextField
+                      margin="dense"
+                      label="Email"
+                      type="email"
+                      fullWidth
+                      variant="outlined"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />}
+                    {(step === Step.login || step === Step.registerFin) && (
+                      <TextField
+                        margin="dense"
+                        label="Password"
+                        type="password"
+                        fullWidth
+                        variant="outlined"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                    )}
+                    {step === Step.registerFin && (
+                      <TextField
+                        margin="dense"
+                        label="Password Confirmation"
+                        type="password"
+                        fullWidth
+                        variant="outlined"
+                        value={passwordAgain}
+                        onChange={(e) => setPasswordAgain(e.target.value)}
+                      />
+                    )}
+                    {step === Step.registerFin && (
+                      <TextField
+                        margin="dense"
+                        label="Full Name"
+                        fullWidth
+                        variant="outlined"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                      />
+                    )}
+                  </>
+                )}
               </Grid>
               <Grid item>
                 <Box mt={2}>
@@ -117,22 +182,92 @@ export const AuthPage = () => {
                         type="submit"
                         data-testid="login-button"
                         variant="contained"
-                        onClick={() => {
-                          setButtonLabel("DOING");
-                          api &&
-                            api.auth
-                              .logInCreate({
-                                email,
-                                password,
-                              })
-                              .then(() => refreshUserData())
-                              .catch((error) =>
-                                toast.error((error as AxiosError)?.message),
-                              )
-                              .finally(() => setButtonLabel("IDLE"));
-                        }}
+                        onClick={
+                          buttonLabel === 'IDLE'
+                            ? step === 0
+                              ? () => {
+                                setButtonLabel('DOING');
+                                api &&
+                                api.api
+                                  .authLogInCreate({
+                                    email,
+                                    password
+                                  })
+                                  .catch((error) =>
+                                    setStep(
+                                      error.response.status === 402
+                                        ? Step.registerReq
+                                        : Step.login
+                                    )
+                                  )
+                                  .finally(() => setButtonLabel('IDLE'));
+                              }
+                              : step === Step.login
+                                ? () => {
+                                  setButtonLabel('DOING');
+                                  api &&
+                                  api.api
+                                    .authLogInCreate({
+                                      email,
+                                      password
+                                    })
+                                    .then(() => refreshUserData())
+                                    .catch((error) =>
+                                      toast.error(
+                                        (error as AxiosError)?.message
+                                      )
+                                    )
+                                    .finally(() => setButtonLabel('IDLE'));
+                                }
+                                : step === Step.registerReq
+                                  ? () => {
+                                    setButtonLabel('DOING');
+                                    api &&
+                                    api.api
+                                      .authRegisterReqCreate({
+                                        email,
+                                        client
+                                      })
+                                      .then(() => setStep(Step.checkEmail))
+                                      .catch((error) =>
+                                        toast.error(
+                                          (error as AxiosError)?.message
+                                        )
+                                      )
+                                      .finally(() =>
+                                        setButtonLabel('IDLE')
+                                      );
+                                  }
+                                  : step === Step.registerFin
+                                    ? () => {
+                                      if (buttonLabel === 'IDLE') {
+                                        setButtonLabel('DOING');
+                                        api &&
+                                        api.api
+                                          .authRegisterFinCreate({
+                                            key: signUpCode,
+                                            password,
+                                            passwordAgain,
+                                            fullName,
+                                            type: client === 'guest' ? 'member' : 'host'
+                                          })
+                                          .then(() => refreshUserData())
+                                          .catch((error) =>
+                                            toast.error(
+                                              (error as AxiosError)
+                                                ?.message
+                                            )
+                                          )
+                                          .finally(() =>
+                                            setButtonLabel('IDLE')
+                                          );
+                                      }
+                                    }
+                                    : doNothing
+                            : doNothing
+                        }
                       >
-                        {LABELS[buttonLabel].LOGIN}
+                        {LABELS[buttonLabel][step]}
                       </Button>
                     </Grid>
                   </Grid>

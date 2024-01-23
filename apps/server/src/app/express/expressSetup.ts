@@ -25,7 +25,7 @@ const middlewares = [
 settings.whiteEnv !== "prod" &&
   swaggerAutogen()(
     "swagger.json",
-    ["apps/server/src/app/express/api/index.ts"],
+    ["apps/server/src/app/express/expressSetup.ts"],
     {
       info: {
         title: "Offisito API",
