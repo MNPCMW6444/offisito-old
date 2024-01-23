@@ -9,6 +9,7 @@ import {
 import { Typography, Grid } from "@mui/material";
 import { styled } from "@mui/system";
 import { ServerContext } from "@monorepo/server-provider";
+import { User } from "@monorepo/types";
 
 interface AuthContextProps {
   children: ReactNode;
@@ -36,7 +37,11 @@ const loadingMessage = (
   </Grid>
 );
 
-const AuthContext = createContext({
+export const AuthContext = createContext<{
+  user?: User;
+  refreshUserData: any;
+  signout: nay;
+}>({
   user: undefined,
   refreshUserData: () => {},
   signout: () => {},
@@ -87,5 +92,3 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
     </AuthContext.Provider>
   );
 };
-
-export default AuthContext;

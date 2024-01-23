@@ -1,10 +1,10 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { Grid, Paper, Typography } from "@mui/material";
 import image from "../../../../assets/backgroundOffice.jpg";
-import UserContext from "../../../context/AuthContext";
+import { AuthContext } from "../../../context";
 import toast from "react-hot-toast";
 import useMobile from "../../../hooks/useMobile";
 import { ServerContext } from "@monorepo/server-provider";
@@ -35,14 +35,14 @@ export const LABELS: LabelsConstants = {
     [Step.login]: "Login",
     [Step.registerReq]: "Send Email",
     [Step.registerFin]: "Register",
-    [Step.checkEmail]: "Register",
+    [Step.checkEmail]: "",
   },
   DOING: {
     [Step.init]: "Checking email...",
     [Step.login]: "Checking password...",
     [Step.registerReq]: "Sending email...",
     [Step.registerFin]: "Registering...",
-    [Step.checkEmail]: "Registering...",
+    [Step.checkEmail]: "",
   },
 };
 
@@ -54,7 +54,7 @@ export const AuthPage = () => {
   const [fullName, setFullName] = useState<string>("");
   const [buttonLabel, setButtonLabel] = useState<keyof LabelsConstants>("IDLE");
   const [step, setStep] = useState<Step>(Step.init);
-  const { refreshUserData } = useContext(UserContext);
+  const { refreshUserData } = useContext(AuthContext);
 
   const { isMobileOrTabl } = useMobile();
 
@@ -116,46 +116,53 @@ export const AuthPage = () => {
                 </Typography>
               </Grid>
               <Grid item>
-                <TextField
-                  margin="dense"
-                  label="Email"
-                  type="email"
-                  fullWidth
-                  variant="outlined"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                {step !== Step.init && (
-                  <TextField
-                    margin="dense"
-                    label="Password"
-                    type="password"
-                    fullWidth
-                    variant="outlined"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                )}
-                {step === Step.registerFin && (
-                  <TextField
-                    margin="dense"
-                    label="Password Confirmation"
-                    type="password"
-                    fullWidth
-                    variant="outlined"
-                    value={passwordAgain}
-                    onChange={(e) => setPasswordAgain(e.target.value)}
-                  />
-                )}
-                {step === Step.registerFin && (
-                  <TextField
-                    margin="dense"
-                    label="Full Name"
-                    fullWidth
-                    variant="outlined"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                  />
+                {step === Step.checkEmail ? (
+                  <Typography>Check your email</Typography>
+                ) : (
+                  <>
+                    {" "}
+                    <TextField
+                      margin="dense"
+                      label="Email"
+                      type="email"
+                      fullWidth
+                      variant="outlined"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    {(step === Step.login || step === Step.registerFin) && (
+                      <TextField
+                        margin="dense"
+                        label="Password"
+                        type="password"
+                        fullWidth
+                        variant="outlined"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                    )}
+                    {step === Step.registerFin && (
+                      <TextField
+                        margin="dense"
+                        label="Password Confirmation"
+                        type="password"
+                        fullWidth
+                        variant="outlined"
+                        value={passwordAgain}
+                        onChange={(e) => setPasswordAgain(e.target.value)}
+                      />
+                    )}
+                    {step === Step.registerFin && (
+                      <TextField
+                        margin="dense"
+                        label="Full Name"
+                        fullWidth
+                        variant="outlined"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                      />
+                    )}
+                  </>
                 )}
               </Grid>
               <Grid item>
@@ -186,7 +193,7 @@ export const AuthPage = () => {
                                       .catch((error) =>
                                         setStep(
                                           error.response.status === 402
-                                            ? Step.registerFin
+                                            ? Step.registerReq
                                             : Step.login,
                                         ),
                                       )
