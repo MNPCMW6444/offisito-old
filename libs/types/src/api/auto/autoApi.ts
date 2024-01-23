@@ -55,7 +55,7 @@ export enum ContentType {
 }
 
 export class HttpClient<SecurityDataType = unknown> {
-  public baseUrl: string = "http://server.offisito.com or localhost...";
+  public baseUrl: string = "http://localhost:5556/api";
   private securityData: SecurityDataType | null = null;
   private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
   private abortControllers = new Map<CancelToken, AbortController>();
@@ -222,19 +222,32 @@ export class HttpClient<SecurityDataType = unknown> {
 /**
  * @title Offisito API
  * @version 1.0.0
- * @baseUrl http://server.offisito.com or localhost...
+ * @baseUrl http://localhost:5556/api
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
-  auth = {
+  /**
+   * No description
+   *
+   * @name GetRoot
+   * @request GET:/
+   */
+  getRoot = (params: RequestParams = {}) =>
+    this.request<void, any>({
+      path: `/`,
+      method: "GET",
+      ...params,
+    });
+
+  api = {
     /**
      * No description
      *
-     * @name LogInList
-     * @request GET:/auth/log/in
+     * @name AuthLogInList
+     * @request GET:/api/auth/log/in
      */
-    logInList: (params: RequestParams = {}) =>
+    authLogInList: (params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/auth/log/in`,
+        path: `/api/auth/log/in`,
         method: "GET",
         ...params,
       }),
@@ -242,10 +255,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @name LogInCreate
-     * @request POST:/auth/log/in
+     * @name AuthLogInCreate
+     * @request POST:/api/auth/log/in
      */
-    logInCreate: (
+    authLogInCreate: (
       body: {
         /** @example "any" */
         email?: any;
@@ -255,7 +268,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {},
     ) =>
       this.request<any, void>({
-        path: `/auth/log/in`,
+        path: `/api/auth/log/in`,
         method: "POST",
         body: body,
         type: ContentType.Json,
@@ -265,12 +278,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @name LogOutList
-     * @request GET:/auth/log/out
+     * @name AuthLogOutList
+     * @request GET:/api/auth/log/out
      */
-    logOutList: (params: RequestParams = {}) =>
+    authLogOutList: (params: RequestParams = {}) =>
       this.request<any, void>({
-        path: `/auth/log/out`,
+        path: `/api/auth/log/out`,
         method: "GET",
         ...params,
       }),
@@ -278,10 +291,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @name RegisterReqCreate
-     * @request POST:/auth/register/req
+     * @name AuthRegisterReqCreate
+     * @request POST:/api/auth/register/req
      */
-    registerReqCreate: (
+    authRegisterReqCreate: (
       body: {
         /** @example "any" */
         email?: any;
@@ -291,7 +304,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/auth/register/req`,
+        path: `/api/auth/register/req`,
         method: "POST",
         body: body,
         type: ContentType.Json,
@@ -301,10 +314,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @name RegisterFinCreate
-     * @request POST:/auth/register/fin
+     * @name AuthRegisterFinCreate
+     * @request POST:/api/auth/register/fin
      */
-    registerFinCreate: (
+    authRegisterFinCreate: (
       body: {
         /** @example "any" */
         key?: any;
@@ -320,24 +333,37 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {},
     ) =>
       this.request<any, void>({
-        path: `/auth/register/fin`,
+        path: `/api/auth/register/fin`,
         method: "POST",
         body: body,
         type: ContentType.Json,
         ...params,
       }),
-  };
-  host = {
+
     /**
      * No description
      *
-     * @name AssetsCreateCreate
-     * @request POST:/host/assets/create
+     * @name HostAssetsCreateCreate
+     * @request POST:/api/host/assets/create
      */
-    assetsCreateCreate: (params: RequestParams = {}) =>
-      this.request<any, void>({
-        path: `/host/assets/create`,
+    hostAssetsCreateCreate: (
+      body: {
+        /** @example "any" */
+        a?: any;
+        /** @example "any" */
+        b?: any;
+        /** @example "any" */
+        c?: any;
+        /** @example "any" */
+        d?: any;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/api/host/assets/create`,
         method: "POST",
+        body: body,
+        type: ContentType.Json,
         ...params,
       }),
   };
