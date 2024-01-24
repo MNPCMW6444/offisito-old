@@ -176,9 +176,6 @@ jobs:
         run: |
           aws ecs describe-task-definition --task-definition server > current-server-task-def.json
 
-      - name: Print current task definition
-        run: cat current-server-task-def.json
-
       - name: Fetch current Guest task definition
         id: current-task-def-guest
         run: |
@@ -192,9 +189,6 @@ jobs:
       - name: Update task definition for server
         run: |
           jq --arg image_tag "${{ env.IMAGE_TAG }}" --arg ecr_registry "${{ steps.login-ecr.outputs.registry }}" '.containerDefinitions[0].image = $ecr_registry + "/server:" + $image_tag' current-server-task-def.json > final-server-task-def.json
-
-      - name: Print final task definition
-        run: cat final-server-task-def.json
 
       - name: Update task definition for guest
         run: |
