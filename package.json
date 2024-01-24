@@ -6,7 +6,7 @@
     "clean": "rm -rf node_modules dist package-lock.json swagger.json ./.nx/cache",
     "update": "npx npm-check-updates -u",
     "audit": "npm audit fix",
-    "swagger": "npm i && npx ts-node -O '{\"module\": \"commonjs\"}' apps/server/src/app/express/api/swaggerRun.ts && npx swagger-typescript-api -p ./swagger.json -o ./libs/types/src/api/auto -n autoApi.ts\n",
+    "swagger": "echo hi",
     "build:guest": "tsc --outDir dist/apps/guest apps/guest/server.ts",
     "build:host": "tsc --outDir dist/apps/host apps/host/server.ts"
   },
