@@ -39,7 +39,7 @@ jobs:
         id: image_tag_step
         run: |
           echo "IMAGE_TAG=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
-          echo "::set-output name=image_tag::$(cat package.json | jq -r .version)"
+          echo "::set-output name=version::$(cat package.json | jq -r .version)"
 
 
       - name: Set up Git with SSH for pushing
@@ -79,7 +79,7 @@ jobs:
 
       - name: Build, tag, and push server image to Amazon ECR
         run: |
-          IMAGE_TAG=${{ needs.prepare.outputs.image_tag }}
+          IMAGE_TAG=${{ needs.prepare.outputs.version }}
           ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
           docker build -t $ECR_REGISTRY/server:$IMAGE_TAG -f ./apps/server/Dockerfile .
           docker push $ECR_REGISTRY/server:$IMAGE_TAG
