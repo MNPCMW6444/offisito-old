@@ -4,9 +4,9 @@ import express from "express";
 import swaggerUi from "swagger-ui-express";
 import swaggerAutogen from "swagger-autogen";
 import api from "./api";
+import settings from "../../config";
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import pack from "../../../../../package.json";
-import settings from "../../config";
 
 const app = express();
 const port = 5556;
@@ -44,13 +44,15 @@ export default async () => {
   try {
     middlewares.forEach((middleware) => app.use(middleware));
 
-    app.use("/api", api);
-
-    const { version } = pack;
-
     app.get("/", (_, res) => {
-      res.json({ status: "Im alive", version, whiteEnv: settings.whiteEnv });
+      res.json({
+        status: "Im alive",
+        version: pack.version,
+        whiteEnv: settings.whiteEnv,
+      });
     });
+
+    app.use("/api", api);
 
     app.listen(port, "0.0.0.0", () => {
       console.log(
