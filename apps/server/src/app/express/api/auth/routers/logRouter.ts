@@ -10,29 +10,7 @@ import { authUser } from "../authUtil";
 const router = Router();
 //const MIN_PASSWORD_STRENGTH = 3;
 
-router.get("/in", async (req, res) => {
-  const User = userModel();
-  if (User)
-    try {
-      const user = await authUser(req.cookies.jsonwebtoken);
-      if (!user) {
-        return res
-          .status(401)
-          .json({ errorMessage: "Unauthorized. Try to login (post)" });
-      }
-      delete user.passwordHash;
-      return res.json({ user });
-    } catch (err) {
-      return res
-        .status(401)
-        .json({ errorMessage: "Unauthorized. Try to login (post)" });
-    }
-  else
-    return res
-      .status(500)
-      .json({ errorMessage: "Server Error nichal todo api" });
-});
-router.get("/inasdasdasdasdasds", async (req, res) => {
+router.get("/inakjsdkjasdasd", async (req, res) => {
   const User = userModel();
   if (User)
     try {
