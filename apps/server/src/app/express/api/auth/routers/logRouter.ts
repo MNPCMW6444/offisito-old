@@ -10,7 +10,7 @@ import { authUser } from "../authUtil";
 const router = Router();
 //const MIN_PASSWORD_STRENGTH = 3;
 
-router.get("/in", async (req, res) => {
+router.get("/", async (req, res) => {
   const User = userModel();
   if (User)
     try {
