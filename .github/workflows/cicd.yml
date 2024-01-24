@@ -1,4 +1,5 @@
-name: CICD
+name: CI/CD Pipeline
+
 on:
   push:
     branches:
@@ -10,25 +11,8 @@ permissions:
   contents: read
 
 jobs:
-  #  prepare_with_nx:
-  #    runs-on: ubuntu-latest
-  #  steps:
-  #    - uses: actions/checkout@v4
-  #      with:
-  #        fetch-depth: 0
-  #    - uses: actions/setup-node@v3
-  #      with:
-  #        node-version: '20.11.0'
-  #        cache: 'npm'
-  #    - run: npm i
-  #    - uses: nrwl/nx-set-shas@v3
-  #    - run: npx nx-cloud record -- nx format:check
-  #    - run: npx nx affected -t lint,test,build --parallel=3
-
-  build_and_push:
+  build_server:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    #needs: prepare_with_nx
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -39,6 +23,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.11.0'
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Bump version in package.json
         run: |
@@ -84,6 +76,30 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./apps/server/Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
+
+
+
+
+
+  build_guest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.11.0'
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Build, tag, and push guest image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -93,6 +109,27 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./apps/guest/Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
+
+
+  build_host:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.11.0'
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+            
       - name: Build, tag, and push host image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
