@@ -71,7 +71,7 @@ export const ServerProvider = ({
     },
   });
 
-  const fetchWrapper = (url, init) => {
+  const fetchWrapper = (url: any, init: any) => {
     const config = {
       url,
       method: init?.method || "GET",
