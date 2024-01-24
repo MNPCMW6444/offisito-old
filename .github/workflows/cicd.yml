@@ -35,13 +35,6 @@ jobs:
           git tag v$NEW_VERSION
 
 
-      - name: Extract version from package.json
-        id: image_tag_step
-        run: |
-          echo "IMAGE_TAG=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
-          echo "::set-output name=version::$(cat package.json | jq -r .version)"
-
-
       - name: Set up Git with SSH for pushing
         run: |
           mkdir -p ~/.ssh
@@ -64,8 +57,6 @@ jobs:
         with:
           node-version: '20.11.0'
 
-
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -77,12 +68,15 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Extract version from package.json
+        run: |
+          echo "VERSION=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
+
       - name: Build, tag, and push server image to Amazon ECR
         run: |
-          IMAGE_TAG=${{ needs.prepare.outputs.version }}
           ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
-          docker build -t $ECR_REGISTRY/server:$IMAGE_TAG -f ./apps/server/Dockerfile .
-          docker push $ECR_REGISTRY/server:$IMAGE_TAG
+          docker build -t $ECR_REGISTRY/server:$VERSION -f ./apps/server/Dockerfile .
+          docker push $ECR_REGISTRY/server:$VERSION
 
 
   build_guest:
@@ -97,8 +91,6 @@ jobs:
         with:
           node-version: '20.11.0'
 
-
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -110,12 +102,15 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Extract version from package.json
+        run: |
+          echo "VERSION=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
+
       - name: Build, tag, and push guest image to Amazon ECR
         run: |
-          IMAGE_TAG=${{ needs.prepare.outputs.image_tag }}
           ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
-          docker build -t $ECR_REGISTRY/guest:$IMAGE_TAG -f ./apps/guest/Dockerfile .
-          docker push $ECR_REGISTRY/guest:$IMAGE_TAG
+          docker build -t $ECR_REGISTRY/guest:$VERSION -f ./apps/guest/Dockerfile .
+          docker push $ECR_REGISTRY/guest:$VERSION
 
 
   build_host:
@@ -143,12 +138,15 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Extract version from package.json
+        run: |
+          echo "VERSION=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
+
       - name: Build, tag, and push host image to Amazon ECR
         run: |
-          IMAGE_TAG=${{ needs.prepare.outputs.image_tag }}
           ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
-          docker build -t $ECR_REGISTRY/host:$IMAGE_TAG -f ./apps/host/Dockerfile .
-          docker push $ECR_REGISTRY/host:$IMAGE_TAG
+          docker build -t $ECR_REGISTRY/host:$VERSION -f ./apps/host/Dockerfile .
+          docker push $ECR_REGISTRY/host:$VERSION
 
   update_task_definitions_and_services:
     needs: [ prepare, build_server, build_guest, build_host ]
@@ -161,7 +159,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-
+      - name: Extract version from package.json
+        run: |
+          echo "VERSION=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -191,20 +191,18 @@ jobs:
 
       - name: Update task definition for server
         run: |
-          IMAGE_TAG=${{ needs.prepare.outputs.image_tag }}
-          jq --arg image_tag "$IMAGE_TAG" --arg ecr_registry "${{ steps.login-ecr.outputs.registry }}" '.taskDefinition.containerDefinitions[0].image = $ecr_registry + "/server:" + $image_tag' current-server-task-def.json > intermediate-server-task-def.json
+          jq --arg image_tag "$VERSION" --arg ecr_registry "${{ steps.login-ecr.outputs.registry }}" '.taskDefinition.containerDefinitions[0].image = $ecr_registry + "/server:" + $image_tag' current-server-task-def.json > intermediate-server-task-def.json
           jq '.taskDefinition | del(.taskDefinitionArn, .status, .revision, .registeredAt, .registeredBy, .requiresAttributes, .compatibilities)' intermediate-server-task-def.json > final-server-task-def.json
 
       - name: Update task definition for guest
         run: |
-          IMAGE_TAG=${{ needs.build_guest.outputs.image_tag }}
-          jq --arg image_tag "$IMAGE_TAG" --arg ecr_registry "${{ steps.login-ecr.outputs.registry }}" '.taskDefinition.containerDefinitions[0].image = $ecr_registry + "/guest:" + $image_tag' current-guest-task-def.json > intermediate-guest-task-def.json
+          jq --arg image_tag "$VERSION" --arg ecr_registry "${{ steps.login-ecr.outputs.registry }}" '.taskDefinition.containerDefinitions[0].image = $ecr_registry + "/guest:" + $image_tag' current-guest-task-def.json > intermediate-guest-task-def.json
           jq '.taskDefinition | del(.taskDefinitionArn, .status, .revision, .registeredAt, .registeredBy, .requiresAttributes, .compatibilities)' intermediate-guest-task-def.json > final-guest-task-def.json
 
       - name: Update task definition for host
         run: |
           IMAGE_TAG=${{ needs.build_host.outputs.image_tag }}
-          jq --arg image_tag "$IMAGE_TAG" --arg ecr_registry "${{ steps.login-ecr.outputs.registry }}" '.taskDefinition.containerDefinitions[0].image = $ecr_registry + "/host:" + $image_tag' current-host-task-def.json > intermediate-host-task-def.json
+          jq --arg image_tag "$VERSION" --arg ecr_registry "${{ steps.login-ecr.outputs.registry }}" '.taskDefinition.containerDefinitions[0].image = $ecr_registry + "/host:" + $image_tag' current-host-task-def.json > intermediate-host-task-def.json
           jq '.taskDefinition | del(.taskDefinitionArn, .status, .revision, .registeredAt, .registeredBy, .requiresAttributes, .compatibilities)' intermediate-host-task-def.json > final-host-task-def.json
 
       - name: Register task definition for server
