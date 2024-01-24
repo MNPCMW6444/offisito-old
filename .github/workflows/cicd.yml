@@ -173,17 +173,17 @@ jobs:
 
       - name: Update task definition for server
         run: |
-          jq '.taskDefinition | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities)' current-server-task-def.json > updated-server-task-def.json
+          jq '.taskDefinition | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' current-server-task-def.json > updated-server-task-def.json
           jq '.containerDefinitions[0].image="${{ steps.login-ecr.outputs.registry }}/server:${{ env.IMAGE_TAG }}"' updated-server-task-def.json > final-server-task-def.json
 
       - name: Update task definition for guest
         run: |
-          jq '.taskDefinition | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities)' current-guest-task-def.json > updated-guest-task-def.json
+          jq '.taskDefinition | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' current-guest-task-def.json > updated-guest-task-def.json
           jq '.containerDefinitions[0].image="${{ steps.login-ecr.outputs.registry }}/guest:${{ env.IMAGE_TAG }}"' updated-guest-task-def.json > final-guest-task-def.json
 
       - name: Update task definition for host
         run: |
-          jq '.taskDefinition | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities)' current-host-task-def.json > updated-host-task-def.json
+          jq '.taskDefinition | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' current-server-task-def.json > updated-host-task-def.json
           jq '.containerDefinitions[0].image="${{ steps.login-ecr.outputs.registry }}/host:${{ env.IMAGE_TAG }}"' updated-host-task-def.json > final-host-task-def.json
 
 
