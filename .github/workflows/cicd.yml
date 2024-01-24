@@ -188,15 +188,15 @@ jobs:
 
       - name: Update task definition for server
         run: |
-          jq --arg image_tag ${{ env.IMAGE_TAG }} --arg ecr_registry ${{ steps.login-ecr.outputs.registry }} '.containerDefinitions[0].image = $ecr_registry + "/server:" + $image_tag' current-server-task-def.json > final-server-task-def.json
+          jq --arg image_tag "${{ env.IMAGE_TAG }}" --arg ecr_registry "${{ steps.login-ecr.outputs.registry }}" '.containerDefinitions[0].image = $ecr_registry + "/server:" + $image_tag' current-server-task-def.json > final-server-task-def.json
 
       - name: Update task definition for guest
         run: |
-          jq --arg image_tag ${{ env.IMAGE_TAG }} --arg ecr_registry ${{ steps.login-ecr.outputs.registry }} '.containerDefinitions[0].image = $ecr_registry + "/guest:" + $image_tag' current-guest-task-def.json > final-guest-task-def.json
+          jq --arg image_tag "${{ env.IMAGE_TAG }}" --arg ecr_registry "${{ steps.login-ecr.outputs.registry }}" '.containerDefinitions[0].image = $ecr_registry + "/guest:" + $image_tag' current-guest-task-def.json > final-guest-task-def.json
 
       - name: Update task definition for host
         run: |
-          jq --arg image_tag ${{ env.IMAGE_TAG }} --arg ecr_registry ${{ steps.login-ecr.outputs.registry }} '.containerDefinitions[0].image = $ecr_registry + "/host:" + $image_tag' current-host-task-def.json > final-host-task-def.json
+          jq --arg image_tag "${{ env.IMAGE_TAG }}" --arg ecr_registry "${{ steps.login-ecr.outputs.registry }}" '.containerDefinitions[0].image = $ecr_registry + "/host:" + $image_tag' current-host-task-def.json > final-host-task-def.json
 
       - name: Register task definition for server
         run: |
