@@ -1,6 +1,6 @@
 {
   "name": "@monorepo/source",
-  "version": "0.5.33",
+  "version": "0.5.34",
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf node_modules dist package-lock.json swagger.json ./.nx/cache",
