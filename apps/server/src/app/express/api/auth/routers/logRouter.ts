@@ -10,16 +10,9 @@ import { authUser } from "../authUtil";
 const router = Router();
 //const MIN_PASSWORD_STRENGTH = 3;
 
-/**
- * @route GET /in
- * @group Authentication - Operations about authentication
- * @produces application/json
- * @returns {object} 200 - An object with user details
- * @returns {object} 401 - Unauthorized, with error message
- * @returns {object} 500 - Server Error, with error message
- */
 router.get("/in", async (req, res) => {
   const User = userModel();
+  // #swagger.produces = ['application/json']
   if (User)
     try {
       const user = await authUser(req.cookies.jsonwebtoken);
@@ -41,15 +34,6 @@ router.get("/in", async (req, res) => {
       .json({ errorMessage: "Server Error nichal todo api" });
 });
 
-/**
- * @route POST /api/auth/log/in
- * @group Authentication - User authentication
- * @param {string} email.body.required - email - eg: user@example.com
- * @param {string} password.body.required - user's password.
- * @produces application/json
- * @returns {object} 200 - An object with user info and token - application/json
- * @returns {Error}  default - Unexpected error
- */
 router.post("/in", async (req, res) => {
   const User = userModel();
   const RequestForAccount = requestForAccountModel();
