@@ -2,12 +2,11 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import express from "express";
 import swaggerUi from "swagger-ui-express";
-import swaggerAutogen from "swagger-autogen";
 import api from "./api";
 import settings from "../../config";
+import { swaggerRun } from "./api/swagger";
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import pack from "../../../../../package.json";
-import router from "./api";
 
 const app = express();
 const port = 5556;
@@ -24,16 +23,7 @@ const middlewares = [
 ];
 
 settings.whiteEnv !== "prod" &&
-  swaggerAutogen()(
-    "swagger.json",
-    ["apps/server/src/app/express/expressSetup.ts"],
-    {
-      info: {
-        title: "Offisito API",
-      },
-      host: "localhost:5556/api",
-    },
-  )
+  swaggerRun()
     .then(
       (x) => x && app.use("/docs", swaggerUi.serve, swaggerUi.setup(x?.data)),
     )
