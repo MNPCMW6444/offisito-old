@@ -7,6 +7,7 @@ import api from "./api";
 import settings from "../../config";
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import pack from "../../../../../package.json";
+import router from "./api";
 
 const app = express();
 const port = 5556;
@@ -44,13 +45,16 @@ export default async () => {
   try {
     middlewares.forEach((middleware) => app.use(middleware));
 
-    app.get("/", (_, res) => {
+    const handler = (_, res) => {
       res.json({
         status: "Im alive",
         version: pack.version,
         whiteEnv: settings.whiteEnv,
       });
-    });
+    };
+
+    app.get("/", handler);
+    app.get("/api", handler);
 
     app.use("/api", api);
 
