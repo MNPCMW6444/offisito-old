@@ -188,15 +188,15 @@ jobs:
 
       - name: Update task definition for server
         run: |
-          jq '(.containerDefinitions[0].image)="${{ steps.login-ecr.outputs.registry }}/server:${{ env.IMAGE_TAG }}"' updated-server-task-def.json > final-server-task-def.json
+          jq '(.containerDefinitions[0].image)="${{ steps.login-ecr.outputs.registry }}/server:$IMAGE_TAG"' current-server-task-def.json > final-server-task-def.json
 
       - name: Update task definition for guest
         run: |
-          jq '(.containerDefinitions[0].image)="${{ steps.login-ecr.outputs.registry }}/guest:${{ env.IMAGE_TAG }}"' updated-guest-task-def.json > final-guest-task-def.json
+          jq '(.containerDefinitions[0].image)="${{ steps.login-ecr.outputs.registry }}/guest:$IMAGE_TAG"' current-guest-task-def.json > final-guest-task-def.json
 
       - name: Update task definition for host
         run: |
-          jq '(.containerDefinitions[0].image)="${{ steps.login-ecr.outputs.registry }}/host:${{ env.IMAGE_TAG }}"' updated-host-task-def.json > final-host-task-def.json
+          jq '(.containerDefinitions[0].image)="${{ steps.login-ecr.outputs.registry }}/host:$IMAGE_TAG"' current-host-task-def.json > final-host-task-def.json
 
       - name: Register task definition for server
         run: |
