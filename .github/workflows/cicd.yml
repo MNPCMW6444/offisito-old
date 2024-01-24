@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
 
 permissions:
   actions: read
@@ -107,7 +106,7 @@ jobs:
         run: |
           echo "VERSION=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
 
-  
+
 
       - name: Build, tag, and push guest image to Amazon ECR
         run: |
