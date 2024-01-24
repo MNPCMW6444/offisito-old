@@ -6,7 +6,7 @@ import { Grid, Paper, Typography } from "@mui/material";
 import image from "../../../../assets/backgroundOffice.jpg";
 import { AuthContext } from "../../../context";
 import toast from "react-hot-toast";
-import useMobile from "../../../hooks/useMobile";
+import { useMobile } from "../../../";
 import { ServerContext } from "@monorepo/server-provider";
 import { AxiosError } from "axios";
 import { doNothing } from "@monorepo/utils";
