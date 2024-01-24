@@ -187,7 +187,7 @@ jobs:
           jq '.containerDefinitions[0].image="${{ steps.login-ecr.outputs.registry }}/host:${{ env.IMAGE_TAG }}"' updated-host-task-def.json > final-host-task-def.json
 
 
-          - name: Register task definition for server
+      - name: Register task definition for server
         run: |
           aws ecs register-task-definition --cli-input-json file://final-server-task-def.json
 
