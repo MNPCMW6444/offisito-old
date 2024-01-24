@@ -71,8 +71,8 @@ export const ServerProvider = ({
     },
   });
 
-  const fetchWrapper: any = (url: string, init: RequestInit) => {
-    const config: unknown = {
+  const fetchWrapper = (url, init) => {
+    const config = {
       url,
       method: init?.method || "GET",
       headers: init?.headers,
@@ -80,13 +80,14 @@ export const ServerProvider = ({
     };
 
     return axiosInstance
-      .request(config as never)
-      .then((response: AxiosResponse<any>) => {
-        return new Response(JSON.stringify(response.data), {
-          status: response.status,
-          statusText: response.statusText,
-          headers: new Headers((response as any).headers),
-        });
+      .request(config)
+      .then((response) => {
+        return response.data;
+      })
+      .catch((error) => {
+        debugger;
+        console.error("Error in fetchWrapper:", error);
+        throw error;
       });
   };
 

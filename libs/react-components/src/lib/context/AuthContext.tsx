@@ -4,23 +4,23 @@ import {
   useEffect,
   useContext,
   ReactNode,
-  useCallback
-} from 'react';
-import { Typography, Grid } from '@mui/material';
-import { styled } from '@mui/system';
-import { ServerContext } from '@monorepo/server-provider';
-import { User } from '@monorepo/types';
+  useCallback,
+} from "react";
+import { Typography, Grid } from "@mui/material";
+import { styled } from "@mui/system";
+import { ServerContext } from "@monorepo/server-provider";
+import { User } from "@monorepo/types";
 
 interface AuthContextProps {
   children: ReactNode;
 }
 
 export const WhiteTypography = styled(Typography)(({ theme }) => ({
-  fontWeight: 'bold',
+  fontWeight: "bold",
   fontSize: 22,
   letterSpacing: 2,
   color: theme.palette.primary,
-  marginBottom: theme.spacing(1)
+  marginBottom: theme.spacing(1),
 }));
 
 const loadingMessage = (
@@ -43,10 +43,8 @@ export const AuthContext = createContext<{
   signout: any;
 }>({
   user: undefined,
-  refreshUserData: () => {
-  },
-  signout: () => {
-  }
+  refreshUserData: () => {},
+  signout: () => {},
 });
 
 export const AuthContextProvider = ({ children }: AuthContextProps) => {
@@ -58,9 +56,11 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
   const refreshUserData = useCallback(async () => {
     try {
       const response = await server?.api.api.authLogInList();
+      debugger;
       response?.data && setUser(response?.data);
     } catch (error) {
-      console.error('Error fetching user data', error);
+      debugger;
+      console.error("Error fetching user data", error);
     }
   }, [server?.api]);
 
@@ -69,7 +69,7 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
       await server?.api.api.authLogOutList();
       setUser(user);
     } catch (error) {
-      console.error('Error during sign out', error);
+      console.error("Error during sign out", error);
     }
   };
 
@@ -87,7 +87,7 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
       value={{
         user,
         refreshUserData,
-        signout
+        signout,
       }}
     >
       {loading ? loadingMessage : children}
