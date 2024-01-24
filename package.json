@@ -7,7 +7,8 @@
     "update": "npx npm-check-updates -u",
     "audit": "npm audit fix",
     "swagger": "npm i && npx ts-node -O '{\"module\": \"commonjs\"}' apps/server/src/app/express/api/swaggerRun.ts && npx swagger-typescript-api -p ./swagger.json -o ./libs/types/src/api/auto -n autoApi.ts\n",
-    "build:guest": "tsc --outDir dist/apps/guest apps/guest/server.ts"
+    "build:guest": "tsc --outDir dist/apps/guest apps/guest/server.ts",
+    "build:host": "tsc --outDir dist/apps/host apps/host/server.ts"
   },
   "private": true,
   "devDependencies": {

@@ -2,14 +2,14 @@ FROM node:lts as builder
 WORKDIR /app
 COPY package*.json nx.json tsconfig.base.json ./
 COPY libs/ libs/
-COPY apps/guest/ apps/guest/
+COPY apps/host/ apps/host/
 RUN npm i
-RUN npx nx build guest
-RUN npm run build:guest
+RUN npx nx build host
+RUN npm run build:host
 
 FROM node:lts-slim
 WORKDIR /app
 COPY --from=builder /app .
-CMD ["node", "dist/apps/guest/server.js"]
-EXPOSE 4100
+CMD ["node", "dist/apps/host/server.js"]
+EXPOSE 4200
 
