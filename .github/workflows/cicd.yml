@@ -149,35 +149,54 @@ jobs:
     needs: [ build_server, build_guest, build_host ]
     runs-on: ubuntu-latest
     steps:
-      - name: Render Amazon ECS task definition for Server
-        id: render-task-definition-server
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          input: ecs-task-def-server.json
-          image: ${{ steps.login-ecr.outputs.registry }}/server:${{ steps.package_version.outputs.version }}
-
-      - name: Render Amazon ECS task definition for Guest
-        id: render-task-definition-guest
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          input: ecs-task-def-guest.json
-          image: ${{ steps.login-ecr.outputs.registry }}/guest:${{ steps.package_version.outputs.version }}
-
-      - name: Render Amazon ECS task definition for Host
-        id: render-task-definition-host
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          input: ecs-task-def-host.json
-          image: ${{ steps.login-ecr.outputs.registry }}/host:${{ steps.package_version.outputs.version }}
-
-      - name: Register task definition for Server
+      - name: Fetch current Server task definition
+        id: current-task-def-server
         run: |
-          aws ecs register-task-definition --cli-input-json file://${{ steps.render-task-definition-server.outputs.task-definition }}
+          aws ecs describe-task-definition --task-definition server-family > current-server-task-def.json
 
-      - name: Register task definition for Guest
+      - name: Fetch current Guest task definition
+        id: current-task-def-guest
         run: |
-          aws ecs register-task-definition --cli-input-json file://${{ steps.render-task-definition-guest.outputs.task-definition }}
+          aws ecs describe-task-definition --task-definition guest-family > current-guest-task-def.json
 
-      - name: Register task definition for Host
+      - name: Fetch current Host task definition
+        id: current-task-def-host
         run: |
-          aws ecs register-task-definition --cli-input-json file://${{ steps.render-task-definition-host.outputs.task-definition }}
+          aws ecs describe-task-definition --task-definition host-family > current-host-task-def.json
+
+      - name: Update task definition for server
+        run: |
+          jq '.taskDefinition.containerDefinitions[0].image="${{ steps.login-ecr.outputs.registry }}/server:${{ env.IMAGE_TAG }}"' current-server-task-def.json > updated-server-task-def.json
+
+      - name: Update task definition for guest
+        run: |
+          jq '.taskDefinition.containerDefinitions[0].image="${{ steps.login-ecr.outputs.registry }}/guest:${{ env.IMAGE_TAG }}"' current-guest-task-def.json > updated-guest-task-def.json
+
+      - name: Update task definition for host
+        run: |
+          jq '.taskDefinition.containerDefinitions[0].image="${{ steps.login-ecr.outputs.registry }}/host:${{ env.IMAGE_TAG }}"' current-host-task-def.json > updated-host-task-def.json
+
+      - name: Register task definition for server
+        run: |
+          aws ecs register-task-definition --cli-input-json file://updated-server-task-def.json
+
+      - name: Register task definition for guest
+        run: |
+          aws ecs register-task-definition --cli-input-json file://updated-guest-task-def.json
+
+      - name: Register task definition for host
+        run: |
+          aws ecs register-task-definition --cli-input-json file://updated-host-task-def.json
+
+      - name: Update ECS Service for server
+        run: |
+          aws ecs update-service --cluster your-cluster-name --service server-service-name --task-definition server-family
+
+      - name: Update ECS Service for guest
+        run: |
+          aws ecs update-service --cluster your-cluster-name --service guest-service-name --task-definition guest-family
+
+      - name: Update ECS Service for host
+        run: |
+          aws ecs update-service --cluster your-cluster-name --service host-service-name --task-definition host-family
+
