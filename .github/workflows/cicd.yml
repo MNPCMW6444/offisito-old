@@ -159,17 +159,17 @@ jobs:
       - name: Fetch current Server task definition
         id: current-task-def-server
         run: |
-          aws ecs describe-task-definition --task-definition server-family > current-server-task-def.json
+          aws ecs describe-task-definition --task-definition server > current-server-task-def.json
 
       - name: Fetch current Guest task definition
         id: current-task-def-guest
         run: |
-          aws ecs describe-task-definition --task-definition guest-family > current-guest-task-def.json
+          aws ecs describe-task-definition --task-definition guest > current-guest-task-def.json
 
       - name: Fetch current Host task definition
         id: current-task-def-host
         run: |
-          aws ecs describe-task-definition --task-definition host-family > current-host-task-def.json
+          aws ecs describe-task-definition --task-definition host > current-host-task-def.json
 
       - name: Update task definition for server
         run: |
