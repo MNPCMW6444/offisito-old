@@ -41,6 +41,15 @@ router.get("/in", async (req, res) => {
       .json({ errorMessage: "Server Error nichal todo api" });
 });
 
+/**
+ * @route POST /api/auth/log/in
+ * @group Authentication - User authentication
+ * @param {string} email.body.required - email - eg: user@example.com
+ * @param {string} password.body.required - user's password.
+ * @produces application/json
+ * @returns {object} 200 - An object with user info and token - application/json
+ * @returns {Error}  default - Unexpected error
+ */
 router.post("/in", async (req, res) => {
   const User = userModel();
   const RequestForAccount = requestForAccountModel();
