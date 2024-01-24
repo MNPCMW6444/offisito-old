@@ -12,7 +12,6 @@ const router = Router();
 
 router.get("/in", async (req, res) => {
   const User = userModel();
-  // #swagger.produces = ['application/json']
   if (User)
     try {
       const user = await authUser(req.cookies.jsonwebtoken);
@@ -22,7 +21,7 @@ router.get("/in", async (req, res) => {
           .json({ errorMessage: "Unauthorized. Try to login (post)" });
       }
       delete user.passwordHash;
-      return res.json({ user });
+      return res.json(user);
     } catch (err) {
       return res
         .status(401)

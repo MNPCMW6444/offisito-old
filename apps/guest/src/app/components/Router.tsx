@@ -10,7 +10,7 @@ const Router = () => {
   const { isMobile } = useMobile();
 
   const backgroundColor = useTheme().palette.background.default; // Get default background color from theme
-  console.log(user);
+
   return (
     <BrowserRouter>
       {user ? (

@@ -85,7 +85,6 @@ export const ServerProvider = ({
         return response.data;
       })
       .catch((error) => {
-        debugger;
         console.error("Error in fetchWrapper:", error);
         throw error;
       });
