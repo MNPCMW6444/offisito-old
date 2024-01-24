@@ -44,7 +44,6 @@ jobs:
           git config user.email 'github-actions@github.com'
           git push git@github.com:${{ github.repository }} HEAD:${{ github.ref_name }}
 
-
   build_server:
     needs: prepare
     runs-on: ubuntu-latest
@@ -64,16 +63,14 @@ jobs:
         id: package_version
         run: echo "::set-output name=version::$(cat package.json | jq -r .version)"
 
-
       - name: Build, tag, and push server image to Amazon ECR
         env:
           ECR_REPOSITORY: server
         run: |
-          ECR_REGISTRY=${{ steps.login-ecr.outputs.registey }}
+          ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG=${{ steps.package_version.outputs.version }}
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./apps/server/Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
 
   build_guest:
     needs: prepare
@@ -98,11 +95,10 @@ jobs:
         env:
           ECR_REPOSITORY: guest
         run: |
-          ECR_REGISTRY=${{ steps.login-ecr.outputs.registey }}
+          ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG=${{ steps.package_version.outputs.version }}
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./apps/guest/Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
 
   build_host:
     needs: prepare
@@ -122,16 +118,15 @@ jobs:
       - name: Get version from package.json
         id: package_version
         run: echo "::set-output name=version::$(cat package.json | jq -r .version)"
-        
+
       - name: Build, tag, and push host image to Amazon ECR
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registey }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ steps.package_version.outputs.version }}
           ECR_REPOSITORY: host
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./apps/host/Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
 
   update_task_definitions_and_services:
     needs: [ build_server, build_guest, build_host ]
@@ -157,7 +152,6 @@ jobs:
         with:
           input: ecs-task-def-host.json
           image: ${{ steps.login-ecr.outputs.registry }}/host:${{ steps.package_version.outputs.version }}
-
 
       - name: Register task definition for Server
         run: |
