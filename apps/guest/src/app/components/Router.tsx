@@ -1,8 +1,8 @@
-import { useContext } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Box, useTheme } from '@mui/material';
-import useMobile from '../../../../../libs/react-components/src/lib/hooks/useMobile';
-import { AuthContext, AuthPage } from '@monorepo/react-components';
+import { useContext } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Box, Typography, useTheme } from "@mui/material";
+import { useMobile } from "@monorepo/react-components";
+import { AuthContext, AuthPage } from "@monorepo/react-components";
 
 const Router = () => {
   const { user } = useContext(AuthContext);
@@ -21,18 +21,23 @@ const Router = () => {
             sx={
               !isMobile
                 ? {
-                  flexGrow: 1,
-                  p: 3,
-                  backgroundColor,
-                  pt: (theme) => theme.spacing(1),
-                  pl: (theme) => theme.spacing(32)
-                }
-                : { pt: '5vh' }
+                    flexGrow: 1,
+                    p: 3,
+                    backgroundColor,
+                    pt: (theme) => theme.spacing(1),
+                    pl: (theme) => theme.spacing(32),
+                  }
+                : { pt: "5vh" }
             }
           >
             <Routes>
-              {/*  <Route path="/*" element={<HomePage />} />
-                    <Route path="/contacts" element={<ContactsPage />} />
+              <Route
+                path="/*"
+                element={
+                  <Typography>Hello: {JSON.stringify(user)} </Typography>
+                }
+              />
+              {/*      <Route path="/contacts" element={<ContactsPage />} />
                     <Route path="/sessions" element={<SessionsPage />} />
                     <Route path="/chat" element={<ChatPage />} />
                     <Route path="/roles" element={<Roles />} />
