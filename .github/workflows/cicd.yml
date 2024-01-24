@@ -151,7 +151,7 @@ jobs:
           docker push $ECR_REGISTRY/host:$IMAGE_TAG
 
   update_task_definitions_and_services:
-    needs: [ build_server, build_guest, build_host ]
+    needs: [ prepare, build_server, build_guest, build_host ]
     runs-on: ubuntu-latest
     steps:
       - name: Configure AWS credentials
