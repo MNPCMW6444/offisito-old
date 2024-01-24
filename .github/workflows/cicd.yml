@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  build_server:
+  prepare:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -67,6 +67,10 @@ jobs:
         id: package_version
         run: echo "::set-output name=version::$(cat package.json | jq -r .version)"
 
+  build_server:
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
       - name: Build, tag, and push server image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -77,29 +81,10 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
 
-
-
-
-
   build_guest:
+    needs: prepare
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20.11.0'
-
-      - name: Cache Node.js modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Build, tag, and push guest image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -110,26 +95,10 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
 
-
   build_host:
+    needs: prepare
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20.11.0'
-
-      - name: Cache Node.js modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-            
       - name: Build, tag, and push host image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -140,4 +109,40 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
 
-      # ... remaining steps for ECS task definition and deployment ...
+  update_task_definitions_and_services:
+    needs: [ build_server, build_guest, build_host ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Render Amazon ECS task definition for Server
+        id: render-task-definition-server
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          input: ecs-task-def-server.json
+          image: ${{ steps.login-ecr.outputs.registry }}/server:${{ steps.package_version.outputs.version }}
+
+      - name: Render Amazon ECS task definition for Guest
+        id: render-task-definition-guest
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          input: ecs-task-def-guest.json
+          image: ${{ steps.login-ecr.outputs.registry }}/guest:${{ steps.package_version.outputs.version }}
+
+      - name: Render Amazon ECS task definition for Host
+        id: render-task-definition-host
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          input: ecs-task-def-host.json
+          image: ${{ steps.login-ecr.outputs.registry }}/host:${{ steps.package_version.outputs.version }}
+
+
+      - name: Register task definition for Server
+        run: |
+          aws ecs register-task-definition --cli-input-json file://${{ steps.render-task-definition-server.outputs.task-definition }}
+
+      - name: Register task definition for Guest
+        run: |
+          aws ecs register-task-definition --cli-input-json file://${{ steps.render-task-definition-guest.outputs.task-definition }}
+
+      - name: Register task definition for Host
+        run: |
+          aws ecs register-task-definition --cli-input-json file://${{ steps.render-task-definition-host.outputs.task-definition }}
