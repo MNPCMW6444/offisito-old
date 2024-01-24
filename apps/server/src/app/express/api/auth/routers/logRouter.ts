@@ -11,11 +11,12 @@ const router = Router();
 //const MIN_PASSWORD_STRENGTH = 3;
 
 /**
- * @route GET /api/items
- * @group items - Operations about items
- * @returns {object} 200 - An array of items
- * @returns {Error}  default - Unexpected error
+ * @route GET /in
+ * @group Authentication - Operations about authentication
  * @produces application/json
+ * @returns {object} 200 - An object with user details
+ * @returns {object} 401 - Unauthorized, with error message
+ * @returns {object} 500 - Server Error, with error message
  */
 router.get("/in", async (req, res) => {
   const User = userModel();
