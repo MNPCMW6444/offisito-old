@@ -255,12 +255,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @name AuthLogInList
-     * @request GET:/api/auth/log/in
+     * @name AuthLogInakjsdkjasdasdList
+     * @request GET:/api/auth/log/inakjsdkjasdasd
      */
-    authLogInList: (params: RequestParams = {}) =>
+    authLogInakjsdkjasdasdList: (params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/api/auth/log/in`,
+        path: `/api/auth/log/inakjsdkjasdasd`,
         method: "GET",
         ...params,
       }),
