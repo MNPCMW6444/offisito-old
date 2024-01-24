@@ -188,18 +188,18 @@ jobs:
 
       - name: Update task definition for server
         run: |
-          jq '.taskDefinition.containerDefinitions[0].image = "${{ steps.login-ecr.outputs.registry }}/server:${{ env.IMAGE_TAG }}"' current-server-task-def.json > temp-server-task-def.json
-          jq '.family = .taskDefinition.family | .containerDefinitions = .taskDefinition.containerDefinitions | .executionRoleArn = .taskDefinition.executionRoleArn | .networkMode = .taskDefinition.networkMode | .requiresCompatibilities = .taskDefinition.requiresCompatibilities | .cpu = .taskDefinition.cpu | .memory = .taskDefinition.memory' temp-server-task-def.json > final-server-task-def.json
+          jq '.taskDefinition.containerDefinitions[0].image = "${{ steps.login-ecr.outputs.registry }}/server:${{ env.IMAGE_TAG }}"' current-server-task-def.json > intermediate-server-task-def.json
+          jq '.taskDefinition | del(.taskDefinitionArn, .status, .revision, .registeredAt, .registeredBy)' intermediate-server-task-def.json > final-server-task-def.json
 
       - name: Update task definition for guest
         run: |
-          jq '.taskDefinition.containerDefinitions[0].image = "${{ steps.login-ecr.outputs.registry }}/guest:${{ env.IMAGE_TAG }}"' current-guest-task-def.json > temp-guest-task-def.json
-          jq '.family = .taskDefinition.family | .containerDefinitions = .taskDefinition.containerDefinitions | .executionRoleArn = .taskDefinition.executionRoleArn | .networkMode = .taskDefinition.networkMode | .requiresCompatibilities = .taskDefinition.requiresCompatibilities | .cpu = .taskDefinition.cpu | .memory = .taskDefinition.memory' temp-guest-task-def.json > final-guest-task-def.json
+          jq '.taskDefinition.containerDefinitions[0].image = "${{ steps.login-ecr.outputs.registry }}/guest:${{ env.IMAGE_TAG }}"' current-guest-task-def.json > intermediate-guest-task-def.json
+          jq '.taskDefinition | del(.taskDefinitionArn, .status, .revision, .registeredAt, .registeredBy)' intermediate-guest-task-def.json > final-guest-task-def.json
 
       - name: Update task definition for host
         run: |
-          jq '.taskDefinition.containerDefinitions[0].image = "${{ steps.login-ecr.outputs.registry }}/host:${{ env.IMAGE_TAG }}"' current-host-task-def.json > temp-host-task-def.json
-          jq '.family = .taskDefinition.family | .containerDefinitions = .taskDefinition.containerDefinitions | .executionRoleArn = .taskDefinition.executionRoleArn | .networkMode = .taskDefinition.networkMode | .requiresCompatibilities = .taskDefinition.requiresCompatibilities | .cpu = .taskDefinition.cpu | .memory = .taskDefinition.memory' temp-host-task-def.json > final-host-task-def.json
+          jq '.taskDefinition.containerDefinitions[0].image = "${{ steps.login-ecr.outputs.registry }}/host:${{ env.IMAGE_TAG }}"' current-host-task-def.json > intermediate-host-task-def.json
+          jq '.taskDefinition | del(.taskDefinitionArn, .status, .revision, .registeredAt, .registeredBy)' intermediate-host-task-def.json > final-host-task-def.json
 
       - name: Register task definition for server
         run: |
