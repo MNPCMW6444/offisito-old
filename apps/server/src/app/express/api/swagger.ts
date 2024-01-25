@@ -1,7 +1,7 @@
 import swaggerAutogen from "swagger-autogen";
 
 export const swaggerRun = () => {
-  swaggerAutogen({ openapi: "3.0.0" })(
+  swaggerAutogen()(
     "swagger.json",
     ["apps/server/src/app/express/expressSetup.ts"],
     {
