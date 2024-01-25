@@ -25,7 +25,6 @@ jobs:
 
       - name: Bump version in package.json
         run: |
-          npm run swagger
           npm version patch --no-git-tag-version
           NEW_VERSION=$(node -p "require('./package.json').version")
           git config --global user.email "michael+cicd@offisito.com"
