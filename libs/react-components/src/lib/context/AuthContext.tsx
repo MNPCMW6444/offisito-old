@@ -39,12 +39,12 @@ const loadingMessage = (
 
 export const AuthContext = createContext<{
   user?: User;
-  refreshUserData: any;
-  signout: any;
+  refreshUserData: () => Promise<void>;
+  signout: () => Promise<void>;
 }>({
   user: undefined,
-  refreshUserData: () => {},
-  signout: () => {},
+  refreshUserData: async () => {},
+  signout: async () => {},
 });
 
 export const AuthContextProvider = ({ children }: AuthContextProps) => {
@@ -55,19 +55,17 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
 
   const refreshUserData = useCallback(async () => {
     try {
-      const response = await server?.api.api.authLogList();
-      debugger;
-      response?.body && setUser(response?.body);
+      const response = await server?.axiosInstance.get("api/auth/log");
+      response?.data && setUser(response?.data);
     } catch (error) {
-      debugger;
       console.error("Error fetching user data:", error);
     }
-  }, [server?.api]);
+  }, [server?.axiosInstance]);
 
   const signout = async () => {
     try {
-      await server?.api.api.authLogOutList();
-      setUser(user);
+      await server?.axiosInstance.get("api/auth/log/out");
+      setUser(undefined);
     } catch (error) {
       console.error("Error during sign out", error);
     }

@@ -1,111 +1,95 @@
-import React, {
-  ReactNode,
-  createContext,
-  useEffect,
-  useState,
-  useRef,
-} from "react";
+import React, { createContext, useEffect, useState, useRef } from "react";
 import { Typography } from "@mui/material";
 import axios, { AxiosInstance } from "axios";
 
+// Constants
+const DEFAULT_TRY_INTERVAL = 3000;
+const GOOD_STATUS = "good";
+const BAD_MESSAGE = "Server is not available. Please try again later.";
+const DEVELOPMENT_BASE_URL = "http://localhost:5556/";
+const PRODUCTION_BASE_URL = "https://server.offisito.com/";
+
+// Types and Interfaces
 interface ServerProviderProps {
-  children: ReactNode;
+  children: React.ReactNode;
   tryInterval?: number;
   env?: "preprod";
-  customErrorTSX?: ReactNode;
+  customErrorTSX?: React.ReactNode;
 }
-
-const DEFAULT_TRY_INTERVAL = 3000;
 
 interface ServerContextProps {
   axiosInstance: AxiosInstance;
   version: string;
 }
 
+// Context creation
 export const ServerContext = createContext<ServerContextProps | null>(null);
 
+// Component
 export const ServerProvider = ({
   tryInterval,
   env,
   customErrorTSX,
+  children,
 }: ServerProviderProps) => {
   const interval = tryInterval || DEFAULT_TRY_INTERVAL;
-  const IDLE = "IDLE";
-  const CHECKING_MESSAGE = "Checking server availability...";
-  const GOOD_STATUS = "good";
-  const BAD_MESSAGE = `Server is not available. Please try again later by refreshing or wait ${
-    interval / 1000
-  } seconds.`;
+  const [status, setStatus] = useState<string>(BAD_MESSAGE);
+  const [version, setVersion] = useState<string>("");
+  const statusRef = useRef(status);
 
-  const checkServerAvailability = async (axiosInstance: AxiosInstance) => {
+  // Helper functions
+  const getBaseURL = () =>
+    process.env.NODE_ENV === "development"
+      ? DEVELOPMENT_BASE_URL
+      : `${env ? `https://${env}.` : ""}${PRODUCTION_BASE_URL}`;
+
+  const axiosInstance = axios.create({
+    baseURL: getBaseURL(),
+    withCredentials: true,
+    headers: { "Content-Type": "application/json" },
+  });
+
+  const scheduleNextCheck = () => {
+    setTimeout(setStatusAsyncly, interval);
+  };
+
+  const setStatusAsyncly = async () => {
     try {
-      return (await axiosInstance.get("areyoualive")).data.status === "Im alive"
-        ? GOOD_STATUS
-        : BAD_MESSAGE;
-    } catch (err) {
-      return BAD_MESSAGE;
+      const response = await axiosInstance.get("api");
+      const newStatus =
+        response.data.status === "Im alive" ? GOOD_STATUS : BAD_MESSAGE;
+
+      setStatus(newStatus);
+      if (newStatus === GOOD_STATUS) {
+        setVersion(response.data.version);
+      } else {
+        scheduleNextCheck();
+      }
+    } catch (error) {
+      console.error("An error occurred while checking the server: ", error);
+      scheduleNextCheck();
     }
   };
 
-  const [status, setStatus] = useState<string>(IDLE);
-  const [version, setVersion] = useState<string>();
-
-  const statusRef = useRef(status);
-
-  const baseURL =
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:6555/"
-      : `https://${env || ""}server.offisito.com/`;
-
-  const axiosInstance = axios.create({
-    baseURL,
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
+  // Effects
   useEffect(() => {
     statusRef.current = status;
   }, [status]);
 
   useEffect(() => {
-    const setStatusAsyncly = async () => {
-      try {
-        setStatus(CHECKING_MESSAGE);
-        console.log("Checking server availability..."); // Log for starting server check
-
-        const newStatus = await checkServerAvailability(axiosInstance);
-        if (newStatus === "good") {
-          const { data } = await axiosInstance.get("areyoualive");
-          setVersion(data.version);
-        }
-        setStatus(newStatus);
-
-        console.log(`Server check complete. Status: ${newStatus}`); // Log for completion of server check
-
-        if (newStatus !== GOOD_STATUS) {
-          console.log("Setting up the next check..."); // Log for setting up next server check
-          setTimeout(setStatusAsyncly, interval);
-        }
-      } catch (error) {
-        console.error("An error occurred while checking the server: ", error); // Log for any error during server check
-        // After an error, we can setup the next server check too
-        setTimeout(setStatusAsyncly, interval);
-      }
-    };
-    if (statusRef.current === IDLE) {
-      setStatusAsyncly().then();
+    if (statusRef.current === BAD_MESSAGE) {
+      setStatusAsyncly();
     }
-  }, [axiosInstance, tryInterval]);
+  }, [axiosInstance, interval]);
 
+  // Render
   if (status === GOOD_STATUS) {
     return (
-      <ServerContext.Provider
-        value={{ version: version || "", axiosInstance }}
-      ></ServerContext.Provider>
+      <ServerContext.Provider value={{ axiosInstance, version }}>
+        {children}
+      </ServerContext.Provider>
     );
   } else {
-    return <>{customErrorTSX}</> || <Typography>{status}</Typography>;
+    return customErrorTSX || <Typography>{status}</Typography>;
   }
 };

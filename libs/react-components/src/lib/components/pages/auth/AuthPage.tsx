@@ -63,7 +63,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
   const { isMobileOrTabl } = useMobile();
 
   const server = useContext(ServerContext);
-  const api = server?.api;
+  const axiosInstance = server?.axiosInstance;
 
   const useQuery = () => new URLSearchParams(useLocation().search);
   const query = useQuery();
@@ -189,9 +189,9 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                             ? step === 0
                               ? () => {
                                   setButtonLabel("DOING");
-                                  api &&
-                                    api.api
-                                      .authLogInCreate({
+                                  axiosInstance &&
+                                    axiosInstance
+                                      .post("api/auth/log/in", {
                                         email,
                                         password,
                                       })
@@ -207,9 +207,9 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                               : step === Step.login
                                 ? () => {
                                     setButtonLabel("DOING");
-                                    api &&
-                                      api.api
-                                        .authLogInCreate({
+                                    axiosInstance &&
+                                      axiosInstance
+                                        .post("api/auth/log/in", {
                                           email,
                                           password,
                                         })
@@ -224,9 +224,9 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                                 : step === Step.registerReq
                                   ? () => {
                                       setButtonLabel("DOING");
-                                      api &&
-                                        api.api
-                                          .authRegisterReqCreate({
+                                      axiosInstance &&
+                                        axiosInstance
+                                          .post("api/auth/register/req", {
                                             email,
                                             client,
                                           })
@@ -244,9 +244,9 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                                     ? () => {
                                         if (buttonLabel === "IDLE") {
                                           setButtonLabel("DOING");
-                                          api &&
-                                            api.api
-                                              .authRegisterFinCreate({
+                                          axiosInstance &&
+                                            axiosInstance
+                                              .post("api/auth/register/fin", {
                                                 key: signUpCode,
                                                 password,
                                                 passwordAgain,
