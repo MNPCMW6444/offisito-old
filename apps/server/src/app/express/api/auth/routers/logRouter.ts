@@ -5,7 +5,7 @@ import settings from "../../../../../config";
 import bcrypt from "bcrypt";
 import jsonwebtoken from "jsonwebtoken";
 import { authUser } from "../authUtil";
-// import { GetInReq, GetInRes, PostInReq, PostInRes } from "@monorepo/types";
+import { User as UserType } from "@monorepo/types";
 
 const router = Router();
 //const MIN_PASSWORD_STRENGTH = 3;
