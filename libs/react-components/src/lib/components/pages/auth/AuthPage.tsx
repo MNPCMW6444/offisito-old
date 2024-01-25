@@ -11,6 +11,7 @@ import { ServerContext } from "@monorepo/server-provider";
 import { AxiosError } from "axios";
 import { doNothing } from "@monorepo/utils";
 import { useLocation } from "react-router-dom";
+import { LoginReq, RegisterFin, RegisterReq } from "@monorepo/types";
 
 enum Step {
   init,
@@ -191,10 +192,13 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                                   setButtonLabel("DOING");
                                   axiosInstance &&
                                     axiosInstance
-                                      .post("api/auth/log/in", {
-                                        email,
-                                        password,
-                                      })
+                                      .post<undefined, undefined, LoginReq>(
+                                        "api/auth/log/in",
+                                        {
+                                          email,
+                                          password,
+                                        },
+                                      )
                                       .catch((error) =>
                                         error.response.status === 402
                                           ? setStep(Step.registerReq)
@@ -209,10 +213,13 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                                     setButtonLabel("DOING");
                                     axiosInstance &&
                                       axiosInstance
-                                        .post("api/auth/log/in", {
-                                          email,
-                                          password,
-                                        })
+                                        .post<undefined, undefined, LoginReq>(
+                                          "api/auth/log/in",
+                                          {
+                                            email,
+                                            password,
+                                          },
+                                        )
                                         .then(() => refreshUserData())
                                         .catch((error) =>
                                           toast.error(
@@ -226,7 +233,11 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                                       setButtonLabel("DOING");
                                       axiosInstance &&
                                         axiosInstance
-                                          .post("api/auth/register/req", {
+                                          .post<
+                                            undefined,
+                                            undefined,
+                                            RegisterReq
+                                          >("api/auth/register/req", {
                                             email,
                                             client,
                                           })
@@ -242,11 +253,18 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                                     }
                                   : step === Step.registerFin
                                     ? () => {
-                                        if (buttonLabel === "IDLE") {
+                                        if (
+                                          buttonLabel === "IDLE" &&
+                                          signUpCode
+                                        ) {
                                           setButtonLabel("DOING");
                                           axiosInstance &&
                                             axiosInstance
-                                              .post("api/auth/register/fin", {
+                                              .post<
+                                                undefined,
+                                                undefined,
+                                                RegisterFin
+                                              >("api/auth/register/fin", {
                                                 key: signUpCode,
                                                 password,
                                                 passwordAgain,
