@@ -81,6 +81,7 @@ router.post<RegisterFin, undefined>("/fin", async (req, res) => {
         passwordHash,
         type,
       }).save();
+      await existingSignupRequest.delete();
 
       const token = jsonwebtoken.sign(
         {
