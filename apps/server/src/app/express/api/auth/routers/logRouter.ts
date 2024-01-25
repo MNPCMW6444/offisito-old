@@ -20,7 +20,7 @@ router.get("/", async (req, res) => {
           .status(401)
           .json({ errorMessage: "Unauthorized. Try to login (postx1)" });
       }
-      delete user.passwordHash;
+      user.passwordHash = "secret";
       return res.json(user);
     } catch (err) {
       return res
