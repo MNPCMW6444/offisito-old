@@ -10,7 +10,6 @@ import { Typography, Grid } from "@mui/material";
 import { styled } from "@mui/system";
 import { ServerContext } from "@monorepo/server-provider";
 import { User } from "@monorepo/types";
-import { AxiosResponse } from "axios";
 
 interface AuthContextProps {
   children: ReactNode;
@@ -56,8 +55,7 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
 
   const refreshUserData = useCallback(async () => {
     try {
-      const response: AxiosResponse<User> | undefined =
-        await server?.axiosInstance.get("api/auth/log");
+      const response = await server?.axiosInstance.get<User>("api/auth/log");
       response?.data && setUser(response?.data);
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -66,7 +64,7 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
 
   const signout = async () => {
     try {
-      await server?.axiosInstance.get("api/auth/log/out");
+      await server?.axiosInstance.get<undefined>("api/auth/log/out");
       setUser(undefined);
     } catch (error) {
       console.error("Error during sign out", error);
