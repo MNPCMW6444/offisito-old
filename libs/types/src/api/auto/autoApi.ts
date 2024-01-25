@@ -1,4 +1,5 @@
-export declare namespace Paths {
+export
+declare namespace Paths {
     namespace ApiAuthLogIn {
         namespace Post {
             export interface BodyParameters {
