@@ -1,8 +1,9 @@
 import { useContext } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { useMobile } from "@monorepo/react-components";
 import { AuthContext, AuthPage } from "@monorepo/react-components";
+import HomePage from "./pages/home/HomePage";
 
 const Router = () => {
   const { user } = useContext(AuthContext);
@@ -31,12 +32,7 @@ const Router = () => {
             }
           >
             <Routes>
-              <Route
-                path="/*"
-                element={
-                  <Typography>Hello: {JSON.stringify(user)} </Typography>
-                }
-              />
+              <Route path="/*" element={<HomePage />} />
               {/*      <Route path="/contacts" element={<ContactsPage />} />
                     <Route path="/sessions" element={<SessionsPage />} />
                     <Route path="/chat" element={<ChatPage />} />
