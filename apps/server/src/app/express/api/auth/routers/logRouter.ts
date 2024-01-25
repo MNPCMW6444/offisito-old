@@ -31,7 +31,7 @@ router.post<LoginReq, undefined>("/in", async (req, res) => {
   const RequestForAccount = requestForAccountModel();
   if (User && RequestForAccount) {
     try {
-      const { email, password } = req.body;
+      const { email, password, client } = req.body;
       if (!email) {
         return res.status(400).send();
       }
@@ -39,6 +39,13 @@ router.post<LoginReq, undefined>("/in", async (req, res) => {
       if (!existingUser) {
         return res.status(402).send();
       }
+      if (
+        !(
+          client === existingUser.type ||
+          (client === "guest" && existingUser.type === "member")
+        )
+      )
+        return res.status(401).send();
       const correctPassword = await bcrypt.compare(
         password,
         existingUser.passwordHash,
