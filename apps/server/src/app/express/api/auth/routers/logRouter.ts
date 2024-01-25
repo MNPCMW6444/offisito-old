@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
   const User = userModel();
   if (User)
     try {
-      const user = await authUser(req.cookies.jsonwebtoken);
+      const user: UserType = await authUser(req.cookies.jsonwebtoken);
       if (!user) {
         return res
           .status(401)

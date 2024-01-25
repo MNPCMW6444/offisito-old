@@ -6,7 +6,7 @@
     "clean": "rm -rf node_modules dist package-lock.json swagger.json ./.nx/cache",
     "update": "npx npm-check-updates -u",
     "audit": "npm audit fix",
-    "swagger": "npm i && npx ts-node -O '{\"module\": \"commonjs\"}' apps/server/src/app/express/api/swaggerRun.ts && npx dtsgenerator --out ./libs/types/src/api/auto/tempApi.ts ./swagger.json && (printf 'export ' && cat libs/types/src/api/auto/tempApi.ts) > libs/types/src/api/auto/autoApi.ts && rm libs/types/src/api/auto/tempApi.ts",
+    "swagger": "npm i && npx ts-node -O '{\"module\": \"commonjs\"}' apps/server/src/app/express/api/swaggerRun.ts && npx @openapitools/openapi-generator-cli generate -i ./swagger.json -g typescript-axios -o ./libs/types/src/api/auto/tempApi.ts && (printf 'export ' && cat libs/types/src/api/auto/tempApi.ts) > libs/types/src/api/auto/autoApi.ts && rm libs/types/src/api/auto/tempApi.ts",
     "build:guest": "tsc --outDir dist/apps/guest apps/guest/server.ts",
     "build:host": "tsc --outDir dist/apps/host apps/host/server.ts"
   },
