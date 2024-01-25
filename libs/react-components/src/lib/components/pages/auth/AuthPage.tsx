@@ -197,6 +197,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                                         {
                                           email,
                                           password,
+                                          client,
                                         },
                                       )
                                       .catch((error) =>
@@ -218,6 +219,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                                           {
                                             email,
                                             password,
+                                            client,
                                           },
                                         )
                                         .then(() => refreshUserData())
