@@ -18,14 +18,14 @@ router.get("/", async (req, res) => {
       if (!user) {
         return res
           .status(401)
-          .json({ errorMessage: "Unauthorized. Try to login (post)" });
+          .json({ errorMessage: "Unauthorized. Try to login (postx1)" });
       }
       delete user.passwordHash;
       return res.json(user);
     } catch (err) {
       return res
         .status(401)
-        .json({ errorMessage: "Unauthorized. Try to login (post)" });
+        .json({ errorMessage: "Unauthorized. Try to login (postx2)" });
     }
   else
     return res

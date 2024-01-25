@@ -6,7 +6,7 @@
     "clean": "rm -rf node_modules dist package-lock.json swagger.json ./.nx/cache",
     "update": "npx npm-check-updates -u",
     "audit": "npm audit fix",
-    "swagger": "npm i && npx ts-node -O '{\"module\": \"commonjs\"}' apps/server/src/app/express/api/swaggerRun.ts && npx swagger-typescript-api -p ./swagger.json -o ./libs/types/src/api/auto -n autoApi.ts\n",
+    "swagger": "npm i && npx ts-node -O '{\\\"module\\\": \\\"commonjs\\\"}' apps/server/src/app/express/api/swaggerRun.ts && npx dtsgenerator --out libs/types/src/api/auto/autoApi.ts ./swagger.json",
     "build:guest": "tsc --outDir dist/apps/guest apps/guest/server.ts",
     "build:host": "tsc --outDir dist/apps/host apps/host/server.ts"
   },
@@ -40,7 +40,6 @@
     "@types/zxcvbn": "^4.4.4",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@vitejs/plugin-react": "^4.2.1",
-    "axios": "^1.6.5",
     "eslint": "~8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "2.29.1",
@@ -62,6 +61,7 @@
     "typescript": "~5.3.3",
     "vite": "^5.0.12",
     "vite-plugin-dts": "~3.7.2",
+    "axios": "^1.6.6",
     "vitest": "~1.2.1"
   },
   "dependencies": {

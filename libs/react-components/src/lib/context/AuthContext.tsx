@@ -55,10 +55,12 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
 
   const refreshUserData = useCallback(async () => {
     try {
-      const response = await server?.api.api.authLogInList();
-      response?.data && setUser(response?.data);
+      const response = await server?.api.api.authLogList();
+      debugger;
+      response?.body && setUser(response?.body);
     } catch (error) {
-      console.error("Error fetching user data", error);
+      debugger;
+      console.error("Error fetching user data:", error);
     }
   }, [server?.api]);
 

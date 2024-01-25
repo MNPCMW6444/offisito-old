@@ -19,7 +19,6 @@ const middlewares = [
     origin: Object.values(settings.clientDomains),
     credentials: true,
   }),
-  //axiosLogger,
 ];
 
 settings.whiteEnv !== "prod" &&
