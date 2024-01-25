@@ -1,3 +1,11 @@
+import React, {
+  ChangeEvent,
+  createRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import {
   Button,
   FormControlLabel,
@@ -9,8 +17,9 @@ import {
   Typography,
 } from "@mui/material";
 import { ListAssetReq } from "@monorepo/types";
-import { createRef, useState } from "react";
 import { Add } from "@mui/icons-material";
+import { ServerContext } from "@monorepo/server-provider";
+import debounce from "lodash.debounce";
 
 const ListPage = () => {
   const [formState, setFormState] = useState<ListAssetReq>({
@@ -36,20 +45,107 @@ const ListPage = () => {
     photoURLs: [],
   });
 
-  const [imageFiles, setImageFiles] = useState([]);
+  const server = useContext(ServerContext);
+  const fileInputRef = createRef<HTMLInputElement>();
 
-  const fileInputRef = createRef<any>();
+  const handleUpdate = async (updatedState: ListAssetReq) => {
+    await server?.axiosInstance.put("/api/host/assets/update", updatedState);
+  };
 
-  const handleFileSelect = (event: any) => {
-    const files: any = Array.from(event.target.files);
-    setImageFiles(files);
-    // Optionally, update formState.photoURLs with file information
+  const debouncedUpdate = useCallback(debounce(handleUpdate, 500), []);
+  useEffect(() => {
+    return () => {
+      debouncedUpdate.cancel();
+    };
+  }, [debouncedUpdate]);
+
+  const handleChange = (name: string, value: string | boolean) => {
+    setFormState((prevState) => {
+      const updatedState = { ...prevState, [name]: value };
+      debouncedUpdate(updatedState);
+      return updatedState;
+    });
+  };
+
+  const handleTextFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
+    handleChange(e.target.name, e.target.value);
+  };
+
+  const handleSwitchChange = (key: string, checked: boolean) => {
+    handleChange(key, checked);
+  };
+
+  const renderTextField = (name: keyof ListAssetReq, label: string) => (
+    <TextField
+      multiline
+      variant="standard"
+      label={label}
+      value={formState[name]}
+      onChange={handleTextFieldChange}
+      name={name}
+    />
+  );
+
+  const renderSwitches = (
+    items: {
+      [key: string]: boolean;
+    },
+    section: "amenities" | "availability",
+  ) => (
+    <>
+      <FormLabel component="legend">
+        {section.charAt(0).toUpperCase() + section.slice(1)}
+      </FormLabel>
+      {Object.keys(items).map((key) => (
+        <FormControlLabel
+          key={key}
+          control={
+            <Switch
+              checked={items[key]}
+              onChange={(e) =>
+                handleSwitchChange(`${section}.${key}`, e.target.checked)
+              }
+            />
+          }
+          label={formatLabel(key)}
+        />
+      ))}
+    </>
+  );
+
+  const formatLabel = (key: string) =>
+    key.charAt(0).toUpperCase() +
+    key
+      .slice(1)
+      .replace(/([A-Z])/g, " $1")
+      .trim();
+
+  const uploadPicture = async (file: File) => {
+    const formData = new FormData();
+    formData.append("photo", file);
+    await server?.axiosInstance.post(
+      "/api/host/assets/uploadPicture",
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      },
+    );
+  };
+
+  const handleFileSelect = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0];
+      uploadPicture(file);
+    }
   };
 
   const addPicture = () => {
-    fileInputRef.current.click();
+    fileInputRef.current?.click();
   };
-  const publish = () => {};
+
+  const publish = async () => {
+    await server?.axiosInstance.post("/api/host/assets/publish", {});
+  };
 
   return (
     <Grid
@@ -64,246 +160,19 @@ const ListPage = () => {
       <Grid item>
         <Typography>List a Space</Typography>
       </Grid>
-      <Grid item>
-        <TextField
-          multiline
-          variant="standard"
-          label="Office Name"
-          value={formState?.officeName}
-          onChange={(e) =>
-            setFormState((prev) => {
-              const updated = JSON.parse(JSON.stringify(prev));
-              updated.officeName = e.target.value;
-              return updated;
-            })
-          }
-        />
-      </Grid>
-      <Grid item>
-        <TextField
-          variant="standard"
-          label="Desc"
-          value={formState?.desc}
-          onChange={(e) =>
-            setFormState((prev) => {
-              const updated = JSON.parse(JSON.stringify(prev));
-              updated.desc = e.target.value;
-              return updated;
-            })
-          }
-        />
-      </Grid>
-      <Grid item>
-        <FormLabel component="legend">Ameneties</FormLabel>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={formState.amenities.freeWiFi}
-              onChange={(e) =>
-                setFormState((prev) => {
-                  const updated = JSON.parse(JSON.stringify(prev));
-                  updated.amenities.freeWiFi = e.target.checked;
-                  return updated;
-                })
-              }
-            />
-          }
-          label="Free Wifi"
-        />
-        <FormControlLabel
-          control={
-            <Switch
-              checked={formState.amenities.parking}
-              onChange={(e) =>
-                setFormState((prev) => {
-                  const updated = JSON.parse(JSON.stringify(prev));
-                  updated.amenities.parking = e.target.checked;
-                  return updated;
-                })
-              }
-            />
-          }
-          label="Parking"
-        />
-        <FormControlLabel
-          control={
-            <Switch
-              checked={formState.amenities.lobbySpace}
-              onChange={(e) =>
-                setFormState((prev) => {
-                  const updated = JSON.parse(JSON.stringify(prev));
-                  updated.amenities.lobbySpace = e.target.checked;
-                  return updated;
-                })
-              }
-            />
-          }
-          label="Lobby Space"
-        />
-        <FormControlLabel
-          control={
-            <Switch
-              checked={formState.amenities.computer}
-              onChange={(e) =>
-                setFormState((prev) => {
-                  const updated = JSON.parse(JSON.stringify(prev));
-                  updated.amenities.computer = e.target.checked;
-                  return updated;
-                })
-              }
-            />
-          }
-          label="Computer"
-        />
-      </Grid>
+      <Grid item>{renderTextField("officeName", "Office Name")}</Grid>
+      <Grid item>{renderTextField("desc", "Desc")}</Grid>
+      <Grid item>{renderSwitches(formState.amenities, "amenities")}</Grid>
+      <Grid item>{renderSwitches(formState.availability, "availability")}</Grid>
       <Grid item container alignItems="center" columnSpacing={4}>
-        <Grid item>
-          <TextField
-            multiline
-            variant="standard"
-            label="Company in hold"
-            value={formState?.companyInHold}
-            onChange={(e) =>
-              setFormState((prev) => {
-                const updated = JSON.parse(JSON.stringify(prev));
-                updated.companyInHold = e.target.value;
-                return updated;
-              })
-            }
-          />
-        </Grid>
-        <Grid item>
-          <TextField
-            sx={{
-              width: "30%",
-            }}
-            variant="standard"
-            label="Floor"
-            value={formState?.floor}
-            onChange={(e) =>
-              setFormState((prev) => {
-                const updated = JSON.parse(JSON.stringify(prev));
-                updated.floor = e.target.value;
-                return updated;
-              })
-            }
-          />
-        </Grid>
+        <Grid item>{renderTextField("companyInHold", "Company in Hold")}</Grid>
+        <Grid item>{renderTextField("floor", "Floor")}</Grid>
       </Grid>
       <Grid item>
-        <FormLabel component="legend">Availability</FormLabel>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={formState.availability.mon}
-              onChange={(e) =>
-                setFormState((prev) => {
-                  const updated = JSON.parse(JSON.stringify(prev));
-                  updated.availability.mon = e.target.checked;
-                  return updated;
-                })
-              }
-            />
-          }
-          label="Mon."
-        />
-        <FormControlLabel
-          control={
-            <Switch
-              checked={formState.availability.tues}
-              onChange={(e) =>
-                setFormState((prev) => {
-                  const updated = JSON.parse(JSON.stringify(prev));
-                  updated.availability.tues = e.target.checked;
-                  return updated;
-                })
-              }
-            />
-          }
-          label="Tues."
-        />
-        <FormControlLabel
-          control={
-            <Switch
-              checked={formState.availability.wed}
-              onChange={(e) =>
-                setFormState((prev) => {
-                  const updated = JSON.parse(JSON.stringify(prev));
-                  updated.availability.wed = e.target.checked;
-                  return updated;
-                })
-              }
-            />
-          }
-          label="Wed."
-        />
-        <FormControlLabel
-          control={
-            <Switch
-              checked={formState.availability.thu}
-              onChange={(e) =>
-                setFormState((prev) => {
-                  const updated = JSON.parse(JSON.stringify(prev));
-                  updated.availability.thu = e.target.checked;
-                  return updated;
-                })
-              }
-            />
-          }
-          label="Thu."
-        />
-        <FormControlLabel
-          control={
-            <Switch
-              checked={formState.availability.fri}
-              onChange={(e) =>
-                setFormState((prev) => {
-                  const updated = JSON.parse(JSON.stringify(prev));
-                  updated.availability.fri = e.target.checked;
-                  return updated;
-                })
-              }
-            />
-          }
-          label="Fri."
-        />
-        <FormControlLabel
-          control={
-            <Switch
-              checked={formState.availability.sat}
-              onChange={(e) =>
-                setFormState((prev) => {
-                  const updated = JSON.parse(JSON.stringify(prev));
-                  updated.availability.sat = e.target.checked;
-                  return updated;
-                })
-              }
-            />
-          }
-          label="Sat."
-        />
-        <FormControlLabel
-          control={
-            <Switch
-              checked={formState.availability.sun}
-              onChange={(e) =>
-                setFormState((prev) => {
-                  const updated = JSON.parse(JSON.stringify(prev));
-                  updated.availability.sun = e.target.checked;
-                  return updated;
-                })
-              }
-            />
-          }
-          label="Sun."
-        />
-      </Grid>
-      <Grid item>
-        <FormLabel component="legend">Property pictures</FormLabel>
+        <FormLabel component="legend">Property Pictures</FormLabel>
         <IconButton onClick={addPicture}>
           <Add sx={{ fontSize: "250%" }} />
         </IconButton>
-        {/* Hidden file input */}
         <input
           type="file"
           ref={fileInputRef}
@@ -311,13 +180,11 @@ const ListPage = () => {
           multiple
           style={{ display: "none" }}
         />
-        {/* Display selected images */}
-        {imageFiles.map((file: any, index) => (
-          <div key={index}>{file.name}</div> // Display file names or thumbnails
-        ))}
       </Grid>
       <Grid item container justifyContent="center">
-        <Button onClick={publish}>Publish</Button>
+        <Button variant="contained" onClick={publish}>
+          Publish
+        </Button>
       </Grid>
     </Grid>
   );
