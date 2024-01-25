@@ -19,7 +19,7 @@ export default () => {
       desc: String,
       amenities: {
         freeWiFi: Boolean,
-        Parking: Boolean,
+        parking: Boolean,
         lobbySpace: Boolean,
         computer: Boolean,
       },
@@ -36,7 +36,7 @@ export default () => {
       },
       photoURLs: [String],
       status: {
-        enum: ["pending", "active", "paused", "archived"],
+        enum: ["draft", "pending", "active", "paused", "archived"],
         required: true,
       },
     },

@@ -7,7 +7,7 @@ export interface Asset extends Schema {
   desc: string;
   amenities: {
     freeWiFi: boolean;
-    Parking: boolean;
+    parking: boolean;
     lobbySpace: boolean;
     computer: boolean;
   };
@@ -23,5 +23,5 @@ export interface Asset extends Schema {
     sat: boolean;
   };
   photoURLs: string[];
-  status: "pending" | "active" | "paused" | "archived";
+  status: "draft" | "pending" | "active" | "paused" | "archived";
 }
