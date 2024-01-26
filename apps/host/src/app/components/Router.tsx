@@ -4,6 +4,7 @@ import { Box, useTheme } from "@mui/material";
 import { useMobile } from "@monorepo/react-components";
 import { AuthContext, AuthPage } from "@monorepo/react-components";
 import HomePage from "./pages/home/HomePage";
+import ListPage from "./pages/list/ListPage";
 
 const Router = () => {
   const { user } = useContext(AuthContext);
@@ -15,24 +16,11 @@ const Router = () => {
   return (
     <BrowserRouter>
       {user ? (
-        <Box overflow="hidden" style={{ backgroundColor }}>
-          {/* <WhiteSideBar />*/}
-          <Box
-            component="main"
-            sx={
-              !isMobile
-                ? {
-                    flexGrow: 1,
-                    p: 3,
-                    backgroundColor,
-                    pt: (theme) => theme.spacing(1),
-                    pl: (theme) => theme.spacing(32),
-                  }
-                : { pt: "5vh" }
-            }
-          >
+        <Box bgcolor={backgroundColor}>
+          <Box component="main">
             <Routes>
               <Route path="/*" element={<HomePage />} />
+              <Route path="/list" element={<ListPage />} />
               {/*      <Route path="/contacts" element={<ContactsPage />} />
                     <Route path="/sessions" element={<SessionsPage />} />
                     <Route path="/chat" element={<ChatPage />} />
@@ -49,7 +37,7 @@ const Router = () => {
           </Box>
         </Box>
       ) : (
-        <AuthPage client="guest" />
+        <AuthPage client="host" />
       )}
     </BrowserRouter>
   );

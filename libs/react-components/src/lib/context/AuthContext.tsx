@@ -39,33 +39,33 @@ const loadingMessage = (
 
 export const AuthContext = createContext<{
   user?: User;
-  refreshUserData: any;
-  signout: any;
+  refreshUserData: () => Promise<void>;
+  signout: () => Promise<void>;
 }>({
   user: undefined,
-  refreshUserData: () => {},
-  signout: () => {},
+  refreshUserData: async () => {},
+  signout: async () => {},
 });
 
 export const AuthContextProvider = ({ children }: AuthContextProps) => {
-  const [user, setUser] = useState();
+  const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState(true);
 
   const server = useContext(ServerContext);
 
   const refreshUserData = useCallback(async () => {
     try {
-      const response = await server?.api.api.authLogInList();
+      const response = await server?.axiosInstance.get<User>("api/auth/log");
       response?.data && setUser(response?.data);
     } catch (error) {
-      console.error("Error fetching user data", error);
+      console.error("Error fetching user data:", error);
     }
-  }, [server?.api]);
+  }, [server?.axiosInstance]);
 
   const signout = async () => {
     try {
-      await server?.api.api.authLogOutList();
-      setUser(user);
+      await server?.axiosInstance.get<undefined>("api/auth/log/out");
+      setUser(undefined);
     } catch (error) {
       console.error("Error during sign out", error);
     }

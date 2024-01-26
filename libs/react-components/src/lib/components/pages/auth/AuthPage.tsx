@@ -11,6 +11,7 @@ import { ServerContext } from "@monorepo/server-provider";
 import { AxiosError } from "axios";
 import { doNothing } from "@monorepo/utils";
 import { useLocation } from "react-router-dom";
+import { LoginReq, RegisterFin, RegisterReq } from "@monorepo/types";
 
 enum Step {
   init,
@@ -63,7 +64,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
   const { isMobileOrTabl } = useMobile();
 
   const server = useContext(ServerContext);
-  const api = server?.api;
+  const axiosInstance = server?.axiosInstance;
 
   const useQuery = () => new URLSearchParams(useLocation().search);
   const query = useQuery();
@@ -189,12 +190,16 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                             ? step === 0
                               ? () => {
                                   setButtonLabel("DOING");
-                                  api &&
-                                    api.api
-                                      .authLogInCreate({
-                                        email,
-                                        password,
-                                      })
+                                  axiosInstance &&
+                                    axiosInstance
+                                      .post<undefined, undefined, LoginReq>(
+                                        "api/auth/log/in",
+                                        {
+                                          email,
+                                          password,
+                                          client,
+                                        },
+                                      )
                                       .catch((error) =>
                                         error.response.status === 402
                                           ? setStep(Step.registerReq)
@@ -207,12 +212,16 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                               : step === Step.login
                                 ? () => {
                                     setButtonLabel("DOING");
-                                    api &&
-                                      api.api
-                                        .authLogInCreate({
-                                          email,
-                                          password,
-                                        })
+                                    axiosInstance &&
+                                      axiosInstance
+                                        .post<undefined, undefined, LoginReq>(
+                                          "api/auth/log/in",
+                                          {
+                                            email,
+                                            password,
+                                            client,
+                                          },
+                                        )
                                         .then(() => refreshUserData())
                                         .catch((error) =>
                                           toast.error(
@@ -224,9 +233,13 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                                 : step === Step.registerReq
                                   ? () => {
                                       setButtonLabel("DOING");
-                                      api &&
-                                        api.api
-                                          .authRegisterReqCreate({
+                                      axiosInstance &&
+                                        axiosInstance
+                                          .post<
+                                            undefined,
+                                            undefined,
+                                            RegisterReq
+                                          >("api/auth/register/req", {
                                             email,
                                             client,
                                           })
@@ -242,11 +255,18 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                                     }
                                   : step === Step.registerFin
                                     ? () => {
-                                        if (buttonLabel === "IDLE") {
+                                        if (
+                                          buttonLabel === "IDLE" &&
+                                          signUpCode
+                                        ) {
                                           setButtonLabel("DOING");
-                                          api &&
-                                            api.api
-                                              .authRegisterFinCreate({
+                                          axiosInstance &&
+                                            axiosInstance
+                                              .post<
+                                                undefined,
+                                                undefined,
+                                                RegisterFin
+                                              >("api/auth/register/fin", {
                                                 key: signUpCode,
                                                 password,
                                                 passwordAgain,

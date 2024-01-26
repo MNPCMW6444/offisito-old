@@ -5,57 +5,53 @@ import settings from "../../../../../config";
 import bcrypt from "bcrypt";
 import jsonwebtoken from "jsonwebtoken";
 import { authUser } from "../authUtil";
-// import { GetInReq, GetInRes, PostInReq, PostInRes } from "@monorepo/types";
+import { LoginReq, User as UserType } from "@monorepo/types";
 
 const router = Router();
 //const MIN_PASSWORD_STRENGTH = 3;
 
-router.get("/", async (req, res) => {
+router.get<undefined, UserType>("/", async (req, res) => {
   const User = userModel();
   if (User)
     try {
       const user = await authUser(req.cookies.jsonwebtoken);
       if (!user) {
-        return res
-          .status(401)
-          .json({ errorMessage: "Unauthorized. Try to login (post)" });
+        return res.status(401).send();
       }
-      delete user.passwordHash;
+      user.passwordHash = "secret";
       return res.json(user);
     } catch (err) {
-      return res
-        .status(401)
-        .json({ errorMessage: "Unauthorized. Try to login (post)" });
+      return res.status(401).send();
     }
-  else
-    return res
-      .status(500)
-      .json({ errorMessage: "Server Error nichal todo api" });
+  else return res.status(500).send();
 });
 
-router.post("/in", async (req, res) => {
+router.post<LoginReq, undefined>("/in", async (req, res) => {
   const User = userModel();
   const RequestForAccount = requestForAccountModel();
   if (User && RequestForAccount) {
     try {
-      const { email, password } = req.body;
+      const { email, password, client } = req.body;
       if (!email) {
-        return res.status(400).json({ errorMessage: "Must pass an email" });
+        return res.status(400).send();
       }
       const existingUser = await User.findOne({ email });
       if (!existingUser) {
-        return res.status(402).json({
-          errorMessage: "please register",
-        });
+        return res.status(402).send();
       }
+      if (
+        !(
+          client === existingUser.type ||
+          (client === "guest" && existingUser.type === "member")
+        )
+      )
+        return res.status(401).send();
       const correctPassword = await bcrypt.compare(
         password,
         existingUser.passwordHash,
       );
       if (!correctPassword) {
-        return res.status(401).json({
-          errorMessage: "Wrong email or password",
-        });
+        return res.status(401).send();
       }
       const token = jsonwebtoken.sign(
         {
@@ -78,17 +74,12 @@ router.post("/in", async (req, res) => {
         .send();
     } catch (err) {
       console.error(err);
-      return res
-        .status(500)
-        .json({ errorMessage: "Unexpected error occurred in the server" });
+      return res.status(500).send();
     }
-  } else
-    return res
-      .status(500)
-      .json({ errorMessage: "Server Error nichal todo api" });
+  } else return res.status(500).send();
 });
 
-router.get("/out", async (_, res) => {
+router.get<undefined, undefined>("/out", async (_, res) => {
   const User = userModel();
   if (User)
     try {
@@ -107,14 +98,9 @@ router.get("/out", async (_, res) => {
         })
         .send();
     } catch (err) {
-      return res
-        .status(500)
-        .json({ errorMessage: "Server Error nichal todo api" });
+      return res.status(500).send();
     }
-  else
-    return res
-      .status(500)
-      .json({ errorMessage: "Server Error nichal todo api" });
+  else return res.status(500).send();
 });
 
 export default router;

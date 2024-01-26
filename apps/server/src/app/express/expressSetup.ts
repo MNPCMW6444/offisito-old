@@ -4,7 +4,7 @@ import express from "express";
 import swaggerUi from "swagger-ui-express";
 import api from "./api";
 import settings from "../../config";
-import { swaggerRun } from "./api/swagger";
+import swaggerAutogen from "swagger-autogen";
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import pack from "../../../../../package.json";
 
@@ -19,11 +19,19 @@ const middlewares = [
     origin: Object.values(settings.clientDomains),
     credentials: true,
   }),
-  //axiosLogger,
 ];
 
 settings.whiteEnv !== "prod" &&
-  swaggerRun()
+  swaggerAutogen()(
+    "swagger.json",
+    ["apps/server/src/app/express/expressSetup.ts"],
+    {
+      info: {
+        title: "Offisito API",
+      },
+      host: "localhost:5556/",
+    },
+  )
     .then(
       (x) => x && app.use("/docs", swaggerUi.serve, swaggerUi.setup(x?.data)),
     )
