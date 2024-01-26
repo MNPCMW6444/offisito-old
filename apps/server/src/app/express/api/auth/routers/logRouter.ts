@@ -73,7 +73,6 @@ router.post<LoginReq, undefined>("/in", async (req, res) => {
         })
         .send();
     } catch (err) {
-      console.error(err);
       return res.status(500).send();
     }
   } else return res.status(500).send();

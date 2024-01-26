@@ -1,3 +1,5 @@
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { version } from "../../../../../package.json";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import express from "express";
@@ -5,8 +7,7 @@ import swaggerUi from "swagger-ui-express";
 import api from "./api";
 import settings from "../../config";
 import swaggerAutogen from "swagger-autogen";
-// eslint-disable-next-line @nx/enforce-module-boundaries
-import pack from "../../../../../package.json";
+import errorModel from "../mongo/logs/errorModel";
 
 const app = express();
 const port = 5556;
@@ -19,6 +20,18 @@ const middlewares = [
     origin: Object.values(settings.clientDomains),
     credentials: true,
   }),
+  async (err, _, res, next) => {
+    const Error = errorModel();
+    if (res.statusCode === 500 && Error) {
+      try {
+        await new Error({ stringifiedError: JSON.stringify(err) }).save();
+        console.log("500 Error was logged to mongo");
+      } catch (e) {
+        console.log("Error logging error to mongo: ", e);
+      }
+    } else console.log("Error logging error to mongo!");
+    next(err);
+  },
 ];
 
 settings.whiteEnv !== "prod" &&
@@ -46,7 +59,7 @@ export default async () => {
     const handler = (_, res) => {
       res.json({
         status: "Im alive",
-        version: pack.version,
+        version,
         whiteEnv: settings.whiteEnv,
       });
     };
