@@ -8,11 +8,9 @@ import React, {
 } from "react";
 import {
   Button,
-  FormControlLabel,
   FormLabel,
   Grid,
   IconButton,
-  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -20,6 +18,7 @@ import { ListAssetReq } from "@monorepo/types";
 import { Add } from "@mui/icons-material";
 import { ServerContext } from "@monorepo/server-provider";
 import debounce from "lodash.debounce";
+import { formatLabel, renderSwitchesHOC } from "@monorepo/react-components";
 
 const ListPage = () => {
   const [formState, setFormState] = useState<ListAssetReq>({
@@ -86,39 +85,7 @@ const ListPage = () => {
     />
   );
 
-  const renderSwitches = (
-    items: {
-      [key: string]: boolean;
-    },
-    section: "amenities" | "availability",
-  ) => (
-    <>
-      <FormLabel component="legend">
-        {section.charAt(0).toUpperCase() + section.slice(1)}
-      </FormLabel>
-      {Object.keys(items).map((key) => (
-        <FormControlLabel
-          key={key}
-          control={
-            <Switch
-              checked={items[key]}
-              onChange={(e) =>
-                handleSwitchChange(`${section}.${key}`, e.target.checked)
-              }
-            />
-          }
-          label={formatLabel(key)}
-        />
-      ))}
-    </>
-  );
-
-  const formatLabel = (key: string) =>
-    key.charAt(0).toUpperCase() +
-    key
-      .slice(1)
-      .replace(/([A-Z])/g, " $1")
-      .trim();
+  const renderSwitches = renderSwitchesHOC(handleSwitchChange, formatLabel);
 
   const uploadPicture = async (file: File) => {
     const formData = new FormData();
@@ -162,7 +129,12 @@ const ListPage = () => {
       </Grid>
       <Grid item>{renderTextField("officeName", "Office Name")}</Grid>
       <Grid item>{renderTextField("desc", "Desc")}</Grid>
-      <Grid item>{renderSwitches(formState.amenities, "amenities")}</Grid>
+      <Grid item>
+        {renderSwitches(
+          formState.amenities as unknown as { [key: string]: boolean },
+          "amenities",
+        )}
+      </Grid>
       <Grid item>{renderSwitches(formState.availability, "availability")}</Grid>
       <Grid item container alignItems="center" columnSpacing={4}>
         <Grid item>{renderTextField("companyInHold", "Company in Hold")}</Grid>
