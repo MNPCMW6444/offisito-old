@@ -1,7 +1,8 @@
 import { Router } from "express";
 import assetModel from "../../../mongo/assets/assetModel";
 import multer from "multer";
-import AWS from "aws-sdk";
+import { Upload } from "@aws-sdk/lib-storage";
+import { S3 } from "@aws-sdk/client-s3";
 import { Asset } from "@monorepo/types";
 import settings from "../../../../config";
 
@@ -11,9 +12,12 @@ declare module "express-serve-static-core" {
   }
 }
 
-const s3 = new AWS.S3({
-  accessKeyId: settings.aws.keyID,
-  secretAccessKey: settings.aws.secretKey,
+const s3 = new S3({
+  credentials: {
+    accessKeyId: settings.aws.keyID,
+    secretAccessKey: settings.aws.secretKey,
+  },
+
   region: settings.aws.region,
 });
 
@@ -101,7 +105,10 @@ router.post<{ id: string }, undefined>(
       ContentType: req.file.mimetype,
     };
     try {
-      await s3.upload(params).promise();
+      await new Upload({
+        client: s3,
+        params,
+      }).done();
       res.status(200).send();
     } catch (error) {
       console.error(error);

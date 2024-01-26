@@ -1,10 +1,13 @@
-import AWS from "aws-sdk";
+import { SES } from "@aws-sdk/client-ses";
 import settings from "../../config";
 
-const ses = new AWS.SES({
+const ses = new SES({
   region: settings.aws.region,
-  accessKeyId: settings.aws.keyID,
-  secretAccessKey: settings.aws.secretKey,
+
+  credentials: {
+    accessKeyId: settings.aws.keyID,
+    secretAccessKey: settings.aws.secretKey,
+  },
 });
 
 export const sendEmail = async (to: string, subject: string, html: string) => {
@@ -30,7 +33,7 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
   };
 
   try {
-    const data = await ses.sendEmail(params).promise();
+    const data = await ses.sendEmail(params);
     console.log("Email sent:", data);
     return data;
   } catch (error) {
