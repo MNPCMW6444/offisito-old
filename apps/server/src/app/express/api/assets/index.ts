@@ -3,6 +3,7 @@ import assetModel from "../../../mongo/assets/assetModel";
 import multer from "multer";
 import AWS from "aws-sdk";
 import { Asset } from "@monorepo/types";
+import settings from "../../../../config";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -11,9 +12,9 @@ declare module "express-serve-static-core" {
 }
 
 const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION,
+  accessKeyId: settings.aws.keyID,
+  secretAccessKey: settings.aws.secretKey,
+  region: settings.aws.region,
 });
 
 // Multer setup
@@ -89,9 +90,12 @@ router.post<{ id: string }, undefined>(
       return res.status(400).send();
     }
     const { id } = req.params;
-    const key = `${id}/${req.file.originalname}`; // File will be saved in a folder named after the 'id'
+    const key = `${id}/${req.file.originalname}`;
     const params = {
-      Bucket: process.env.AWS_S3_BUCKET, // Your bucket name
+      Bucket:
+        settings.whiteEnv === "prod"
+          ? "offisito-prod-images"
+          : "offisito-preprod-images",
       Key: key,
       Body: req.file.buffer, // File buffer
       ContentType: req.file.mimetype,
