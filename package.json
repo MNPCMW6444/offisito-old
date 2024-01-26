@@ -3,7 +3,7 @@
   "version": "0.7.29",
   "license": "MIT",
   "scripts": {
-    "clean": "rm -rf node_modules dist package-lock.json swagger.json ./.nx/cache",
+    "clean": "rm -rf node_modules dist package-lock.json ./.nx/cache",
     "update": "npx npm-check-updates -u",
     "audit": "npm audit fix",
     "build:guest": "tsc --outDir dist/apps/guest apps/guest/server.ts",
@@ -37,7 +37,6 @@
     "@types/node": "20.11.6",
     "@types/react": "18.2.48",
     "@types/react-dom": "18.2.18",
-    "@types/swagger-ui-express": "^4.1.6",
     "@types/uuid": "^9.0.7",
     "@types/zxcvbn": "^4.4.4",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
@@ -82,8 +81,6 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.1.1",
     "multer": "^1.4.5-lts.1",
-    "swagger-autogen": "^2.23.7",
-    "swagger-ui-express": "^5.0.0",
     "typescript-json-schema": "^0.62.0",
     "zxcvbn": "^4.4.2"
   }
