@@ -17,3 +17,4 @@ export interface Otp extends Schema {
   user: User;
   otp: string;
 }
+
