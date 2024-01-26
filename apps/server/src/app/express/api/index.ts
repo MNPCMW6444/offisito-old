@@ -1,10 +1,10 @@
 import { Router } from "express";
 import auth from "./auth";
-import host from "./host";
+import assets from "./assets";
 
 const router = Router();
 
 router.use("/auth", auth);
-router.use("/host", host);
+router.use("/assets", assets);
 
 export default router;

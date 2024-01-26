@@ -4,8 +4,8 @@ COPY package*.json nx.json tsconfig.base.json ./
 COPY libs/ libs/
 COPY apps/host/ apps/host/
 RUN npm i
-RUN npx nx build host
-RUN npm run build:host
+RUN npx nx build assets
+RUN npm run build:assets
 
 FROM node:lts-slim
 WORKDIR /app

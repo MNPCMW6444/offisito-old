@@ -144,7 +144,7 @@ jobs:
         run: |
           echo "VERSION=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
 
-      - name: Build, tag, and push host image to Amazon ECR
+      - name: Build, tag, and push assets image to Amazon ECR
         run: |
           ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
           docker build -t $ECR_REGISTRY/host:$VERSION -f ./apps/host/Dockerfile .
@@ -197,7 +197,7 @@ jobs:
           aws ecs describe-task-definition --task-definition guest > current-guest-task-def.json
 
       - name: Fetch current Host task definition
-        id: current-task-def-host
+        id: current-task-def-assets
         run: |
           aws ecs describe-task-definition --task-definition host > current-host-task-def.json
 
@@ -211,7 +211,7 @@ jobs:
           jq --arg image_tag "$VERSION" --arg ecr_registry "${{ steps.login-ecr.outputs.registry }}" '.taskDefinition.containerDefinitions[0].image = $ecr_registry + "/guest:" + $image_tag' current-guest-task-def.json > intermediate-guest-task-def.json
           jq '.taskDefinition | del(.taskDefinitionArn, .status, .revision, .registeredAt, .registeredBy, .requiresAttributes, .compatibilities)' intermediate-guest-task-def.json > final-guest-task-def.json
 
-      - name: Update task definition for host
+      - name: Update task definition for assets
         run: |
           IMAGE_TAG=${{ needs.build_host.outputs.image_tag }}
           jq --arg image_tag "$VERSION" --arg ecr_registry "${{ steps.login-ecr.outputs.registry }}" '.taskDefinition.containerDefinitions[0].image = $ecr_registry + "/host:" + $image_tag' current-host-task-def.json > intermediate-host-task-def.json
@@ -225,7 +225,7 @@ jobs:
         run: |
           aws ecs register-task-definition --cli-input-json file://final-guest-task-def.json
 
-      - name: Register task definition for host
+      - name: Register task definition for assets
         run: |
           aws ecs register-task-definition --cli-input-json file://final-host-task-def.json
 
@@ -237,7 +237,7 @@ jobs:
         run: |
           aws ecs update-service --cluster prod --service guest --task-definition guest
 
-      - name: Update ECS Service for host
+      - name: Update ECS Service for assets
         run: |
           aws ecs update-service --cluster prod --service host --task-definition host
 
