@@ -129,7 +129,12 @@ const ListPage = () => {
       </Grid>
       <Grid item>{renderTextField("officeName", "Office Name")}</Grid>
       <Grid item>{renderTextField("desc", "Desc")}</Grid>
-      <Grid item>{renderSwitches(formState.amenities, "amenities")}</Grid>
+      <Grid item>
+        {renderSwitches(
+          formState.amenities as unknown as { [key: string]: boolean },
+          "amenities",
+        )}
+      </Grid>
       <Grid item>{renderSwitches(formState.availability, "availability")}</Grid>
       <Grid item container alignItems="center" columnSpacing={4}>
         <Grid item>{renderTextField("companyInHold", "Company in Hold")}</Grid>
