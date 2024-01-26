@@ -35,14 +35,14 @@ const middlewares = [
 ];
 
 settings.whiteEnv !== "prod" &&
-  swaggerAutogen()(
+  swaggerAutogen({ openapi: "3.1.0" })(
     "swagger.json",
-    ["apps/server/src/app/express/expressSetup.ts"],
+    ["apps/server/src/app/express/api/index.ts"],
     {
       info: {
         title: "Offisito API",
       },
-      host: "localhost:5556/",
+      host: "localhost:5556/api",
     },
   )
     .then(
