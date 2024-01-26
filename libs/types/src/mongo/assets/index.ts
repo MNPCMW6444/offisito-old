@@ -1,16 +1,12 @@
 import { Schema } from "mongoose";
 import { User } from "../auth";
+import { Amenities } from "../../index";
 
 export interface Asset extends Schema {
   host: User;
   officeName: string;
   desc: string;
-  amenities: {
-    freeWiFi: boolean;
-    parking: boolean;
-    lobbySpace: boolean;
-    computer: boolean;
-  };
+  amenities: Amenities;
   companyInHold: string;
   floor: string;
   availability: {
