@@ -1,36 +1,19 @@
 import { useContext } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Box, useTheme } from "@mui/material";
-import { useMobile } from "@monorepo/react-components";
 import { AuthContext, AuthPage } from "@monorepo/react-components";
 import HomePage from "./pages/home/HomePage";
 
 const Router = () => {
   const { user } = useContext(AuthContext);
 
-  const { isMobile } = useMobile();
-
   const backgroundColor = useTheme().palette.background.default; // Get default background color from theme
 
   return (
     <BrowserRouter>
       {user ? (
-        <Box overflow="hidden" style={{ backgroundColor }}>
-          {/* <WhiteSideBar />*/}
-          <Box
-            component="main"
-            sx={
-              !isMobile
-                ? {
-                    flexGrow: 1,
-                    p: 3,
-                    backgroundColor,
-                    pt: (theme) => theme.spacing(1),
-                    pl: (theme) => theme.spacing(32),
-                  }
-                : { pt: "5vh" }
-            }
-          >
+        <Box bgcolor={backgroundColor}>
+          <Box component="main">
             <Routes>
               <Route path="/*" element={<HomePage />} />
               {/*      <Route path="/contacts" element={<ContactsPage />} />
