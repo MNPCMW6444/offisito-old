@@ -1,6 +1,6 @@
 import { Router } from "express";
-import logRouter from "./routers/logRouter";
-import registerRouter from "./routers/registerRouter";
+import logRouter from "./logRouter";
+import registerRouter from "./registerRouter";
 
 const router = Router();
 

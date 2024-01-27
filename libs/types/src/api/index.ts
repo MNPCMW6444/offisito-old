@@ -1,4 +1,5 @@
 import { User, UserType } from "../mongo";
+import { Amenities } from "../index";
 
 export type WhiteClient = "host" | "guest";
 
@@ -24,12 +25,7 @@ export interface RegisterFin {
 export interface ListAssetReq {
   officeName: string;
   desc: string;
-  amenities: {
-    freeWiFi: boolean;
-    parking: boolean;
-    lobbySpace: boolean;
-    computer: boolean;
-  };
+  amenities: Amenities;
   companyInHold: string;
   floor: string;
   availability: {

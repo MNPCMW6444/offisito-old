@@ -225,7 +225,9 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                                         .then(() => refreshUserData())
                                         .catch((error) =>
                                           toast.error(
-                                            (error as AxiosError)?.message,
+                                            error.response.status === 401
+                                              ? "Wrong Password"
+                                              : error?.message,
                                           ),
                                         )
                                         .finally(() => setButtonLabel("IDLE"));

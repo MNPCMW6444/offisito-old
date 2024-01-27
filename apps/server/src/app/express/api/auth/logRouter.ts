@@ -1,14 +1,27 @@
 import { Router } from "express";
-import userModel from "../../../../mongo/auth/userModel";
-import requestForAccountModel from "../../../../mongo/auth/requestForAccountModel";
-import settings from "../../../../../config";
+import userModel from "../../../mongo/auth/userModel";
+import requestForAccountModel from "../../../mongo/auth/requestForAccountModel";
+import settings from "../../../../config";
 import bcrypt from "bcrypt";
-import jsonwebtoken from "jsonwebtoken";
-import { authUser } from "../authUtil";
+import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import { LoginReq, User as UserType } from "@monorepo/types";
+import process from "process";
 
 const router = Router();
 //const MIN_PASSWORD_STRENGTH = 3;
+
+export const authUser = async (token: string) => {
+  try {
+    if (!token) return null;
+    const validatedUser = jsonwebtoken.verify(
+      token as string,
+      process.env.JWT + "",
+    );
+    return userModel().findById((validatedUser as JwtPayload).id);
+  } catch (err) {
+    return null;
+  }
+};
 
 router.get<undefined, UserType>("/", async (req, res) => {
   const User = userModel();
@@ -73,7 +86,6 @@ router.post<LoginReq, undefined>("/in", async (req, res) => {
         })
         .send();
     } catch (err) {
-      console.error(err);
       return res.status(500).send();
     }
   } else return res.status(500).send();

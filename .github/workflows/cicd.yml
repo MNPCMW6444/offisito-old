@@ -151,7 +151,7 @@ jobs:
           docker push $ECR_REGISTRY/host:$VERSION
 
 
-  update_task_definitions_and_services:
+  deploy_to_ecs:
     needs: [ prepare, build_server, build_guest, build_host ]
     runs-on: ubuntu-latest
     steps:

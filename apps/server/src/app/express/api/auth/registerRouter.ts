@@ -1,9 +1,9 @@
 import { Router } from "express";
-import userModel from "../../../../mongo/auth/userModel";
-import requestForAccountModel from "../../../../mongo/auth/requestForAccountModel";
-import { sendEmail } from "../../../../sendgrid/sendEmail";
-import { signupreq } from "../../../../../assets/email-templates/authEmails";
-import settings from "../../../../../config";
+import userModel from "../../../mongo/auth/userModel";
+import requestForAccountModel from "../../../mongo/auth/requestForAccountModel";
+import { sendEmail } from "../../../email/sendEmail";
+import { signupreq } from "../../../../assets/email-templates/authEmails";
+import settings from "../../../../config";
 import { v4 } from "uuid";
 import bcrypt from "bcrypt";
 import zxcvbn from "zxcvbn";
@@ -33,14 +33,12 @@ router.post<RegisterReq, undefined>("/req", async (req, res) => {
 
       const { subject, body } = signupreq(url);
 
-      sendEmail(email, subject, body)
-        .then(() => console.log("sent registration email - " + body))
-        .catch((err) => console.error(err));
+      sendEmail(email, subject, body).then(() =>
+        console.log("sent registration email - " + body),
+      );
 
       return res.status(200).send();
     } catch (err) {
-      console.error(err);
-
       return res.status(500).send();
     }
   else return res.status(500).send();
@@ -105,7 +103,6 @@ router.post<RegisterFin, undefined>("/fin", async (req, res) => {
         })
         .send();
     } catch (err) {
-      console.error(err);
       return res.status(500).send();
     }
   else return res.status(500).send();

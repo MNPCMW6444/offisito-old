@@ -8,11 +8,9 @@ import React, {
 } from "react";
 import {
   Button,
-  FormControlLabel,
   FormLabel,
   Grid,
   IconButton,
-  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -20,8 +18,13 @@ import { ListAssetReq } from "@monorepo/types";
 import { Add } from "@mui/icons-material";
 import { ServerContext } from "@monorepo/server-provider";
 import debounce from "lodash.debounce";
+import { formatLabel, renderSwitchesHOC } from "@monorepo/react-components";
 
-const ListPage = () => {
+interface ListPageProps {
+  _id?: string;
+}
+
+const ListPage = ({ _id }: ListPageProps) => {
   const [formState, setFormState] = useState<ListAssetReq>({
     officeName: "",
     desc: "",
@@ -49,7 +52,9 @@ const ListPage = () => {
   const fileInputRef = createRef<HTMLInputElement>();
 
   const handleUpdate = async (updatedState: ListAssetReq) => {
-    await server?.axiosInstance.put("/api/host/assets/update", updatedState);
+    await server?.axiosInstance.patch("/api/assets/", {
+      newAsset: { _id, ...updatedState },
+    });
   };
 
   const debouncedUpdate = useCallback(debounce(handleUpdate, 500), []);
@@ -86,45 +91,13 @@ const ListPage = () => {
     />
   );
 
-  const renderSwitches = (
-    items: {
-      [key: string]: boolean;
-    },
-    section: "amenities" | "availability",
-  ) => (
-    <>
-      <FormLabel component="legend">
-        {section.charAt(0).toUpperCase() + section.slice(1)}
-      </FormLabel>
-      {Object.keys(items).map((key) => (
-        <FormControlLabel
-          key={key}
-          control={
-            <Switch
-              checked={items[key]}
-              onChange={(e) =>
-                handleSwitchChange(`${section}.${key}`, e.target.checked)
-              }
-            />
-          }
-          label={formatLabel(key)}
-        />
-      ))}
-    </>
-  );
-
-  const formatLabel = (key: string) =>
-    key.charAt(0).toUpperCase() +
-    key
-      .slice(1)
-      .replace(/([A-Z])/g, " $1")
-      .trim();
+  const renderSwitches = renderSwitchesHOC(handleSwitchChange, formatLabel);
 
   const uploadPicture = async (file: File) => {
     const formData = new FormData();
     formData.append("photo", file);
     await server?.axiosInstance.post(
-      "/api/host/assets/uploadPicture",
+      "/api/assets/uploadPicture/" + _id,
       formData,
       {
         headers: { "Content-Type": "multipart/form-data" },
@@ -144,10 +117,10 @@ const ListPage = () => {
   };
 
   const publish = async () => {
-    await server?.axiosInstance.post("/api/host/assets/publish", {});
+    await server?.axiosInstance.post("/api/assets/publish", {});
   };
 
-  return (
+  return _id ? (
     <Grid
       container
       direction="column"
@@ -162,7 +135,12 @@ const ListPage = () => {
       </Grid>
       <Grid item>{renderTextField("officeName", "Office Name")}</Grid>
       <Grid item>{renderTextField("desc", "Desc")}</Grid>
-      <Grid item>{renderSwitches(formState.amenities, "amenities")}</Grid>
+      <Grid item>
+        {renderSwitches(
+          formState.amenities as unknown as { [key: string]: boolean },
+          "amenities",
+        )}
+      </Grid>
       <Grid item>{renderSwitches(formState.availability, "availability")}</Grid>
       <Grid item container alignItems="center" columnSpacing={4}>
         <Grid item>{renderTextField("companyInHold", "Company in Hold")}</Grid>
@@ -187,6 +165,8 @@ const ListPage = () => {
         </Button>
       </Grid>
     </Grid>
+  ) : (
+    <Typography>Error</Typography>
   );
 };
 

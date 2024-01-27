@@ -1,15 +1,12 @@
 import { useContext } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Box, useTheme } from "@mui/material";
-import { useMobile } from "@monorepo/react-components";
 import { AuthContext, AuthPage } from "@monorepo/react-components";
 import HomePage from "./pages/home/HomePage";
 import ListPage from "./pages/list/ListPage";
 
 const Router = () => {
   const { user } = useContext(AuthContext);
-
-  const { isMobile } = useMobile();
 
   const backgroundColor = useTheme().palette.background.default; // Get default background color from theme
 
