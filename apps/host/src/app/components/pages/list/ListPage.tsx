@@ -25,7 +25,6 @@ interface ListPageProps {
 }
 
 const ListPage = ({ _id }: ListPageProps) => {
-  if (!_id) _id = "65b38e5180b57da867a08fdc";
   const [formState, setFormState] = useState<ListAssetReq>({
     officeName: "",
     desc: "",
