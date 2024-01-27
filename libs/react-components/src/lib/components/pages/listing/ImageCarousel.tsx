@@ -4,7 +4,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Box } from "@mui/material";
 
-const images = [
+const defaultImages = [
   {
     label: "Photo1",
     alt: "Photo1",
@@ -36,7 +36,14 @@ const images = [
     imgPath: "",
   },
 ];
-const ImageCarousel = () => {
+
+interface ImageCarouelProps {
+  imagesArray?: { label: string; alt: string; imgPath: string }[];
+}
+
+export const ImageCarousel = (
+  { imagesArray }: ImageCarouelProps = { imagesArray: defaultImages },
+) => {
   return (
     <Box sx={{ maxWidth: 400, flexGrow: 1 }}>
       <Swiper
@@ -48,7 +55,7 @@ const ImageCarousel = () => {
         spaceBetween={50}
         slidesPerView={1}
       >
-        {images.map((image) => (
+        {imagesArray?.map((image) => (
           <SwiperSlide key={image.label}>
             <Box
               component="img"
@@ -68,5 +75,3 @@ const ImageCarousel = () => {
     </Box>
   );
 };
-
-export default ImageCarousel;
