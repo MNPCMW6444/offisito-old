@@ -13,7 +13,7 @@ export default () => {
         required: true,
       },
       officeName: {
-        String,
+        type: String,
         unique: true,
       },
       desc: String,
@@ -36,8 +36,9 @@ export default () => {
       },
       photoURLs: [String],
       status: {
+        type: String,
         enum: ["draft", "pending", "active", "paused", "archived"],
-        required: true,
+        required: false,
       },
     },
     {

@@ -20,7 +20,12 @@ import { ServerContext } from "@monorepo/server-provider";
 import debounce from "lodash.debounce";
 import { formatLabel, renderSwitchesHOC } from "@monorepo/react-components";
 
-const ListPage = () => {
+interface ListPageProps {
+  _id: string;
+}
+
+const ListPage = ({ _id }: ListPageProps) => {
+  if (!_id) _id = "65b38e5180b57da867a08fdc";
   const [formState, setFormState] = useState<ListAssetReq>({
     officeName: "",
     desc: "",
@@ -48,7 +53,9 @@ const ListPage = () => {
   const fileInputRef = createRef<HTMLInputElement>();
 
   const handleUpdate = async (updatedState: ListAssetReq) => {
-    await server?.axiosInstance.put("/api/host/assets/update", updatedState);
+    await server?.axiosInstance.patch("/api/assets/", {
+      newAsset: { _id, ...updatedState },
+    });
   };
 
   const debouncedUpdate = useCallback(debounce(handleUpdate, 500), []);
@@ -91,7 +98,7 @@ const ListPage = () => {
     const formData = new FormData();
     formData.append("photo", file);
     await server?.axiosInstance.post(
-      "/api/host/assets/uploadPicture",
+      "/api/assets/uploadPicture/" + _id,
       formData,
       {
         headers: { "Content-Type": "multipart/form-data" },
@@ -111,10 +118,10 @@ const ListPage = () => {
   };
 
   const publish = async () => {
-    await server?.axiosInstance.post("/api/host/assets/publish", {});
+    await server?.axiosInstance.post("/api/assets/publish", {});
   };
 
-  return (
+  return _id ? (
     <Grid
       container
       direction="column"
@@ -159,6 +166,8 @@ const ListPage = () => {
         </Button>
       </Grid>
     </Grid>
+  ) : (
+    <Typography>Error</Typography>
   );
 };
 

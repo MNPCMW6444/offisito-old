@@ -51,7 +51,7 @@ router.get</*{ params: any }*/ undefined, Asset[]>(
 );
 
 // POST route: Create a new asset
-router.post<undefined, undefined>("/", async (req, res) => {
+router.post<undefined, Asset>("/", async (req, res) => {
   try {
     const Asset = assetModel();
     if (Asset) {
@@ -66,13 +66,13 @@ router.post<undefined, undefined>("/", async (req, res) => {
 });
 
 // PATCH route: Update an existing asset
-router.patch<{ id: string }, undefined>("/:id", async (req, res) => {
+router.patch<{ newAsset: Asset }, Asset>("/", async (req, res) => {
   try {
     const Asset = assetModel();
     if (Asset) {
       const updatedAsset = await Asset.findByIdAndUpdate(
-        req.params.id,
-        req.body,
+        req.body.newAsset._id,
+        req.body.newAsset,
         { new: true },
       );
       if (!updatedAsset) {
@@ -86,7 +86,7 @@ router.patch<{ id: string }, undefined>("/:id", async (req, res) => {
   }
 });
 
-router.post<{ id: string }, undefined>(
+router.post<{ id: string }, { url: string }>(
   "/uploadPicture/:id",
   upload.single("file"),
   async (req, res) => {
@@ -133,4 +133,15 @@ router.delete<{ id: string }, undefined>("/:id", async (req, res) => {
   }
 });
 
+router.put<{ id: string }, undefined>("/publish/:id", async (req, res) => {
+  try {
+    const Asset = assetModel();
+    if (Asset) {
+      await Asset.findByIdAndUpdate(req.params.id, { status: "pending" });
+    } else throw new Error("no db");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send();
+  }
+});
 export default router;
