@@ -21,7 +21,7 @@ import debounce from "lodash.debounce";
 import { formatLabel, renderSwitchesHOC } from "@monorepo/react-components";
 
 interface ListPageProps {
-  _id: string;
+  _id?: string;
 }
 
 const ListPage = ({ _id }: ListPageProps) => {
