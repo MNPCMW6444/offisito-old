@@ -1,3 +1,4 @@
+/*
 import { Router } from "express";
 import assetModel from "../../../mongo/assets/assetModel";
 import multer from "multer";
@@ -25,13 +26,13 @@ const upload = multer({});
 
 const router = Router();
 
-router.get</*{ params: any }*/ undefined, Asset[]>(
+router.get</!*{ params: any }*!/ undefined, Asset[]>(
   "/:params",
   async (req, res) => {
     try {
       const Asset = assetModel();
       if (Asset) {
-        const asset = await Asset.find(/*{ params }*/);
+        const asset = await Asset.find(/!*{ params }*!/);
         if (!asset) {
           return res.status(404).send();
         }
@@ -137,3 +138,4 @@ router.put<{ id: string }, undefined>("/publish/:id", async (req, res) => {
   }
 });
 export default router;
+*/
