@@ -14,47 +14,58 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { ListAssetReq } from "@monorepo/types";
+import { Asset, ListAssetReq } from "@monorepo/types";
 import { Add } from "@mui/icons-material";
 import { ServerContext } from "@monorepo/server-provider";
 import debounce from "lodash.debounce";
 import { formatLabel, renderSwitchesHOC } from "@monorepo/react-components";
 
 interface ListPageProps {
-  _id?: string;
+  fetchedAsset?: Asset;
 }
 
-const ListPage = ({ _id }: ListPageProps) => {
-  const [formState, setFormState] = useState<ListAssetReq>({
-    officeName: "",
-    desc: "",
-    amenities: {
-      parking: false,
-      computer: false,
-      freeWiFi: false,
-      lobbySpace: false,
-    },
-    availability: {
-      fri: false,
-      mon: false,
-      sat: false,
-      sun: false,
-      thu: false,
-      tues: false,
-      wed: false,
-    },
-    companyInHold: "",
-    floor: "",
-    photoURLs: [],
-  });
+const ListPage = ({ fetchedAsset }: ListPageProps) => {
+  const [formState, setFormState] = useState<ListAssetReq>(
+    fetchedAsset
+      ? fetchedAsset
+      : {
+          officeName: "",
+          desc: "",
+          amenities: {
+            parking: false,
+            computer: false,
+            freeWiFi: false,
+            lobbySpace: false,
+          },
+          availability: {
+            fri: false,
+            mon: false,
+            sat: false,
+            sun: false,
+            thu: false,
+            tues: false,
+            wed: false,
+          },
+          companyInHold: "",
+          floor: "",
+          photoURLs: [],
+        },
+  );
+
+  useEffect(() => {
+    console.log("fetchedAsset: ", fetchedAsset);
+    fetchedAsset && setFormState(JSON.parse(JSON.stringify(fetchedAsset)));
+  }, [fetchedAsset]);
 
   const server = useContext(ServerContext);
   const fileInputRef = createRef<HTMLInputElement>();
 
   const handleUpdate = async (updatedState: ListAssetReq) => {
-    await server?.axiosInstance.patch("/api/assets/", {
-      newAsset: { _id, ...updatedState },
-    });
+    debugger;
+    fetchedAsset &&
+      (await server?.axiosInstance.patch("/api/assets/", {
+        newAsset: { _id: fetchedAsset._id, ...updatedState },
+      }));
   };
 
   const debouncedUpdate = useCallback(debounce(handleUpdate, 500), []);
@@ -96,13 +107,14 @@ const ListPage = ({ _id }: ListPageProps) => {
   const uploadPicture = async (file: File) => {
     const formData = new FormData();
     formData.append("photo", file);
-    await server?.axiosInstance.post(
-      "/api/assets/uploadPicture/" + _id,
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      },
-    );
+    fetchedAsset &&
+      (await server?.axiosInstance.post(
+        "/api/assets/uploadPicture/" + fetchedAsset._id,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        },
+      ));
   };
 
   const handleFileSelect = (event: ChangeEvent<HTMLInputElement>) => {
@@ -120,7 +132,7 @@ const ListPage = ({ _id }: ListPageProps) => {
     await server?.axiosInstance.post("/api/assets/publish", {});
   };
 
-  return _id ? (
+  return fetchedAsset?._id ? (
     <Grid
       container
       direction="column"

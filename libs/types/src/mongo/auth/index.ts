@@ -1,8 +1,8 @@
-import { Schema } from "mongoose";
+import { Document } from "mongoose";
 
 export type UserType = "admin" | "host" | "member";
 
-export interface User extends Schema {
+export interface User extends Document {
   phone: string;
   email: string;
   passwordHash?: string;
@@ -10,12 +10,12 @@ export interface User extends Schema {
   type: UserType;
 }
 
-export interface RequestForAccount extends Schema {
+export interface RequestForAccount extends Document {
   email: string;
   key: string;
 }
 
-export interface Otp extends Schema {
+export interface Otp extends Document {
   user: User;
   otp: string;
 }

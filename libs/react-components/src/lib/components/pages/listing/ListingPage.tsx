@@ -29,8 +29,9 @@ export const ListingPage = ({ _id }: ListingPageProps) => {
             alt: "",
             label: "",
           }))}
-        ></ImageCarousel>
+        />
       </Grid>
+      <Grid item>asdas</Grid>
     </Grid>
   ) : (
     <Typography>Loading Listing...</Typography>
