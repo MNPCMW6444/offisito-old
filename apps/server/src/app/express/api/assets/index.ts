@@ -26,7 +26,6 @@ const upload = multer({});
 const router = Router();
 
 router.get<{ _id: string }, Asset[]>("/:_id", async (req, res) => {
-  console.log("q.params");
   try {
     const Asset = assetModel();
     if (Asset) {
