@@ -1,4 +1,3 @@
-/*
 import { Router } from "express";
 import assetModel from "../../../mongo/assets/assetModel";
 import multer from "multer";
@@ -26,24 +25,23 @@ const upload = multer({});
 
 const router = Router();
 
-router.get</!*{ params: any }*!/ undefined, Asset[]>(
-  "/:params",
-  async (req, res) => {
-    try {
-      const Asset = assetModel();
-      if (Asset) {
-        const asset = await Asset.find(/!*{ params }*!/);
-        if (!asset) {
-          return res.status(404).send();
-        }
-        res.json(asset);
-      } else throw new Error("no db");
-    } catch (error) {
-      console.error(error);
-      res.status(500).send();
-    }
-  },
-);
+router.get<{ _id: string }, Asset[]>("/:_id", async (req, res) => {
+  try {
+    const Asset = assetModel();
+    if (Asset) {
+      const assets = req.params._id
+        ? [await Asset.findById(req.params._id)]
+        : await Asset.find(/*{ params }*/);
+      if (!assets) {
+        return res.status(404).send();
+      }
+      res.json(assets);
+    } else throw new Error("no db");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send();
+  }
+});
 
 router.post<undefined, Asset>("/", async (req, res) => {
   try {
@@ -138,4 +136,3 @@ router.put<{ id: string }, undefined>("/publish/:id", async (req, res) => {
   }
 });
 export default router;
-*/
