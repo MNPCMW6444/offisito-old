@@ -21,20 +21,14 @@ const s3 = new S3({
   region: settings.aws.region,
 });
 
-// Multer setup
-const upload = multer({
-  storage: multer.memoryStorage(), // use memory storage
-  limits: { fileSize: 100 * 1024 * 1024 }, // for example, limit file size to 5MB
-});
+const upload = multer({});
 
 const router = Router();
 
-// GET route: Retrieve a specific asset by some parameters
 router.get</*{ params: any }*/ undefined, Asset[]>(
   "/:params",
   async (req, res) => {
     try {
-      //    const params = req.params.params;
       const Asset = assetModel();
       if (Asset) {
         const asset = await Asset.find(/*{ params }*/);
@@ -50,7 +44,6 @@ router.get</*{ params: any }*/ undefined, Asset[]>(
   },
 );
 
-// POST route: Create a new asset
 router.post<undefined, Asset>("/", async (req, res) => {
   try {
     const Asset = assetModel();
@@ -65,7 +58,6 @@ router.post<undefined, Asset>("/", async (req, res) => {
   }
 });
 
-// PATCH route: Update an existing asset
 router.patch<{ newAsset: Asset }, Asset>("/", async (req, res) => {
   try {
     const Asset = assetModel();
@@ -101,7 +93,7 @@ router.post<{ id: string }, { url: string }>(
           ? "offisito-prod-images"
           : "offisito-preprod-images",
       Key: key,
-      Body: req.file.buffer, // File buffer
+
       ContentType: req.file.mimetype,
     };
     try {
