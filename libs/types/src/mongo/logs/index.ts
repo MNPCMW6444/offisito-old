@@ -1,8 +1,8 @@
-import { Schema } from "mongoose";
+import { Document } from "mongoose";
 import { User } from "../auth";
 import { Asset } from "../assets";
 
-export interface Booking extends Schema {
+export interface Booking extends Document {
   guest: User;
   asset: Asset;
   daysInWeek: {

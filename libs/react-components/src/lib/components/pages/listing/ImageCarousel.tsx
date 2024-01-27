@@ -3,40 +3,28 @@ import { Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Box } from "@mui/material";
+import p1 from "../../../../assets/mock/colorfull-x-s/mock1.png";
+import p2 from "../../../../assets/mock/colorfull-x-s/mock2.png";
 
-const images = [
+const defaultImages = [
   {
     label: "Photo1",
     alt: "Photo1",
-    imgPath: "",
+    imgPath: p1,
   },
   {
     label: "Photo2",
     alt: "Photo2",
-    imgPath: "",
-  },
-  {
-    label: "Photo3",
-    alt: "Photo3",
-    imgPath: "",
-  },
-  {
-    label: "Photo4",
-    alt: "Photo4",
-    imgPath: "",
-  },
-  {
-    label: "Photo5",
-    alt: "Photo5",
-    imgPath: "",
-  },
-  {
-    label: "Photo6",
-    alt: "Photo6",
-    imgPath: "",
+    imgPath: p2,
   },
 ];
-const ImageCarousel = () => {
+
+interface ImageCarouelProps {
+  imagesArray?: { label: string; alt: string; imgPath: string }[];
+}
+
+export const ImageCarousel = ({ imagesArray }: ImageCarouelProps) => {
+  const images = imagesArray || defaultImages;
   return (
     <Box sx={{ maxWidth: 400, flexGrow: 1 }}>
       <Swiper
@@ -68,5 +56,3 @@ const ImageCarousel = () => {
     </Box>
   );
 };
-
-export default ImageCarousel;
