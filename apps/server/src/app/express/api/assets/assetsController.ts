@@ -5,7 +5,7 @@ import { isValidObjectId } from "mongoose";
 
 export const createAsset = async (req: Request, res: Response) => {
   console.log("in the create asset");
-
+  const Assets = assetModel();
   try {
     const {
       host,
@@ -17,14 +17,13 @@ export const createAsset = async (req: Request, res: Response) => {
       availability,
       photoURLs,
       status,
-      published,
     } = req.body;
 
     if (!isValidObjectId(host)) {
       return res.status(500).json({ msg: "Not Vlaid User" });
     }
 
-    const newAsset = new assetModel({
+    const newAsset = new Assets({
       host,
       officeName,
       desc,
@@ -34,7 +33,6 @@ export const createAsset = async (req: Request, res: Response) => {
       availability,
       photoURLs,
       status,
-      published,
     });
 
     const savedNewAsset = await newAsset.save();

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createAsset } from "./assetscontroller";
+import { createAsset } from "./assetsController";
 
 const assetsRouter = Router();
 
