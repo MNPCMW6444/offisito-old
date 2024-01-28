@@ -33,15 +33,13 @@ router.get<{ _id: string; location: string }, Asset[]>(
   async (req, res) => {
     try {
       const Asset = assetModel();
-      if (Asset) {
-        const assets = req.params._id
-          ? [await Asset.findById(req.params._id)]
-          : await Asset.find(/*{ params }*/);
-        if (!assets) {
-          return res.status(404).send();
-        }
-        res.json(assets);
-      } else throw new Error("no db");
+      const assets = req.params._id
+        ? [await Asset.findById(req.params._id)]
+        : await Asset.find(/*{ params }*/);
+      if (!assets) {
+        return res.status(404).send();
+      }
+      res.json(assets);
     } catch (error) {
       console.error(error);
       res.status(500).send();
@@ -53,11 +51,9 @@ router.get<{ _id: string; location: string }, Asset[]>(
 router.post<undefined, Asset>("/", async (req, res) => {
   try {
     const Asset = assetModel();
-    if (Asset) {
-      const newAsset = new Asset(req.body);
-      const savedAsset = await newAsset.save();
-      res.status(201).json(savedAsset);
-    } else throw new Error("no db");
+    const newAsset = new Asset(req.body);
+    const savedAsset = await newAsset.save();
+    res.status(201).json(savedAsset);
   } catch (error) {
     console.error(error);
     res.status(500).send();
@@ -67,17 +63,15 @@ router.post<undefined, Asset>("/", async (req, res) => {
 router.patch<{ newAsset: Asset }, Asset>("/", async (req, res) => {
   try {
     const Asset = assetModel();
-    if (Asset) {
-      const updatedAsset = await Asset.findByIdAndUpdate(
-        req.body.newAsset._id,
-        req.body.newAsset,
-        { new: true },
-      );
-      if (!updatedAsset) {
-        return res.status(404).send();
-      }
-      res.json(updatedAsset);
-    } else throw new Error("no db");
+    const updatedAsset = await Asset.findByIdAndUpdate(
+      req.body.newAsset._id,
+      req.body.newAsset,
+      { new: true },
+    );
+    if (!updatedAsset) {
+      return res.status(404).send();
+    }
+    res.json(updatedAsset);
   } catch (error) {
     console.error(error);
     res.status(500).send();
@@ -118,13 +112,11 @@ router.post<{ id: string }, { url: string }>(
 router.delete<{ id: string }, undefined>("/:id", async (req, res) => {
   try {
     const Asset = assetModel();
-    if (Asset) {
-      const deletedAsset = await Asset.findByIdAndDelete(req.params.id);
-      if (!deletedAsset) {
-        return res.status(404).send();
-      }
-      res.send();
-    } else throw new Error("no db");
+    const deletedAsset = await Asset.findByIdAndDelete(req.params.id);
+    if (!deletedAsset) {
+      return res.status(404).send();
+    }
+    res.send();
   } catch (error) {
     console.error(error);
     res.status(500).send();
@@ -134,9 +126,7 @@ router.delete<{ id: string }, undefined>("/:id", async (req, res) => {
 router.put<{ id: string }, undefined>("/publish/:id", async (req, res) => {
   try {
     const Asset = assetModel();
-    if (Asset) {
-      await Asset.findByIdAndUpdate(req.params.id, { status: "pending" });
-    } else throw new Error("no db");
+    await Asset.findByIdAndUpdate(req.params.id, { status: "pending" });
   } catch (error) {
     console.error(error);
     res.status(500).send();
