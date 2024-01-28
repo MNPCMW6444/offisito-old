@@ -35,7 +35,7 @@ const middlewares = [
 /*settings.whiteEnv !== "prod" &&
   swaggerAutogen({ openapi: "3.1.0" })(
     "swagger.json",
-    ["apps/server/src/app/express/api/michaelsRouter.comment"],
+    ["apps/server/src/app/express/api/index.ts"],
     {
       info: {
         title: "Offisito API",

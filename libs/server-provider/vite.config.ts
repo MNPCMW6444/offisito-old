@@ -34,7 +34,7 @@ export default defineConfig({
     },
     lib: {
       // Could also be a dictionary or array of multiple entry points.
-      entry: "src/michaelsRouter.comment",
+      entry: "src/index.ts",
       name: "server-provider",
       fileName: "index",
       // Change this to the formats you want to support.
