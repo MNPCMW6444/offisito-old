@@ -46,3 +46,19 @@ export const createAsset = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
+
+export const getAssetsList = async (req:Request, res: Response)=>{
+
+  console.log("getting host assets list - res", res)
+  console.log("getting host assets list - req", req)
+}
+
+
+export const getAssetDetail = async(req:Request, res: Response)=>{
+  console.log("getting host assets detail - res", res)
+  console.log("getting host assets details - req", req)
+
+
+}

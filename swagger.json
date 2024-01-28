@@ -1,0 +1,89 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Offisito API",
+    "version": "1.0.0",
+    "description": ""
+  },
+  "host": "localhost:5556/",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/host/assets/create": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "host": {
+                  "example": "any"
+                },
+                "officeName": {
+                  "example": "any"
+                },
+                "desc": {
+                  "example": "any"
+                },
+                "amenities": {
+                  "example": "any"
+                },
+                "companyInHold": {
+                  "example": "any"
+                },
+                "floor": {
+                  "example": "any"
+                },
+                "availability": {
+                  "example": "any"
+                },
+                "photoURLs": {
+                  "example": "any"
+                },
+                "status": {
+                  "example": "any"
+                },
+                "published": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  }
+}
