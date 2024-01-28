@@ -32,7 +32,7 @@ export default defineConfig({
     },
     lib: {
       // Could also be a dictionary or array of multiple entry points.
-      entry: "src/michelsRouter.ts",
+      entry: "src/michaelsRouter.comment",
       name: "utils",
       fileName: "index",
       // Change this to the formats you want to support.

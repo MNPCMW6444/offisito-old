@@ -2,6 +2,8 @@ import { Document } from "mongoose";
 import { User } from "../auth";
 import { Amenities, Availability } from "../../index";
 
+type assetStatus = "draft" | "pending" | "active" | "paused" | "archived";
+
 export interface Asset extends Document {
   host: User;
   officeName: string;
@@ -11,5 +13,5 @@ export interface Asset extends Document {
   floor: string;
   availability: Availability;
   photoURLs: string[];
-  status: "draft" | "pending" | "active" | "paused" | "archived";
+  status: assetStatus;
 }

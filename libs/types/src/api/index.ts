@@ -1,4 +1,4 @@
-import { User, UserType } from "../mongo";
+import { UserType } from "../mongo";
 import { Amenities } from "../index";
 
 export type WhiteClient = "host" | "guest";
