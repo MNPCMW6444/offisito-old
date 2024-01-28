@@ -1,12 +1,30 @@
-import { Asset } from "@monorepo/types";
+import { Amenities, Asset, Availability } from "@monorepo/types";
 import { useContext, useEffect, useState } from "react";
 import { ServerContext } from "@monorepo/server-provider";
-import { Grid, Typography } from "@mui/material";
+import { Divider, Grid, Typography } from "@mui/material";
 import { ImageCarousel } from "./ImageCarousel";
+import Box from "@mui/material/Box";
+import { LocationOn } from "@mui/icons-material";
+import { renderAmenityIcon } from "../../utils/amenitiesIcons";
 
 interface ListingPageProps {
   _id?: string;
 }
+
+// TODO integrate to styled components yoad@offisito.com
+interface AvailabilityProps {
+  name: string;
+  isFilled: boolean;
+}
+
+const AvailabilityBox = ({ name, isFilled }: AvailabilityProps) => (
+  <Box
+    color={isFilled ? "white" : "black"}
+    bgcolor={isFilled ? "black" : "white"}
+  >
+    {name}
+  </Box>
+);
 
 export const ListingPage = ({ _id }: ListingPageProps) => {
   const [listing, setListing] = useState<Asset>();
@@ -31,7 +49,61 @@ export const ListingPage = ({ _id }: ListingPageProps) => {
           }))}
         />
       </Grid>
-      <Grid item>asdas</Grid>
+      <Grid item container alignItems="center" justifyContent="center">
+        <Grid item width="65%">
+          <Typography>{listing.officeName}</Typography>
+        </Grid>
+        <Grid item container>
+          <Grid item>
+            <Typography>Day: </Typography>
+          </Grid>
+          <Grid item>
+            <Box>
+              {/*TODO: itai@offisito.com*/}
+              <Typography>{"listing.price??"}</Typography>
+            </Box>
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item container alignItems="center">
+        <Grid item>
+          <LocationOn />
+        </Grid>
+        {/*TODO: itai@offisito.com*/}
+        <Grid item>{"listing.address??"}</Grid>
+      </Grid>
+      <Grid item container justifyItems="center">
+        {Object.keys(listing.amenities).map(
+          (amenity) =>
+            listing.amenities[amenity as keyof Amenities] && (
+              <Grid item>{renderAmenityIcon(amenity as keyof Amenities)}</Grid>
+            ),
+        )}
+      </Grid>
+      <Divider />
+      <Grid item>
+        <Typography>Availability</Typography>
+      </Grid>
+      <Grid item container columnSpacing={2}>
+        {Object.keys(listing.availability).map((key) => (
+          <Grid item>
+            <AvailabilityBox
+              name={key}
+              isFilled={listing.availability[key as keyof Availability]}
+            />
+          </Grid>
+        ))}
+      </Grid>
+      <Grid item>
+        <Typography>Space includes:</Typography>
+      </Grid>
+      <Grid item>????? {/*TODO: itai@offisito.com*/}</Grid>
+      <Grid item>
+        <Typography>Owner:</Typography>
+      </Grid>
+      <Grid item>
+        <Typography>Map:</Typography>
+      </Grid>
     </Grid>
   ) : (
     <Typography>Loading Listing...</Typography>
