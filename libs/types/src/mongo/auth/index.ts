@@ -19,3 +19,4 @@ export interface Otp extends Document {
   user: User;
   otp: string;
 }
+

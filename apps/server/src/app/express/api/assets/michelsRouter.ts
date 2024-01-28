@@ -25,24 +25,31 @@ const upload = multer({});
 
 const router = Router();
 
-router.get<{ _id: string }, Asset[]>("/:_id", async (req, res) => {
-  try {
-    const Asset = assetModel();
-    if (Asset) {
-      const assets = req.params._id
-        ? [await Asset.findById(req.params._id)]
-        : await Asset.find(/*{ params }*/);
-      if (!assets) {
-        return res.status(404).send();
-      }
-      res.json(assets);
-    } else throw new Error("no db");
-  } catch (error) {
-    console.error(error);
-    res.status(500).send();
-  }
-});
+// fetch one asset by id
+// or many by params - not implemented yet
+// returns an array of assets - if fetched one by id then with a single asset
+router.get<{ _id: string; location: string }, Asset[]>(
+  "/:_id/:location",
+  async (req, res) => {
+    try {
+      const Asset = assetModel();
+      if (Asset) {
+        const assets = req.params._id
+          ? [await Asset.findById(req.params._id)]
+          : await Asset.find(/*{ params }*/);
+        if (!assets) {
+          return res.status(404).send();
+        }
+        res.json(assets);
+      } else throw new Error("no db");
+    } catch (error) {
+      console.error(error);
+      res.status(500).send();
+    }
+  },
+);
 
+// create a new asset, no
 router.post<undefined, Asset>("/", async (req, res) => {
   try {
     const Asset = assetModel();
