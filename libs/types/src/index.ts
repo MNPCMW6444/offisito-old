@@ -7,3 +7,13 @@ export interface Amenities {
   lobbySpace: boolean;
   computer: boolean;
 }
+
+export interface Availability {
+  sun: boolean;
+  mon: boolean;
+  tues: boolean;
+  wed: boolean;
+  thu: boolean;
+  fri: boolean;
+  sat: boolean;
+}

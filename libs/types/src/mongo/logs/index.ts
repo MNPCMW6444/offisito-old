@@ -14,7 +14,7 @@ export interface Booking extends Document {
     fri: boolean;
     sat: boolean;
   };
-  //payment: Payment TODO: Add the Payment model interface when ready
+  //payment: Payment TODO: Add the Payment model interface when ready michael@offisito.com
   startDate: Date;
   endDate: Date;
   status: "pending" | "active" | "paused" | "archived";
