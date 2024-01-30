@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState, useRef } from "react";
+import { createContext, useEffect, useState, useRef, ReactNode } from "react";
 import { Typography } from "@mui/material";
 import axios, { AxiosInstance } from "axios";
 
@@ -11,10 +11,10 @@ const PRODUCTION_BASE_URL = "https://server.offisito.com/";
 
 // Types and Interfaces
 interface ServerProviderProps {
-  children: React.ReactNode;
+  children: ReactNode;
   tryInterval?: number;
   env?: "preprod";
-  customErrorTSX?: React.ReactNode;
+  customErrorTSX?: ReactNode;
 }
 
 interface ServerContextProps {
