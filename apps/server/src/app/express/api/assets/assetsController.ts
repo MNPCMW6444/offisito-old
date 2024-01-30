@@ -74,6 +74,25 @@ export const createAsset = async (req: Request, res: Response) => {
 };
 
 
+
+
+export const editAsset =async (req:Request, res:Response)=>{
+
+  const {host_id, asset_id} = req.params;
+  
+
+
+
+}
+
+export const publishAsset = async (req:Request, res: Response)=>{
+
+  console.log("in publishing REQ"), req;
+  console.log("in publishingRES ", res);
+  
+
+}
+
 // here Req Need to hold host_id in order to retrieve the host listing
 
 export const getAssetsList = async (req:Request, res: Response)=>{
