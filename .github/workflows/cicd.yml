@@ -152,6 +152,7 @@ jobs:
 
 
   deploy_to_ecs:
+    needs: [ prepare, build_server, build_guest, build_host ]
     runs-on: ubuntu-latest
     steps:
       - name: Configure AWS credentials
