@@ -1,24 +1,7 @@
 import mongoose from "mongoose";
 import { Document } from "mongoose";
 import { User } from "../auth";
-
-// The Asset Interface will require a minimum of Name for office in order to have an editable Form to add all necessary information
-export interface Amenities {
-  freeWiFi?: boolean;
-  parking?: boolean;
-  lobbySpace?: boolean;
-  computer?: boolean;
-}
-
-export interface Availability {
-  sun?: boolean;
-  mon?: boolean;
-  tues?: boolean;
-  wed?: boolean;
-  thu?: boolean;
-  fri?: boolean;
-  sat?: boolean;
-}
+import { Amenities, Availability } from "../../index";
 
 type assetStatus = "draft" | "pending" | "active" | "paused" | "archived";
 

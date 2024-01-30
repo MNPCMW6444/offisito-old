@@ -14,7 +14,7 @@ interface ListingPageProps {
 // TODO integrate to styled components yoad@offisito.com
 interface AvailabilityProps {
   name: string;
-  isFilled: boolean;
+  isFilled?: boolean;
 }
 
 const AvailabilityBox = ({ name, isFilled }: AvailabilityProps) => (
@@ -83,7 +83,11 @@ export const ListingPage = ({ _id }: ListingPageProps) => {
             <Grid item>
               <AvailabilityBox
                 name={key}
-                isFilled={listing.availability?[key as keyof Availability]}
+                isFilled={
+                  listing.availability
+                    ? listing.availability[key as keyof Availability]
+                    : undefined
+                }
               />
             </Grid>
           ))}
