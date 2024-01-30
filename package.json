@@ -73,6 +73,7 @@
     "@aws-sdk/lib-storage": "^3.501.0",
     "@mnpcmw6444/mongoose-auto-versioning": "^4.0.0",
     "@sendgrid/mail": "^8.1.0",
+    "@types/geojson": "^7946.0.13",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
