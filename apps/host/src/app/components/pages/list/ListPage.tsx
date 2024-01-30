@@ -29,8 +29,8 @@ const ListPage = ({ fetchedAsset }: ListPageProps) => {
     fetchedAsset
       ? fetchedAsset
       : {
-          officeName: "",
-          desc: "",
+          officeName: "asd2",
+          desc: "asd",
           amenities: {
             parking: false,
             computer: false,
@@ -48,7 +48,6 @@ const ListPage = ({ fetchedAsset }: ListPageProps) => {
           },
           companyInHold: "",
           floor: "",
-          photoURLs: [],
         },
   );
 
@@ -61,7 +60,6 @@ const ListPage = ({ fetchedAsset }: ListPageProps) => {
   const fileInputRef = createRef<HTMLInputElement>();
 
   const handleUpdate = async (updatedState: ListAssetReq) => {
-    debugger;
     fetchedAsset &&
       (await server?.axiosInstance.patch("/api/assets/", {
         newAsset: { _id: fetchedAsset._id, ...updatedState },
@@ -153,7 +151,15 @@ const ListPage = ({ fetchedAsset }: ListPageProps) => {
           "amenities",
         )}
       </Grid>
-      <Grid item>{renderSwitches(formState.availability, "availability")}</Grid>
+      {formState.availability && (
+        <Grid item>
+          {formState.availability &&
+            renderSwitches(
+              formState.availability as unknown as { [key: string]: boolean },
+              "availability",
+            )}
+        </Grid>
+      )}
       <Grid item container alignItems="center" columnSpacing={4}>
         <Grid item>{renderTextField("companyInHold", "Company in Hold")}</Grid>
         <Grid item>{renderTextField("floor", "Floor")}</Grid>
