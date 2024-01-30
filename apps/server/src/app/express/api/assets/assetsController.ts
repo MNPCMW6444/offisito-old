@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import assetModel from "../../../mongo/assets/assetModel";
 import { isValidObjectId } from "mongoose";
-import geoJsonModel from "../../../mongo/geo/geoJsonModel";
+import geoJsonModel from "../../../mongo/geo/geoPointModel";
 
 // #TODO: Front end will add a coordinate Array with longitude, longitude in req.body
 
