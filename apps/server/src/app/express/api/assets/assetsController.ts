@@ -5,7 +5,7 @@ import { isValidObjectId } from "mongoose";
 import geoJsonModel from "../../../mongo/geoJson/geoJsonModel";
 
 
-
+// #TODO: Front end will add a coordinate Array with longitude, longitude in req.body
 
 export const createAsset = async (req: Request, res: Response) => {
   console.log("in the create asset");
