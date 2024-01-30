@@ -231,13 +231,13 @@ jobs:
 
       - name: Update ECS Service for server
         run: |
-          aws ecs update-service --cluster prod --service server --task-definition server
+          aws ecs update-service --cluster prod --service server --task-definition server:latest
 
       - name: Update ECS Service for guest
         run: |
-          aws ecs update-service --cluster prod --service guest --task-definition guest
+          aws ecs update-service --cluster prod --service guest --task-definition guest:latest
 
       - name: Update ECS Service for host
         run: |
-          aws ecs update-service --cluster prod --service host --task-definition host
+          aws ecs update-service --cluster prod --service host --task-definition host:latest
 
