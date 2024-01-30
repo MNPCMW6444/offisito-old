@@ -1,11 +1,11 @@
-import { Amenities, Asset, Availability } from "@monorepo/types";
+import { Asset, Availability } from "@monorepo/types";
 import { useContext, useEffect, useState } from "react";
 import { ServerContext } from "@monorepo/server-provider";
 import { Divider, Grid, Typography } from "@mui/material";
 import { ImageCarousel } from "./ImageCarousel";
 import Box from "@mui/material/Box";
 import { LocationOn } from "@mui/icons-material";
-import { renderAmenityIcon } from "../../utils/amenitiesIcons";
+import { AmenitiesView } from "../../assets-views";
 
 interface ListingPageProps {
   _id?: string;
@@ -72,14 +72,7 @@ export const ListingPage = ({ _id }: ListingPageProps) => {
         {/*TODO: itai@offisito.com*/}
         <Grid item>{"listing.address??"}</Grid>
       </Grid>
-      <Grid item container justifyItems="center">
-        {Object.keys(listing.amenities).map(
-          (amenity) =>
-            listing.amenities[amenity as keyof Amenities] && (
-              <Grid item>{renderAmenityIcon(amenity as keyof Amenities)}</Grid>
-            ),
-        )}
-      </Grid>
+      <AmenitiesView amenities={listing.amenities} />
       <Divider />
       <Grid item>
         <Typography>Availability</Typography>

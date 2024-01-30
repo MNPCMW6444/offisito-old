@@ -6,6 +6,7 @@ import {
 } from "@monorepo/react-components";
 import styled from "@emotion/styled";
 import { Box, Grid, Typography } from "@mui/material";
+import { Toaster } from "react-hot-toast";
 
 const whiteEnv =
   import.meta.env.VITE_WHITE_ENV !== "prod"
@@ -32,11 +33,14 @@ const App = () => {
   const { isMobile } = useResponsiveness();
 
   const app = (
-    <ServerProvider env={whiteEnv}>
-      <AuthContextProvider>
-        <Router />
-      </AuthContextProvider>
-    </ServerProvider>
+    <>
+      <Toaster />
+      <ServerProvider env={whiteEnv}>
+        <AuthContextProvider>
+          <Router />
+        </AuthContextProvider>
+      </ServerProvider>
+    </>
   );
 
   return isMobile ? (
