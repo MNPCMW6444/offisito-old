@@ -296,3 +296,5 @@ export const AuthPage = ({ client }: AuthPageProps) => {
     </Grid>
   );
 };
+
+//TODO: add pass reset
