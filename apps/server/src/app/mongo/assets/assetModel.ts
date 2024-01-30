@@ -1,10 +1,7 @@
 import { connection } from "../connection";
 import mongoose from "mongoose";
 import { versioning } from "@mnpcmw6444/mongoose-auto-versioning";
-// import { Asset } from "@monorepo/types";
-import { Asset } from "./assetInterface";
-
-
+import { Asset } from "@monorepo/types";
 
 export default () => {
   const name = "asset";
@@ -45,14 +42,12 @@ export default () => {
       },
       location: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'GeoJSONPoint', 
+        ref: "GeoJSONPoint",
       },
     },
     {
       timestamps: true,
     },
-    
-
   ).plugin(versioning, { collection: name + "s.history", mongoose });
 
   if (!connection) throw new Error("Database not initialized");
