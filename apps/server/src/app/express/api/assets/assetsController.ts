@@ -2,14 +2,16 @@ import { Request, Response } from "express";
 
 import assetModel from "../../../mongo/assets/assetModel";
 import { isValidObjectId } from "mongoose";
-// import { log } from "console";
+import geoJsonModel from "../../../mongo/geoJson/geoJsonModel";
 
 
 
 
 export const createAsset = async (req: Request, res: Response) => {
   console.log("in the create asset");
-  const Assets = assetModel();
+  const Assets = assetModel();    
+  let geoJson_id;
+
   try {
     const {
       host,
@@ -21,12 +23,31 @@ export const createAsset = async (req: Request, res: Response) => {
       availability,
       photoURLs,
       status,
+      coordinates
     } = req.body;
 
     if (!isValidObjectId(host)) {
       return res.status(500).json({ msg: "Not Vlaid User" });
     }
 
+    const GeoJSONModel = geoJsonModel();
+    const assetLocation = new GeoJSONModel({
+      type:'Point',
+     coordinates
+    });
+
+
+    try{
+      const savedLocation = await assetLocation.save();
+
+       geoJson_id = savedLocation._id;
+    }
+    catch(locationError){
+      console.log("error Saving Location:", locationError);
+      res.status(500).json({error:"error Saving Location"})
+    }
+   
+    
     const newAsset = new Assets({
       host,
       officeName,
@@ -37,6 +58,7 @@ export const createAsset = async (req: Request, res: Response) => {
       availability,
       photoURLs,
       status,
+      location : geoJson_id
     });
 
     const savedNewAsset = await newAsset.save();

@@ -1,5 +1,8 @@
+import mongoose from "mongoose";
 import { Document } from "mongoose";
 import { User } from "@monorepo/types";
+
+
 
 // The Asset Interface will require a minimum of Name for office in order to have an editable Form to add all necessary information
 export interface Amenities {
@@ -31,6 +34,6 @@ export interface Asset extends Document {
   availability?: Availability;
   photoURLs?: string[];
   status?: assetStatus;
-  // location?: GeoJSONPoint;
+  location?: mongoose.Types.ObjectId;
 
 }

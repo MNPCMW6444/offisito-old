@@ -4,6 +4,8 @@ import { versioning } from "@mnpcmw6444/mongoose-auto-versioning";
 // import { Asset } from "@monorepo/types";
 import { Asset } from "./assetInterface";
 
+
+
 export default () => {
   const name = "asset";
 
@@ -41,14 +43,16 @@ export default () => {
         enum: ["draft", "pending", "active", "paused", "archived"],
         required: false,
       },
+      location: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'GeoJSONPoint', 
+      },
     },
     {
       timestamps: true,
     },
-    // location: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: 'GeoJSON', // Reference the GeoJSON model
-    // },
+    
+
   ).plugin(versioning, { collection: name + "s.history", mongoose });
 
   if (!connection) throw new Error("Database not initialized");
