@@ -1,6 +1,6 @@
 {
   "name": "@monorepo/source",
-  "version": "0.7.40",
+  "version": "0.7.47",
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf node_modules dist package-lock.json ./.nx/cache",
@@ -82,6 +82,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.1.1",
     "multer": "^1.4.5-lts.1",
+    "sendgrid": "^5.2.3",
     "typescript-json-schema": "^0.62.0",
     "zxcvbn": "^4.4.2"
   }

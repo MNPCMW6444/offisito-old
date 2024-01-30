@@ -1,47 +1,40 @@
 import { Router } from "express";
+import { PassResetFin, PassResetReq } from "@monorepo/types";
 import userModel from "../../../mongo/auth/userModel";
-import registrationRequestModel from "../../../mongo/auth/registrationRequestModel";
-import { sendEmail } from "../../../email/sendEmail";
-import {
-  memberRegisterReq,
-  hostRegisterReq,
-} from "../../../../assets/email-templates/authEmails";
-import settings from "../../../../config";
 import { v4 } from "uuid";
-import bcrypt from "bcrypt";
+import settings from "../../../../config";
+import { resetPassword } from "../../../../assets/email-templates/authEmails";
+import { sendEmail } from "../../../email/sendEmail";
 import zxcvbn from "zxcvbn";
-import jsonwebtoken from "jsonwebtoken";
-import { RegisterFin, RegisterReq } from "@monorepo/types";
 import { MIN_PASSWORD_STRENGTH } from "@monorepo/utils";
+import bcrypt from "bcrypt";
+import jsonwebtoken from "jsonwebtoken";
+import passResetRequestModel from "../../../mongo/auth/passResetRequestModel";
+import PassResetRequestModel from "../../../mongo/auth/passResetRequestModel";
 
 const router = Router();
 
-router.post<RegisterReq, string>("/req", async (req, res, next) => {
+router.post<PassResetReq, string>("/passresetreq", async (req, res, next) => {
   try {
-    const User = userModel();
-    const RegistrationRequest = registrationRequestModel();
+    const PassResetRequest = passResetRequestModel();
 
-    const { email, client } = req.body as RegisterReq;
+    const { email, client } = req.body as PassResetReq;
     if (!email || !client)
       return res.status(400).send("email and client are required");
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).send("Please log in");
-
     const key = v4();
-    await new RegistrationRequest({
+    await new PassResetRequest({
       email,
       key,
     }).save();
 
     const url = `${client === "guest" ? settings.clientDomains.guest : client === "host" ? settings.clientDomains.host : settings.clientDomains.admin}/register?code=${key}`;
 
-    const { subject, body } =
-      client === "guest" ? memberRegisterReq(url) : hostRegisterReq(url);
+    const { subject, body } = resetPassword(url);
     sendEmail(email, subject, body).then(
       () =>
         settings.whiteEnv === "local" &&
-        console.log("tried to send registration email - link is: " + url),
+        console.log("tried to send pass reset email - link is: " + url),
     );
     return res.status(200).send("email sent successfully");
   } catch (error) {
@@ -49,15 +42,15 @@ router.post<RegisterReq, string>("/req", async (req, res, next) => {
   }
 });
 
-router.post<RegisterFin, string>("/fin", async (req, res, next) => {
+router.post<PassResetFin, string>("/passresetfin", async (req, res, next) => {
   try {
     const User = userModel();
-    const RegistrationRequest = registrationRequestModel();
-    const { key, fullName, password, passwordAgain, type } = req.body;
-    if (!key || !fullName || !password || !passwordAgain || !type)
+    const PassResetRequest = PassResetRequestModel();
+    const { key, password, passwordAgain } = req.body as PassResetFin;
+    if (!key || !password || !passwordAgain)
       return res
         .status(400)
-        .send("key, fullName, password, passwordAgain and type are required");
+        .send("key, password and passwordAgain and type are required");
 
     const passwordStrength = zxcvbn(password);
     if (passwordStrength.score < MIN_PASSWORD_STRENGTH)
@@ -66,33 +59,25 @@ router.post<RegisterFin, string>("/fin", async (req, res, next) => {
     if (password !== passwordAgain)
       return res.status(400).send("Passwords don't match");
 
-    const existingRegistrationRequest = await RegistrationRequest.findOne({
+    const exisitngPassResetRequest = await PassResetRequest.findOne({
       key,
     });
-    if (!existingRegistrationRequest) {
+    if (!exisitngPassResetRequest) {
       return res.status(400).send("Wrong key");
     }
 
     const existingUser = await User.findOne({
-      email: existingRegistrationRequest.email,
+      email: exisitngPassResetRequest.email,
     });
-    if (existingUser)
-      return res
-        .status(400)
-        .send("Email is already in use or account already exists");
 
     const salt = await bcrypt.genSalt();
-    const passwordHash = await bcrypt.hash(password, salt);
-    const savedUser = await new User({
-      email: existingRegistrationRequest.email,
-      name: fullName,
-      passwordHash,
-      type,
-    }).save();
+    existingUser.passwordHash = await bcrypt.hash(password, salt);
+
+    await existingUser.save();
 
     const token = jsonwebtoken.sign(
       {
-        id: savedUser._id,
+        id: existingUser._id,
       },
       settings.jwtSecret,
     );

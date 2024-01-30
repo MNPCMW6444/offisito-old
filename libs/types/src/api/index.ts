@@ -39,3 +39,14 @@ export interface ListAssetReq {
   };
   photoURLs: string[];
 }
+
+export interface PassResetReq {
+  email: string;
+  client: string;
+}
+
+export interface PassResetFin {
+  key: string;
+  password: string;
+  passwordAgain: string;
+}

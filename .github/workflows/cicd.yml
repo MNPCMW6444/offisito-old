@@ -217,27 +217,35 @@ jobs:
           jq --arg image_tag "$VERSION" --arg ecr_registry "${{ steps.login-ecr.outputs.registry }}" '.taskDefinition.containerDefinitions[0].image = $ecr_registry + "/host:" + $image_tag' current-host-task-def.json > intermediate-host-task-def.json
           jq '.taskDefinition | del(.taskDefinitionArn, .status, .revision, .registeredAt, .registeredBy, .requiresAttributes, .compatibilities)' intermediate-host-task-def.json > final-host-task-def.json
 
+
       - name: Register task definition for server
+        id: register-task-def-server
         run: |
-          aws ecs register-task-definition --cli-input-json file://final-server-task-def.json
+          TASK_DEF_ARN=$(aws ecs register-task-definition --cli-input-json file://final-server-task-def.json | jq -r '.taskDefinition.taskDefinitionArn')
+          echo "TASK_DEF_ARN_SERVER=$TASK_DEF_ARN" >> $GITHUB_ENV
 
       - name: Register task definition for guest
+        id: register-task-def-guest
         run: |
-          aws ecs register-task-definition --cli-input-json file://final-guest-task-def.json
+          TASK_DEF_ARN=$(aws ecs register-task-definition --cli-input-json file://final-guest-task-def.json | jq -r '.taskDefinition.taskDefinitionArn')
+          echo "TASK_DEF_ARN_GUEST=$TASK_DEF_ARN" >> $GITHUB_ENV
 
       - name: Register task definition for host
+        id: register-task-def-host
         run: |
-          aws ecs register-task-definition --cli-input-json file://final-host-task-def.json
+          TASK_DEF_ARN=$(aws ecs register-task-definition --cli-input-json file://final-host-task-def.json | jq -r '.taskDefinition.taskDefinitionArn')
+          echo "TASK_DEF_ARN_HOST=$TASK_DEF_ARN" >> $GITHUB_ENV
 
       - name: Update ECS Service for server
         run: |
-          aws ecs update-service --cluster prod --service server --task-definition server
+          aws ecs update-service --cluster prod --service server --task-definition $TASK_DEF_ARN_SERVER
 
       - name: Update ECS Service for guest
         run: |
-          aws ecs update-service --cluster prod --service guest --task-definition guest
+          aws ecs update-service --cluster prod --service guest --task-definition $TASK_DEF_ARN_GUEST
 
       - name: Update ECS Service for host
         run: |
-          aws ecs update-service --cluster prod --service host --task-definition host
+          aws ecs update-service --cluster prod --service host --task-definition $TASK_DEF_ARN_HOST
+
 

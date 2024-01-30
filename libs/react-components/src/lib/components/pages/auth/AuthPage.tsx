@@ -6,12 +6,13 @@ import { Grid, Paper, Typography } from "@mui/material";
 import image from "../../../../assets/backgroundOffice.jpg";
 import { AuthContext } from "../../../context";
 import toast from "react-hot-toast";
-import { useMobile } from "../../../";
+import { useResponsiveness } from "../../../";
 import { ServerContext } from "@monorepo/server-provider";
 import { AxiosError } from "axios";
-import { doNothing } from "@monorepo/utils";
 import { useLocation } from "react-router-dom";
 import { LoginReq, RegisterFin, RegisterReq } from "@monorepo/types";
+import zxcvbn from "zxcvbn";
+import { MIN_PASSWORD_STRENGTH } from "@monorepo/utils";
 
 enum Step {
   init,
@@ -61,7 +62,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
   const [step, setStep] = useState<Step>(Step.init);
   const { refreshUserData } = useContext(AuthContext);
 
-  const { isMobileOrTabl } = useMobile();
+  const { isMobileOrTabl } = useResponsiveness();
 
   const server = useContext(ServerContext);
   const axiosInstance = server?.axiosInstance;
@@ -133,6 +134,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                         fullWidth
                         variant="outlined"
                         value={email}
+                        error={!email}
                         onChange={(e) => setEmail(e.target.value)}
                       />
                     )}
@@ -144,6 +146,10 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                         fullWidth
                         variant="outlined"
                         value={password}
+                        error={
+                          !password ||
+                          zxcvbn(password).score < MIN_PASSWORD_STRENGTH
+                        }
                         onChange={(e) => setPassword(e.target.value)}
                       />
                     )}
@@ -155,6 +161,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                         fullWidth
                         variant="outlined"
                         value={passwordAgain}
+                        error={passwordAgain !== password}
                         onChange={(e) => setPasswordAgain(e.target.value)}
                       />
                     )}
@@ -165,6 +172,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                         fullWidth
                         variant="outlined"
                         value={fullName}
+                        error={!fullName}
                         onChange={(e) => setFullName(e.target.value)}
                       />
                     )}
@@ -186,8 +194,29 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                         data-testid="login-button"
                         variant="contained"
                         onClick={
-                          buttonLabel === "IDLE"
-                            ? step === 0
+                          buttonLabel === "IDLE" && step === 0
+                            ? () => {
+                                setButtonLabel("DOING");
+                                axiosInstance &&
+                                  axiosInstance
+                                    .post<undefined, undefined, LoginReq>(
+                                      "api/auth/log/in",
+                                      {
+                                        email,
+                                        password,
+                                        client,
+                                      },
+                                    )
+                                    .catch((error) =>
+                                      error.response.status === 402
+                                        ? setStep(Step.registerReq)
+                                        : error.response.status === 401
+                                          ? setStep(Step.login)
+                                          : toast(error?.message),
+                                    )
+                                    .finally(() => setButtonLabel("IDLE"));
+                              }
+                            : step === Step.login
                               ? () => {
                                   setButtonLabel("DOING");
                                   axiosInstance &&
@@ -200,52 +229,57 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                                           client,
                                         },
                                       )
+                                      .then(() => refreshUserData())
                                       .catch((error) =>
-                                        error.response.status === 402
-                                          ? setStep(Step.registerReq)
-                                          : error.response.status === 401
-                                            ? setStep(Step.login)
-                                            : toast(error?.message),
+                                        toast.error(
+                                          error.response.status === 401
+                                            ? "Wrong Password"
+                                            : error?.message,
+                                        ),
                                       )
                                       .finally(() => setButtonLabel("IDLE"));
                                 }
-                              : step === Step.login
+                              : step === Step.registerReq
                                 ? () => {
                                     setButtonLabel("DOING");
                                     axiosInstance &&
                                       axiosInstance
-                                        .post<undefined, undefined, LoginReq>(
-                                          "api/auth/log/in",
-                                          {
-                                            email,
-                                            password,
-                                            client,
-                                          },
-                                        )
-                                        .then(() => refreshUserData())
+                                        .post<
+                                          undefined,
+                                          undefined,
+                                          RegisterReq
+                                        >("api/auth/register/req", {
+                                          email,
+                                          client,
+                                        })
+                                        .then(() => setStep(Step.checkEmail))
                                         .catch((error) =>
                                           toast.error(
-                                            error.response.status === 401
-                                              ? "Wrong Password"
-                                              : error?.message,
+                                            (error as AxiosError)?.message,
                                           ),
                                         )
                                         .finally(() => setButtonLabel("IDLE"));
                                   }
-                                : step === Step.registerReq
-                                  ? () => {
+                                : () => {
+                                    if (buttonLabel === "IDLE" && signUpCode) {
                                       setButtonLabel("DOING");
                                       axiosInstance &&
                                         axiosInstance
                                           .post<
                                             undefined,
                                             undefined,
-                                            RegisterReq
-                                          >("api/auth/register/req", {
-                                            email,
-                                            client,
+                                            RegisterFin
+                                          >("api/auth/register/fin", {
+                                            key: signUpCode,
+                                            password,
+                                            passwordAgain,
+                                            fullName,
+                                            type:
+                                              client === "guest"
+                                                ? "member"
+                                                : "host",
                                           })
-                                          .then(() => setStep(Step.checkEmail))
+                                          .then(() => refreshUserData())
                                           .catch((error) =>
                                             toast.error(
                                               (error as AxiosError)?.message,
@@ -255,43 +289,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                                             setButtonLabel("IDLE"),
                                           );
                                     }
-                                  : step === Step.registerFin
-                                    ? () => {
-                                        if (
-                                          buttonLabel === "IDLE" &&
-                                          signUpCode
-                                        ) {
-                                          setButtonLabel("DOING");
-                                          axiosInstance &&
-                                            axiosInstance
-                                              .post<
-                                                undefined,
-                                                undefined,
-                                                RegisterFin
-                                              >("api/auth/register/fin", {
-                                                key: signUpCode,
-                                                password,
-                                                passwordAgain,
-                                                fullName,
-                                                type:
-                                                  client === "guest"
-                                                    ? "member"
-                                                    : "host",
-                                              })
-                                              .then(() => refreshUserData())
-                                              .catch((error) =>
-                                                toast.error(
-                                                  (error as AxiosError)
-                                                    ?.message,
-                                                ),
-                                              )
-                                              .finally(() =>
-                                                setButtonLabel("IDLE"),
-                                              );
-                                        }
-                                      }
-                                    : doNothing
-                            : doNothing
+                                  }
                         }
                       >
                         {LABELS[buttonLabel][step]}
@@ -307,3 +305,5 @@ export const AuthPage = ({ client }: AuthPageProps) => {
     </Grid>
   );
 };
+
+//TODO: add pass reset
