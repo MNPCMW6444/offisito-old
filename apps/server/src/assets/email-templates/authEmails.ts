@@ -1,10 +1,10 @@
-export const signupreq = (url: string) => ({
-  subject: 'Complete Your Failean Account Setup',
+export const memberRegisterReq = (url: string) => ({
+  subject: "Complete Your Offisito Member Account Setup",
   body: `<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Complete Your Failean Account Setup</title>
+    <title>Welcome to Offisito: Elevate Your Workspace Experience</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -21,7 +21,7 @@ export const signupreq = (url: string) => ({
             box-sizing: border-box;
         }
         .header, .footer {
-            background-color: #8A307F;
+            background-color: #4A90E2; /* Offisito brand color */
             color: white;
             text-align: center;
             padding: 10px;
@@ -30,7 +30,7 @@ export const signupreq = (url: string) => ({
             padding: 20px;
         }
         a.activate-button {
-            background-color: #8A307F;  /* Changed to match your brand color */
+            background-color: #4A90E2; /* Offisito brand color */
             color: #ffffff;
             text-decoration: none;
             padding: 15px 30px;
@@ -51,40 +51,38 @@ export const signupreq = (url: string) => ({
 <body>
 <div class="container">
     <div class="header">
-        <h2>Welcome to Failean</h2>
+        <h2>Welcome to Offisito</h2>
     </div>
 
     <div class="content">
         <p>Hello,</p>
-        <p>We're excited that you've chosen to join Failean, the platform that supports a smarter approach to entrepreneurship. Before you dive in, please complete your account setup.</p>
+        <p>Welcome to Offisito, the premium marketplace for corner offices. Enhance your productivity and elevate your work experience by booking a premium private office space on the go. Let's get your journey started.</p>
 
-        <a href="${url}" class="activate-button">Complete Setup</a>
+        <a href="${url}" class="activate-button">Activate Your Account</a>
 
-        <p>If this wasn't you, please ignore this email.</p>
+        <p>If you did not request this, please disregard this email.</p>
 
-        <h3>Your Thoughts Matter</h3>
-        <p>We value your insights as we continually strive to improve. Once you've had a chance to use our platform, we'd appreciate your feedback. Feel free to reply to this email with your thoughts.</p>
+        <h3>Share Your Experience</h3>
+        <p>Your feedback is crucial for us. After experiencing our service, we would love to hear from you. Please feel free to reply to this email with your suggestions and thoughts.</p>
 
-        <p>Best wishes,<br><strong>The Failean Team</strong></p>
+        <p>Here's to maximum productivity,<br><strong>The Offisito Team</strong></p>
     </div>
 
     <div class="footer">
-        <p>Unsubscribe | &copy; 2023 Failean LLC, All rights reserved.</p>
+        <p>Unsubscribe | &copy; 2024 Offisito Inc, All rights reserved.</p>
     </div>
 </div>
 </body>
-</html>
-  `
+</html>  `,
 });
 
-export const passreset = (url: string) => ({
-  subject: 'Reset Your Password - Failean',
+export const hostRegisterReq = (url: string) => ({
+  subject: "Join the Offisito Network: Start Hosting Today",
   body: `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Your Password - Failean</title>
+    <title>Join the Offisito Network</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -101,7 +99,86 @@ export const passreset = (url: string) => ({
             box-sizing: border-box;
         }
         .header, .footer {
-            background-color: #8A307F;
+            background-color: #4A90E2; /* Offisito brand color */
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+        .content {
+            padding: 20px;
+        }
+        a.activate-button {
+            background-color: #4A90E2; /* Offisito brand color */
+            color: #ffffff;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        @media only screen and (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            .content {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>Become an Offisito Host</h2>
+    </div>
+
+    <div class="content">
+        <p>Hello,</p>
+        <p>Thank you for your interest in joining Offisito as a host. Offisito offers a unique opportunity to monetize your premium office space and connect with professionals seeking exceptional work environments. Let's get your space listed and start your hosting journey.</p>
+
+        <a href="${url}" class="activate-button">Set Up Your Host Account</a>
+
+        <p>If you did not sign up to be a host, please ignore this email.</p>
+
+        <h3>Ready to Help</h3>
+        <p>Our team is here to assist you in making the most out of your hosting experience. Should you have any questions or need guidance, do not hesitate to get in touch.</p>
+
+        <p>Thank you for choosing Offisito,<br><strong>The Offisito Team</strong></p>
+    </div>
+
+    <div class="footer">
+        <p>Unsubscribe | &copy; 2024 Offisito Inc, All rights reserved.</p>
+    </div>
+</div>
+</body>
+</html>`,
+});
+
+export const resetPassword = (url: string) => ({
+  subject: "Reset Your Offisito Password",
+  body: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Your Password - Offisito</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+        .header, .footer {
+            background-color: #4A90E2; /* Offisito brand color */
             color: white;
             text-align: center;
             padding: 10px;
@@ -110,7 +187,7 @@ export const passreset = (url: string) => ({
             padding: 20px;
         }
         a.button {
-            background-color: #8A307F; /* Updated to match brand color */
+            background-color: #4A90E2; /* Offisito brand color */
             color: white;
             text-decoration: none;
             padding: 15px 30px;
@@ -129,7 +206,6 @@ export const passreset = (url: string) => ({
     </style>
 </head>
 <body>
-
 <div class="container">
     <div class="header">
         <h2>Password Reset Instructions</h2>
@@ -138,21 +214,19 @@ export const passreset = (url: string) => ({
     <div class="content">
         <p>Hello,</p>
 
-        <p>We've received a request to reset your Failean account password. If this was you, please click the button below to set up a new password:</p>
+        <p>We received a request to reset your password for your Offisito account. If you made this request, please click the button below to choose a new password:</p>
 
         <a href="${url}" class="button">Reset Password</a>
 
-        <p>If you didn't initiate this request, you can safely ignore this email or contact our support.</p>
+        <p>If you did not request a password reset, please ignore this email or contact us if you have concerns.</p>
 
-        <p>Warm regards,<br><strong>The Failean Team</strong></p>
+        <p>Best regards,<br><strong>The Offisito Team</strong></p>
     </div>
 
     <div class="footer">
-        <p>Unsubscribe | &copy; 2023 Failean LLC, All rights reserved.</p>
+        <p>Unsubscribe | &copy; 2024 Offisito Inc, All rights reserved.</p>
     </div>
 </div>
-
 </body>
-</html>
-    `
+</html>`,
 });

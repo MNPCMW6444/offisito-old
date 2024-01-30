@@ -11,6 +11,8 @@ import { ServerContext } from "@monorepo/server-provider";
 import { AxiosError } from "axios";
 import { useLocation } from "react-router-dom";
 import { LoginReq, RegisterFin, RegisterReq } from "@monorepo/types";
+import zxcvbn from "zxcvbn";
+import { MIN_PASSWORD_STRENGTH } from "@monorepo/utils";
 
 enum Step {
   init,
@@ -132,6 +134,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                         fullWidth
                         variant="outlined"
                         value={email}
+                        error={!email}
                         onChange={(e) => setEmail(e.target.value)}
                       />
                     )}
@@ -143,6 +146,10 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                         fullWidth
                         variant="outlined"
                         value={password}
+                        error={
+                          !password ||
+                          zxcvbn(password).score < MIN_PASSWORD_STRENGTH
+                        }
                         onChange={(e) => setPassword(e.target.value)}
                       />
                     )}
@@ -154,6 +161,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                         fullWidth
                         variant="outlined"
                         value={passwordAgain}
+                        error={passwordAgain !== password}
                         onChange={(e) => setPasswordAgain(e.target.value)}
                       />
                     )}
@@ -164,6 +172,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                         fullWidth
                         variant="outlined"
                         value={fullName}
+                        error={!fullName}
                         onChange={(e) => setFullName(e.target.value)}
                       />
                     )}
