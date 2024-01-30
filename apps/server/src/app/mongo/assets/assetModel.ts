@@ -40,6 +40,10 @@ export default () => {
         enum: ["draft", "pending", "active", "paused", "archived"],
         required: false,
       },
+      location: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "GeoJSONPoint",
+      },
     },
     {
       timestamps: true,
