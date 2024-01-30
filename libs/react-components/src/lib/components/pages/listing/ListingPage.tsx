@@ -42,7 +42,7 @@ export const ListingPage = ({ _id }: ListingPageProps) => {
     <Grid container direction="column">
       <Grid item>
         <ImageCarousel
-          imagesArray={listing.photoURLs.map((url) => ({
+          imagesArray={listing.photoURLs?.map((url) => ({
             imgPath: url,
             alt: "",
             label: "",
@@ -77,16 +77,18 @@ export const ListingPage = ({ _id }: ListingPageProps) => {
       <Grid item>
         <Typography>Availability</Typography>
       </Grid>
-      <Grid item container columnSpacing={2}>
-        {Object.keys(listing.availability).map((key) => (
-          <Grid item>
-            <AvailabilityBox
-              name={key}
-              isFilled={listing.availability[key as keyof Availability]}
-            />
-          </Grid>
-        ))}
-      </Grid>
+      {listing.availability && (
+        <Grid item container columnSpacing={2}>
+          {Object.keys(listing.availability).map((key) => (
+            <Grid item>
+              <AvailabilityBox
+                name={key}
+                isFilled={listing.availability?[key as keyof Availability]}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      )}
       <Grid item>
         <Typography>Space includes:</Typography>
       </Grid>
