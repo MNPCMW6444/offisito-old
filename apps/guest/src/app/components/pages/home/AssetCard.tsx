@@ -16,20 +16,29 @@ const AssetCard = ({ asset }: AssetCardProps) => {
       rowSpacing={1}
     >
       <Grid item>
-        <Box component="img" src={asset.photoURLs[0]}></Box>
+        <Box
+          component="img"
+          src={asset.photoURLs ? asset.photoURLs[0] : ""}
+        ></Box>
       </Grid>
       <Grid item>
         <Typography>{asset.officeName}</Typography>
       </Grid>
-      <Grid item>
-        <Typography>
-          Available -{" "}
-          {Object.keys(asset.availability)
-            .filter((key) => asset.availability[key as keyof Availability])
-            .join(", ")}
-          .
-        </Typography>
-      </Grid>
+      {asset.availability && (
+        <Grid item>
+          <Typography>
+            Available -{" "}
+            {Object.keys(asset.availability)
+              .filter((key) =>
+                asset.availability
+                  ? asset.availability[key as keyof Availability]
+                  : true,
+              )
+              .join(", ")}
+            .
+          </Typography>
+        </Grid>
+      )}
       <Grid item>
         <Divider sx={{ borderStyle: "dashed" }}> </Divider>
       </Grid>
