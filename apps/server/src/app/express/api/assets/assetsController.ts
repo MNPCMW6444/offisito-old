@@ -3,7 +3,7 @@ import assetModel from "../../../mongo/assets/assetModel";
 import { Asset } from "@monorepo/types";
 import { isValidObjectId } from "mongoose";
 import geoJsonModel from "../../../mongo/geoJson/geoJsonModel";
-// import { log } from "console";
+
 
 
 // #TODO: Front end will add a coordinate Array with longitude, longitude in req.body
