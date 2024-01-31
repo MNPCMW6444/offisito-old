@@ -64,8 +64,8 @@ export default async () => {
         } catch (e) {
           console.log("Error logging error to mongo: ", e);
         }
+        return res.status(500).send("Server error");
       }
-      return res.status(500).send("Server error");
     });
 
     app.listen(port, "0.0.0.0", () => {
