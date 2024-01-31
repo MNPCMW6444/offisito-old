@@ -38,7 +38,6 @@ router.post<LoginReq, string>("/in", async (req, res, next) => {
 
     const existingUser = await User.findOne({ email });
     if (!existingUser) return res.status(402).send("Please register");
-    if (!password) return res.status(400).send("Password is required");
     if (
       client !== existingUser.type &&
       (client !== "guest" || existingUser.type !== "member")
