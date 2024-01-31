@@ -6,6 +6,7 @@ import express from "express";
 import api from "./api";
 import settings from "../../config";
 import errorModel from "../mongo/logs/errorModel";
+import { getAddressByPoint } from "../google-geocoding";
 
 const app = express();
 const port = 5556;
@@ -64,8 +65,8 @@ export default async () => {
         } catch (e) {
           console.log("Error logging error to mongo: ", e);
         }
-      } else console.log("Error logging error to mongo!");
-      return res.status(500).send("Server error");
+        return res.status(500).send("Server error");
+      }
     });
 
     app.listen(port, "0.0.0.0", () => {
