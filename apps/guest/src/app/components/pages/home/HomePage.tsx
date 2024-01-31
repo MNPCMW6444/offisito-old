@@ -20,5 +20,4 @@ const HomePage = () => (
     </Grid>
   </Grid>
 );
-
 export default HomePage;

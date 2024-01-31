@@ -6,6 +6,7 @@ import express from "express";
 import api from "./api";
 import settings from "../../config";
 import errorModel from "../mongo/logs/errorModel";
+import { getAddressByPoint } from "../google-geocoding";
 
 const app = express();
 const port = 5556;
