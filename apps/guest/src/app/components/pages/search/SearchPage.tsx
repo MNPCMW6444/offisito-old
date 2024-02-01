@@ -24,7 +24,7 @@ const SearchPage = () => {
 
   return (
     <Grid container direction="column" alignItems="center">
-      <Grid item height="15vh" />
+      <Grid item height="15%" />
       <Grid item>
         <Typography>Find your</Typography>
       </Grid>

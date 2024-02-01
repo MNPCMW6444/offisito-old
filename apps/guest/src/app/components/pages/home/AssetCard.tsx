@@ -8,13 +8,7 @@ interface AssetCardProps {
 
 const AssetCard = ({ asset }: AssetCardProps) => {
   return (
-    <Grid
-      container
-      direction="column"
-      width="95vw"
-      padding="10%"
-      rowSpacing={1}
-    >
+    <Grid container direction="column" width="95%" padding="10%" rowSpacing={1}>
       <Grid item>
         <Box
           component="img"

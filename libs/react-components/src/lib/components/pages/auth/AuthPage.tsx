@@ -139,295 +139,270 @@ export const AuthPage = ({ client }: AuthPageProps) => {
   const progressBarColor =
     passwordStrength < MIN_PASSWORD_STRENGTH ? "error" : "primary";
 
-  return (
-    <Grid container>
-      {!isMobileOrTabl && (
-        <Grid item width="70vw" height="100vh">
-          <Box
-            sx={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              minWidth: "600px",
-            }}
-            src={image}
-            component="img"
-          />
-        </Grid>
-      )}
-      <Grid
-        item
-        container
-        justifyContent="center"
-        alignItems="center"
-        width={isMobileOrTabl ? "100vw" : "30vw"}
-        height="100vh"
-        position="fixed"
-        right={0}
-      >
+  const authJSX = (
+    <Paper style={{ padding: 20, maxWidth: 400, margin: "0 auto" }}>
+      <Grid container direction="column" alignItems="center">
         <Grid item>
-          <Paper style={{ padding: 20, maxWidth: 400, margin: "0 auto" }}>
-            <Grid container direction="column" alignItems="center">
-              <Grid item>
-                <Typography variant="h6" textAlign="center">
-                  Welcome to
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Typography variant="h6" textAlign="center">
-                  Offisito
-                </Typography>
-              </Grid>
-              <Grid item>
-                {step === Step.checkEmail ? (
-                  <Typography>
-                    We sent {email} a link to activate your account!
-                  </Typography>
-                ) : (
-                  <>
-                    {step !== Step.registerFin && (
-                      <>
-                        <TextField
-                          margin="dense"
-                          label="Email"
-                          type="email"
-                          fullWidth
-                          variant="outlined"
-                          value={email}
-                          error={!validations.email}
-                          onChange={(e) => setEmail(e.target.value)}
-                        />
+          <Typography variant="h6" textAlign="center">
+            Welcome to
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Typography variant="h6" textAlign="center">
+            Offisito
+          </Typography>
+        </Grid>
+        <Grid item>
+          {step === Step.checkEmail ? (
+            <Typography>
+              We sent {email} a link to activate your account!
+            </Typography>
+          ) : (
+            <>
+              {step !== Step.registerFin && (
+                <>
+                  <TextField
+                    margin="dense"
+                    label="Email"
+                    type="email"
+                    fullWidth
+                    variant="outlined"
+                    value={email}
+                    error={!validations.email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
 
-                        {!validations.email && (
-                          <Typography color="error" variant="caption">
-                            {getErrorMessage("email")}
-                          </Typography>
-                        )}
-                      </>
-                    )}
-                    {(step === Step.login || step === Step.registerFin) && (
-                      <>
-                        <TextField
-                          margin="dense"
-                          label="Password"
-                          type="password"
-                          fullWidth
-                          variant="outlined"
-                          value={password}
-                          error={!validations.password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-                        {!validations.password && (
-                          <Typography color="error" variant="caption">
-                            {getErrorMessage("password")}
-                          </Typography>
-                        )}
-                        {step === Step.registerFin && (
-                          <Box
-                            position="relative"
-                            display="flex"
-                            alignItems="center"
-                            width="100%"
-                            mt={1}
-                          >
-                            <LinearProgress
-                              variant="determinate"
-                              value={getStrengthBarValue(passwordStrength)}
-                              color={progressBarColor}
-                              style={{ width: "100%" }}
-                            />
-                            <Box
-                              position="absolute"
-                              left={`${(MIN_PASSWORD_STRENGTH / 4) * 100 - 5}%`}
-                              top={0}
-                            >
-                              <Grid container>
-                                <Grid item>
-                                  <Flag />
-                                </Grid>
-                                <Grid item>
-                                  <Typography>Min</Typography>
-                                </Grid>
-                              </Grid>
-                            </Box>
-                          </Box>
-                        )}
-                      </>
-                    )}
-                    {step === Step.registerFin && (
-                      <>
-                        <br />
-                      </>
-                    )}
-                    {step === Step.registerFin && (
-                      <>
-                        <TextField
-                          margin="dense"
-                          label="Password Confirmation"
-                          type="password"
-                          fullWidth
-                          variant="outlined"
-                          value={passwordAgain}
-                          error={!validations.passwordAgain}
-                          onChange={(e) => setPasswordAgain(e.target.value)}
-                        />
-                        {!validations.passwordAgain && (
-                          <Typography color="error" variant="caption">
-                            {getErrorMessage("passwordAgain")}
-                          </Typography>
-                        )}
-                        <TextField
-                          margin="dense"
-                          label="Full Name"
-                          fullWidth
-                          variant="outlined"
-                          value={fullName}
-                          error={!validations.fullName}
-                          onChange={(e) => setFullName(e.target.value)}
-                        />
-                        {!validations.fullName && (
-                          <Typography color="error" variant="caption">
-                            {getErrorMessage("fullName")}
-                          </Typography>
-                        )}
-                      </>
-                    )}
-                  </>
-                )}
-              </Grid>
-              {LABELS[buttonLabel][step] && (
-                <Grid item>
-                  <Box mt={2}>
-                    <Grid
-                      container
-                      direction="column"
+                  {!validations.email && (
+                    <Typography color="error" variant="caption">
+                      {getErrorMessage("email")}
+                    </Typography>
+                  )}
+                </>
+              )}
+              {(step === Step.login || step === Step.registerFin) && (
+                <>
+                  <TextField
+                    margin="dense"
+                    label="Password"
+                    type="password"
+                    fullWidth
+                    variant="outlined"
+                    value={password}
+                    error={!validations.password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  {!validations.password && (
+                    <Typography color="error" variant="caption">
+                      {getErrorMessage("password")}
+                    </Typography>
+                  )}
+                  {step === Step.registerFin && (
+                    <Box
+                      position="relative"
+                      display="flex"
                       alignItems="center"
-                      rowSpacing={2}
+                      width="100%"
+                      mt={1}
                     >
-                      <Grid item>
-                        <Button
-                          color="primary"
-                          type="submit"
-                          variant="contained"
-                          onClick={
-                            buttonLabel === "IDLE" && step === 0
-                              ? () => {
+                      <LinearProgress
+                        variant="determinate"
+                        value={getStrengthBarValue(passwordStrength)}
+                        color={progressBarColor}
+                        style={{ width: "100%" }}
+                      />
+                      <Box
+                        position="absolute"
+                        left={`${(MIN_PASSWORD_STRENGTH / 4) * 100 - 5}%`}
+                        top={0}
+                      >
+                        <Grid container>
+                          <Grid item>
+                            <Flag />
+                          </Grid>
+                          <Grid item>
+                            <Typography>Min</Typography>
+                          </Grid>
+                        </Grid>
+                      </Box>
+                    </Box>
+                  )}
+                </>
+              )}
+              {step === Step.registerFin && <br />}
+              {step === Step.registerFin && (
+                <>
+                  <TextField
+                    margin="dense"
+                    label="Password Confirmation"
+                    type="password"
+                    fullWidth
+                    variant="outlined"
+                    value={passwordAgain}
+                    error={!validations.passwordAgain}
+                    onChange={(e) => setPasswordAgain(e.target.value)}
+                  />
+                  {!validations.passwordAgain && (
+                    <Typography color="error" variant="caption">
+                      {getErrorMessage("passwordAgain")}
+                    </Typography>
+                  )}
+                  <TextField
+                    margin="dense"
+                    label="Full Name"
+                    fullWidth
+                    variant="outlined"
+                    value={fullName}
+                    error={!validations.fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                  />
+                  {!validations.fullName && (
+                    <Typography color="error" variant="caption">
+                      {getErrorMessage("fullName")}
+                    </Typography>
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </Grid>
+        {LABELS[buttonLabel][step] && (
+          <Grid item>
+            <Box mt={2}>
+              <Grid
+                container
+                direction="column"
+                alignItems="center"
+                rowSpacing={2}
+              >
+                <Grid item>
+                  <Button
+                    color="primary"
+                    type="submit"
+                    variant="contained"
+                    onClick={
+                      buttonLabel === "IDLE" && step === 0
+                        ? () => {
+                            setButtonLabel("DOING");
+                            axiosInstance &&
+                              axiosInstance
+                                .post<undefined, undefined, LoginReq>(
+                                  "api/auth/log/in",
+                                  {
+                                    email,
+                                    password,
+                                    client,
+                                  },
+                                )
+                                .catch((error) =>
+                                  error.response.status === 402
+                                    ? setStep(Step.registerReq)
+                                    : error.response.status === 401
+                                      ? setStep(Step.login)
+                                      : toast(error?.message),
+                                )
+                                .finally(() => setButtonLabel("IDLE"));
+                          }
+                        : step === Step.login
+                          ? () => {
+                              setButtonLabel("DOING");
+                              axiosInstance &&
+                                axiosInstance
+                                  .post<undefined, undefined, LoginReq>(
+                                    "api/auth/log/in",
+                                    {
+                                      email,
+                                      password,
+                                      client,
+                                    },
+                                  )
+                                  .then(() => refreshUserData())
+                                  .catch((error) =>
+                                    toast.error(
+                                      error.response.status === 401
+                                        ? "Wrong Password"
+                                        : error?.message,
+                                    ),
+                                  )
+                                  .finally(() => setButtonLabel("IDLE"));
+                            }
+                          : step === Step.registerReq
+                            ? () => {
+                                setButtonLabel("DOING");
+                                axiosInstance &&
+                                  axiosInstance
+                                    .post<undefined, undefined, RegisterReq>(
+                                      "api/auth/register/req",
+                                      {
+                                        email,
+                                        client,
+                                      },
+                                    )
+                                    .then(() => setStep(Step.checkEmail))
+                                    .catch((error) =>
+                                      toast.error(
+                                        (error as AxiosError)?.message,
+                                      ),
+                                    )
+                                    .finally(() => setButtonLabel("IDLE"));
+                              }
+                            : () => {
+                                if (buttonLabel === "IDLE" && signUpCode) {
                                   setButtonLabel("DOING");
                                   axiosInstance &&
                                     axiosInstance
-                                      .post<undefined, undefined, LoginReq>(
-                                        "api/auth/log/in",
+                                      .post<undefined, undefined, RegisterFin>(
+                                        "api/auth/register/fin",
                                         {
-                                          email,
+                                          key: signUpCode,
                                           password,
-                                          client,
+                                          passwordAgain,
+                                          fullName,
+                                          type:
+                                            client === "guest"
+                                              ? "member"
+                                              : "host",
                                         },
                                       )
+                                      .then(() => refreshUserData())
                                       .catch((error) =>
-                                        error.response.status === 402
-                                          ? setStep(Step.registerReq)
-                                          : error.response.status === 401
-                                            ? setStep(Step.login)
-                                            : toast(error?.message),
+                                        toast.error(
+                                          (error as AxiosError)?.message,
+                                        ),
                                       )
                                       .finally(() => setButtonLabel("IDLE"));
                                 }
-                              : step === Step.login
-                                ? () => {
-                                    setButtonLabel("DOING");
-                                    axiosInstance &&
-                                      axiosInstance
-                                        .post<undefined, undefined, LoginReq>(
-                                          "api/auth/log/in",
-                                          {
-                                            email,
-                                            password,
-                                            client,
-                                          },
-                                        )
-                                        .then(() => refreshUserData())
-                                        .catch((error) =>
-                                          toast.error(
-                                            error.response.status === 401
-                                              ? "Wrong Password"
-                                              : error?.message,
-                                          ),
-                                        )
-                                        .finally(() => setButtonLabel("IDLE"));
-                                  }
-                                : step === Step.registerReq
-                                  ? () => {
-                                      setButtonLabel("DOING");
-                                      axiosInstance &&
-                                        axiosInstance
-                                          .post<
-                                            undefined,
-                                            undefined,
-                                            RegisterReq
-                                          >("api/auth/register/req", {
-                                            email,
-                                            client,
-                                          })
-                                          .then(() => setStep(Step.checkEmail))
-                                          .catch((error) =>
-                                            toast.error(
-                                              (error as AxiosError)?.message,
-                                            ),
-                                          )
-                                          .finally(() =>
-                                            setButtonLabel("IDLE"),
-                                          );
-                                    }
-                                  : () => {
-                                      if (
-                                        buttonLabel === "IDLE" &&
-                                        signUpCode
-                                      ) {
-                                        setButtonLabel("DOING");
-                                        axiosInstance &&
-                                          axiosInstance
-                                            .post<
-                                              undefined,
-                                              undefined,
-                                              RegisterFin
-                                            >("api/auth/register/fin", {
-                                              key: signUpCode,
-                                              password,
-                                              passwordAgain,
-                                              fullName,
-                                              type:
-                                                client === "guest"
-                                                  ? "member"
-                                                  : "host",
-                                            })
-                                            .then(() => refreshUserData())
-                                            .catch((error) =>
-                                              toast.error(
-                                                (error as AxiosError)?.message,
-                                              ),
-                                            )
-                                            .finally(() =>
-                                              setButtonLabel("IDLE"),
-                                            );
-                                      }
-                                    }
-                          }
-                        >
-                          {LABELS[buttonLabel][step]}
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  </Box>
+                              }
+                    }
+                  >
+                    {LABELS[buttonLabel][step]}
+                  </Button>
                 </Grid>
-              )}
-            </Grid>
-          </Paper>
-        </Grid>
+              </Grid>
+            </Box>
+          </Grid>
+        )}
       </Grid>
+    </Paper>
+  );
+
+  return (
+    <Grid
+      container
+      justifyContent="center"
+      alignItems="center"
+      width="1005"
+      height="100%"
+      columnSpacing={10}
+      wrap="nowrap"
+    >
+      <Grid item width={client === "host" && !isMobileOrTabl ? "70%" : "auto"}>
+        {authJSX}
+      </Grid>
+      {client === "host" && !isMobileOrTabl && (
+        <Grid item width="70%" height="100%">
+          <Box component="img" src={image} maxHeight="100%" width="auto" />
+        </Grid>
+      )}
     </Grid>
   );
 };

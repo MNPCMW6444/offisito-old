@@ -14,10 +14,11 @@ const whiteEnv =
     : undefined;
 
 const MobileContainer = styled(Box)`
-  max-width: 375px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border: 2px solid black;
-  height: 100vh;
+  height: 96vh;
+  width: calc(98vh / 16 * 9);
+  margin-top: 2vh;
 `;
 
 const DesktopMessage = styled(Box)`
@@ -46,7 +47,7 @@ const App = () => {
   return isMobile ? (
     app
   ) : (
-    <Grid container justifyContent="center" columnSpacing={8}>
+    <Grid container justifyContent="center" columnSpacing={8} wrap="nowrap">
       <Grid item>
         <MobileContainer>{app}</MobileContainer>
       </Grid>
