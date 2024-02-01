@@ -11,8 +11,7 @@ export const getAddressByPoint = async (lat: number, long: number) => {
         "&key=" +
         settings.googleGeoCoding,
     );
-    console.log(res.data);
-    return res.data.results[0].formatted_address.split(",")[0];
+    return res.data.results[0].formatted_address.split(",")[1];
   } catch (e) {
     console.log(e);
     return null;
