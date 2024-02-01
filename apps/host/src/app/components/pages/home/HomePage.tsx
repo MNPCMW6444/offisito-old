@@ -1,5 +1,5 @@
-import { ListingPage } from "@monorepo/react-components";
+import { Typography } from "@mui/material";
 
-const HomePage = () => <ListingPage _id="65b38e5180b57da867a08fdc" />;
+const HomePage = () => <Typography>Dashboard</Typography>;
 
 export default HomePage;
