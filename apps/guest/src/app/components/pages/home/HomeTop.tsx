@@ -16,7 +16,7 @@ const HomeTop = () => {
         axiosInstance &&
         axiosInstance
           .get("/api/geo/getAddress/" + location.lat + "," + location.long)
-          .then((r) => setAddress(r.data)),
+          .then((r) => setAddress(r.data || "Current Address")),
     );
   }, [axiosInstance]);
 
