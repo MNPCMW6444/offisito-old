@@ -10,14 +10,25 @@ const Dashboard = () => (
   >
     <Grid item alignSelf="flex-start">
       <Typography>My Dashboard</Typography>
-    </Grid>{" "}
-    <Grid item alignSelf="flex-start">
+    </Grid>
+    <Grid item container justifyContent="space-around" alignItems="center">
+      <Grid item>
+        <Typography>Stats</Typography>
+      </Grid>
+      <Grid item>
+        <Typography>Stats</Typography>
+      </Grid>
+      <Grid item>
+        <Typography>Stats</Typography>
+      </Grid>
+      <Grid item>
+        <Typography>Stats</Typography>
+      </Grid>
+    </Grid>
+    <Grid item>
       <Typography>My Dashboard</Typography>
-    </Grid>{" "}
-    <Grid item alignSelf="flex-start">
-      <Typography>My Dashboard</Typography>
-    </Grid>{" "}
-    <Grid item alignSelf="flex-start">
+    </Grid>
+    <Grid item>
       <Typography>My Dashboard</Typography>
     </Grid>
   </Grid>
