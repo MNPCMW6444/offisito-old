@@ -3,7 +3,7 @@ import { AuthContextProvider } from "@monorepo/react-components";
 import Router from "./components/Router";
 import { Toaster } from "react-hot-toast";
 import { EnvBorder } from "@monorepo/react-components";
-import { frontendSettings } from "@monorepo/utils";
+import { frontendSettings } from "@monorepo/react-components";
 
 const whiteEnv =
   frontendSettings().VITE_WHITE_ENV !== "prod"
