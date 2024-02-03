@@ -6,8 +6,8 @@ import axios, { AxiosInstance } from "axios";
 const DEFAULT_TRY_INTERVAL = 3000;
 const GOOD_STATUS = "good";
 const BAD_MESSAGE = "Server is not available. Please try again later.";
-const DEVELOPMENT_BASE_URL = "http://localhost:5556/";
-const PRODUCTION_BASE_URL = "https://server.offisito.com/";
+const DEVELOPMENTURL = "http://localhost:5556/";
+const PRODUCTION_BASE_URL = "server.offisito.com/";
 
 // Types and Interfaces
 interface ServerProviderProps {
@@ -40,8 +40,8 @@ export const ServerProvider = ({
   // Helper functions
   const getBaseURL = () =>
     process.env.NODE_ENV === "development"
-      ? DEVELOPMENT_BASE_URL
-      : `${env ? `https://${env}.` : ""}${PRODUCTION_BASE_URL}`;
+      ? DEVELOPMENTURL
+      : `${env ? `https://${env === "preprod" ? "pre" : env}.` : ""}${PRODUCTION_BASE_URL}`;
 
   const axiosInstance = axios.create({
     baseURL: getBaseURL(),
