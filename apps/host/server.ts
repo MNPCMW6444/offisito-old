@@ -1,8 +1,7 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
-// Assuming you're using dotenv to manage your environment variables
-require("dotenv").config();
+const dotenv = require("dotenv");
 
 const app = express();
 
@@ -10,29 +9,19 @@ app.use(express.static(path.join(__dirname, "")));
 
 app.get("*", (_, res) => {
   const indexPath = path.join(__dirname, "", "index.html");
-  fs.readFile(indexPath, "utf8", (err, htmlData) => {
-    if (err) {
-      console.error("Error reading HTML file:", err);
-      return res.status(500).send("Server error");
-    }
+  let indexHTML = fs.readFileSync(indexPath, "utf8");
 
-    // Prepare environment variables to inject
-    const envVariables = {
-      VITE_WHITE_ENV: process.env.VITE_WHITE_ENV || "defaultValue",
-      // Add other runtime environment variables here as needed
-    };
+  // Assuming you want to pass process.env.API_URL to the frontend
+  const envVariables = { API_URL: process.env.API_URL };
+  const envScript = `<script>window.env = ${JSON.stringify(envVariables)};</script>`;
 
-    // Replace the placeholder script with actual environment variables
-    const replacedHtmlData = htmlData.replace(
-      "<script>window.env = {};</script>",
-      `<script>window.env = ${JSON.stringify(envVariables)};</script>`,
-    );
+  // Replace the placeholder with actual env variables
+  indexHTML = indexHTML.replace("<script>window.env = {};</script>", envScript);
 
-    res.send(replacedHtmlData);
-  });
+  res.send(indexHTML);
 });
 
 const port = 4200;
-app.listen(port, "0.0.0.0", () => {
-  console.log(`App is listening on port ${port}`);
-});
+app.listen(port, "0.0.0.0");
+
+console.log("App is listening on port " + port);
