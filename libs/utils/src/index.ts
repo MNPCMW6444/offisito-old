@@ -20,13 +20,3 @@ export const findMe = (): Promise<null | { lat: number; long: number }> => {
     }
   });
 };
-
-export const frontendSettings = () => {
-  try {
-    const envConfig = document.getElementById("env-config")?.textContent;
-    return JSON.parse(envConfig || "{}");
-  } catch (e) {
-    console.log("dev mode");
-    return import.meta.env;
-  }
-};
