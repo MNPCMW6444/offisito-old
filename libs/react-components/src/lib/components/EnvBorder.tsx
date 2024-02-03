@@ -6,11 +6,6 @@ interface EnvBorderContextProps {
 }
 
 export const EnvBorder = ({ children }: EnvBorderContextProps) => {
-  console.log(
-    "import.meta.env.VITE_WHITE_ENV: ",
-    import.meta.env.VITE_WHITE_ENV,
-  );
-  console.log("import.meta.env: ", import.meta.env);
   const props = {
     width:
       import.meta.env.VITE_WHITE_ENV === "prod" ? "100%" : "calc(100% - 8px)",
