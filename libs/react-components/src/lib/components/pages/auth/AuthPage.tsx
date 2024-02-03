@@ -306,7 +306,9 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                   type="submit"
                   variant="contained"
                   onClick={navigateButton.clickHandler}
-                  sx={{ fontSize: "70%" }}
+                  sx={{
+                    fontSize: "clamp(70%, 100%, 5vw)", // Adjust as needed
+                  }}
                 >
                   {navigateButton.label}
                 </Button>
@@ -319,7 +321,9 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                   type="submit"
                   variant="contained"
                   onClick={resetButton.clickHandler}
-                  sx={{ fontSize: "70%" }}
+                  sx={{
+                    fontSize: "clamp(70%, 100%, 5vw)", // Adjust as needed
+                  }}
                 >
                   {resetButton.label}
                 </Button>
@@ -332,7 +336,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
   };
 
   const authJSX = (
-    <Paper sx={{ padding: "20px" }}>
+    <Paper sx={{ padding: "20px", width: "75%" }}>
       <Grid container direction="column" alignItems="center">
         <Grid item>
           <Typography variant="h6" textAlign="center">
@@ -477,12 +481,12 @@ export const AuthPage = ({ client }: AuthPageProps) => {
       <Grid
         item
         container
-        width="40%"
+        width={isMobileOrTabl || client === "guest" ? "100%" : "40%"}
         height="100%"
         justifyContent="center"
         alignItems="center"
       >
-        <Grid item>{authJSX}</Grid>
+        {authJSX}
       </Grid>
       {client === "host" && !isMobileOrTabl && (
         <Grid item width="60%" height="100%">
