@@ -8,7 +8,7 @@ import {
 import styled from "@emotion/styled";
 import { Box, Grid, Typography } from "@mui/material";
 import { Toaster } from "react-hot-toast";
-import { frontendSettings } from "@monorepo/utils";
+import { frontendSettings } from "@monorepo/react-components";
 
 const whiteEnv =
   frontendSettings().VITE_WHITE_ENV !== "prod"
