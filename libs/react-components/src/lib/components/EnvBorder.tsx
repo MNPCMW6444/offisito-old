@@ -6,16 +6,22 @@ interface EnvBorderContextProps {
 }
 
 export const EnvBorder = ({ children }: EnvBorderContextProps) => {
-  const sx =
-    import.meta.env.VITE_WHITE_ENV === "prod"
-      ? {}
-      : import.meta.env.VITE_WHITE_ENV === "preprod"
-        ? { border: "4px solid orange" }
-        : { border: "4px solid blue" };
-
-  return (
-    <Box width="calc(100% - 8px)" height="calc(100% - 8px)" sx={sx}>
-      {children}
-    </Box>
+  console.log(
+    "import.meta.env.VITE_WHITE_ENV: ",
+    import.meta.env.VITE_WHITE_ENV,
   );
+  console.log("import.meta.env: ", import.meta.env);
+  const props = {
+    width:
+      import.meta.env.VITE_WHITE_ENV === "prod" ? "100%" : "calc(100% - 8px)",
+    height:
+      import.meta.env.VITE_WHITE_ENV === "prod" ? "100%" : "calc(100% - 8px)",
+    sx:
+      import.meta.env.VITE_WHITE_ENV === "prod"
+        ? {}
+        : import.meta.env.VITE_WHITE_ENV === "preprod"
+          ? { border: "4px solid orange" }
+          : { border: "4px solid blue" },
+  };
+  return <Box {...props}>{children}</Box>;
 };
