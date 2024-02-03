@@ -6,6 +6,7 @@ import { Asset } from "@monorepo/types"
 
 
 
+
 export default () => {
   const name = "asset";
 
@@ -20,12 +21,7 @@ export default () => {
         unique: true,
       },
       desc: String,
-      amenities: {
-        freeWiFi: Boolean,
-        parking: Boolean,
-        lobbySpace: Boolean,
-        computer: Boolean,
-      },
+      
       companyInHold: String,
       floor: String,
       availability: {

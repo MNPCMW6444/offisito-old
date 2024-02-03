@@ -1,17 +1,60 @@
-import { Document } from "mongoose";
+import { Types, Document } from "mongoose";
 import { User } from "../auth";
-import { Amenities, Availability } from "../../index";
+ import { Amenities } from "../../index";
 
-type assetStatus = "draft" | "pending" | "active" | "paused" | "archived";
+type assetPubStatus = "draft" | "pending" | "active" | "paused" | "archived";
+
+type assetType =  "office" | "openSpace" | "meetingRoom";
+
+
+enum WeekDays {
+  Sunday = "sunday",
+  Monday = "monday",
+  Tuesday = "tuesday",
+  Wednesday = "wednesday",
+  Thursday = "thursday",
+  Friday = "friday",
+  Saturday = "saturday",
+}
+
+export interface Availability {
+  days_of_week: WeekDays[],
+  start_date: Date,
+  end_date : Date,
+}
+
+
 
 export interface Asset extends Document {
-  host: User;
-  officeName: string;
-  desc: string;
-  amenities: Amenities;
-  companyInHold: string;
-  floor: string;
-  availability: Availability;
-  photoURLs: string[];
-  status: assetStatus;
+  assetDescription: string,
+  roomNumber: string,
+  availability: Availability,
+  amenities: Types.ObjectId[],
+  photoURLs: string[],
+  assetType: assetType,
+  publishingStatus: assetPubStatus,
+  peopleCapcity: number[],
+};
+
+
+export interface AssetBuilding extends Document{
+  host : User,
+  buildingName: string,
+  companyInHold: string,
+  address:{
+    street:string,
+    city:string,
+    country:string,
+    geoLocalisation: {
+      type: 'Point';
+      coordinates: [number, number];
+    },
+  },
+  floorNumber : number,
+  fullFloor: boolean,
+  buildingAmenities: Amenities,
+  buildingAccess: WeekDays[],
+  buildingDescription: string,
+  assets:Asset[]
+  
 }
