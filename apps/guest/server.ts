@@ -18,8 +18,8 @@ app.get("*", (_, res) => {
 
     // Prepare environment variables to inject
     const envVariables = {
-      VITE_WHITE_ENV: process.env.VITE_WHITE_ENV || "prod",
-      VITE_NODE_ENV: process.env.VITE_NODE_ENV || "production",
+      VITE_WHITE_ENV: process.env.VITE_WHITE_ENV || "defaultValue",
+      // Add other runtime environment variables here as needed
     };
 
     // Replace the placeholder script with actual environment variables
