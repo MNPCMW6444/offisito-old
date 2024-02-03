@@ -41,7 +41,7 @@ export const ServerProvider = ({
   const getBaseURL = () =>
     process.env.NODE_ENV === "development"
       ? DEVELOPMENTURL
-      : `${env ? `https://${env === "preprod" ? "pre" : env}.` : ""}${PRODUCTION_BASE_URL}`;
+      : `${env ? `https://${env === "preprod" ? "pre" : env}` : ""}${PRODUCTION_BASE_URL}`;
 
   const axiosInstance = axios.create({
     baseURL: getBaseURL(),
