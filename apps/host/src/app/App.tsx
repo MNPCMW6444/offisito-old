@@ -2,6 +2,7 @@ import { ServerProvider } from "@monorepo/server-provider";
 import { AuthContextProvider } from "@monorepo/react-components";
 import Router from "./components/Router";
 import { Toaster } from "react-hot-toast";
+import { EnvBorder } from "@monorepo/react-components";
 
 const whiteEnv =
   import.meta.env.VITE_WHITE_ENV !== "prod"
@@ -9,14 +10,14 @@ const whiteEnv =
     : undefined;
 
 const App = () => (
-  <>
+  <EnvBorder>
     <Toaster />
     <ServerProvider env={whiteEnv}>
       <AuthContextProvider>
         <Router />
       </AuthContextProvider>
     </ServerProvider>
-  </>
+  </EnvBorder>
 );
 
 export default App;

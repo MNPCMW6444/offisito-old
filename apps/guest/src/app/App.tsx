@@ -2,6 +2,7 @@ import { ServerProvider } from "@monorepo/server-provider";
 import Router from "./components/Router";
 import {
   AuthContextProvider,
+  EnvBorder,
   useResponsiveness,
 } from "@monorepo/react-components";
 import styled from "@emotion/styled";
@@ -44,21 +45,25 @@ const App = () => {
     </>
   );
 
-  return isMobile ? (
-    app
-  ) : (
-    <Grid container justifyContent="center" columnSpacing={8} wrap="nowrap">
-      <Grid item>
-        <MobileContainer>{app}</MobileContainer>
-      </Grid>
-      <Grid item>
-        <DesktopMessage>
-          <Typography>
-            For the best experience, please use our app on a mobile device.
-          </Typography>
-        </DesktopMessage>
-      </Grid>
-    </Grid>
+  return (
+    <EnvBorder>
+      {isMobile ? (
+        app
+      ) : (
+        <Grid container justifyContent="center" columnSpacing={8} wrap="nowrap">
+          <Grid item>
+            <MobileContainer>{app}</MobileContainer>
+          </Grid>
+          <Grid item>
+            <DesktopMessage>
+              <Typography>
+                For the best experience, please use our app on a mobile device.
+              </Typography>
+            </DesktopMessage>
+          </Grid>
+        </Grid>
+      )}
+    </EnvBorder>
   );
 };
 
