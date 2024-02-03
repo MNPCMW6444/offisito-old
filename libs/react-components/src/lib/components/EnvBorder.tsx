@@ -17,6 +17,7 @@ export const EnvBorder = ({ children }: EnvBorderContextProps) => {
 
     // Adjust the height on initial render
     adjustHeight();
+    console.log("resize");
 
     // Add event listener to adjust the height on window resize
     window.addEventListener("resize", adjustHeight);
