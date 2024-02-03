@@ -14,6 +14,11 @@ const whiteEnv =
     ? import.meta.env.VITE_WHITE_ENV
     : undefined;
 
+const envConfig = document.getElementById("env-config")?.textContent;
+const envVariables = JSON.parse(envConfig || "{}");
+
+// Now you can use envVariables.VITE_API_URL or any other variable you've set
+
 const MobileContainer = styled(Box)`
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border: 2px solid black;
