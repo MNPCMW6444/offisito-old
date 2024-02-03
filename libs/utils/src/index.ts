@@ -20,3 +20,8 @@ export const findMe = (): Promise<null | { lat: number; long: number }> => {
     }
   });
 };
+
+export const frontendSettings = () => {
+  const envConfig = document.getElementById("env-config")?.textContent;
+  return JSON.parse(envConfig || "{}");
+};

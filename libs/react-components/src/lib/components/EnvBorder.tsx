@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import Box from "@mui/material/Box";
+import { frontendSettings } from "@monorepo/utils";
 
 interface EnvBorderContextProps {
   children: ReactNode;
@@ -8,13 +9,17 @@ interface EnvBorderContextProps {
 export const EnvBorder = ({ children }: EnvBorderContextProps) => {
   const props = {
     width:
-      import.meta.env.VITE_WHITE_ENV === "prod" ? "100%" : "calc(100% - 8px)",
+      frontendSettings().VITE_WHITE_ENV === "prod"
+        ? "100%"
+        : "calc(100% - 8px)",
     height:
-      import.meta.env.VITE_WHITE_ENV === "prod" ? "100%" : "calc(100% - 8px)",
+      frontendSettings().VITE_WHITE_ENV === "prod"
+        ? "100%"
+        : "calc(100% - 8px)",
     sx:
-      import.meta.env.VITE_WHITE_ENV === "prod"
+      frontendSettings().VITE_WHITE_ENV === "prod"
         ? {}
-        : import.meta.env.VITE_WHITE_ENV === "preprod"
+        : frontendSettings().VITE_WHITE_ENV === "preprod"
           ? { border: "4px solid orange" }
           : { border: "4px solid blue" },
   };
