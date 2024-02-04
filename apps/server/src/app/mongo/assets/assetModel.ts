@@ -1,59 +1,45 @@
 import { connection } from "../connection";
 import mongoose from "mongoose";
+import { Types } from "mongoose";
 import { versioning } from "@mnpcmw6444/mongoose-auto-versioning";
-import { Asset } from "@monorepo/types";
+import { Asset, WeekDays, AssetPubStatus, AssetType, LeaseType } from "@monorepo/types";
+
 
 
 export default () => {
   const name = "asset";
 
-  const assetModel = new mongoose.Schema(
+  const assetScema = new mongoose.Schema(
     {
-      host: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
+      roomNumber:{type:String , required: true},
+      assetDescription: {type:String},
+      availability:{type:String, enum:Object.values(WeekDays), required: true},
+      amenities:[{type: Types.ObjectId, ref: 'AssetsAmenities'}],
+      photoURLs:[{type: String}],
+      assetType:{type:[String], enum:Object.values(AssetType), required:true},
+      publishingStatus:{type:String, enum: Object.values(AssetPubStatus)},
+      peopleCapcity:[{type:Number}],
+      leaseCondition:{
+        dailyPrice:{type:Number, required:true},
+        leaseType: [{type: String, enum: Object.values(LeaseType), required:true}]
       },
-      officeName: {
-        type: String,
-        unique: true,
-      },
-      desc: String,
-      
-      companyInHold: String,
-      floor: String,
-      availability: {
-        sun: Boolean,
-        mon: Boolean,
-        tues: Boolean,
-        wed: Boolean,
-        thu: Boolean,
-        fri: Boolean,
-        sat: Boolean,
-      },
-      photoURLs: [String],
-      status: {
-        type: String,
-        enum: ["draft", "pending", "active", "paused", "archived"],
-        required: false,
-      },
-      location: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "GeoJSONPoint",
-      },
+      leasingCompany: {type: Types.ObjectId, ref:'CompanyContract'},
+      building: {type: Types.ObjectId, ref: 'AssetBuilding'}
     },
     {
       timestamps: true,
     },
-  ).plugin(versioning, { collection: name + "s.history", mongoose });
+  )
+  .plugin(versioning, { collection: name + "s.history", mongoose });
 
   if (!connection) throw new Error("Database not initialized");
 
-  let assetModelR;
+  let assetModel;
   if (mongoose.models.asset) {
-    assetModelR = connection.model<Asset>(name);
+    assetModel = connection.model<Asset>(name);
   } else {
-    assetModelR = connection.model<Asset>(name, assetModel);
+    assetModel = connection.model<Asset>(name, assetScema);
   }
 
-  return assetModelR; // connection.model("asset", assetModel);
+  return assetModel; 
 };

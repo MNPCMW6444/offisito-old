@@ -1,15 +1,27 @@
 import { Types, Document } from "mongoose";
 import { User } from "../auth";
- import { Amenities } from "../../index";
 import { GeoPoint } from "../geo";
 
-type assetPubStatus = "draft" | "pending" | "active" | "paused" | "archived";
+ export enum AssetPubStatus{ Draft = 'draft',
+                             Pending = 'pending',
+                             Active = 'active',
+                             Paused = 'paused',
+                             Archived = 'archived',}
+ export enum AssetType {
+                        Office = 'office',
+                        OpenSpace = 'openSpace',
+                        MeetingRoom = 'meetingRoom',
+ }
 
-type assetType =  "office" | "openSpace" | "meetingRoom";
+ export enum LeaseType{ 
+                    Daily = 'daily',
+                    DailyDiffered = 'dailyDiffered',
+                    Weekly = 'weekly',
+                    Monthly = 'monthly',
+                    FullYear = 'fullYear',
+ }
 
-type leaseType = "daily" | "dailyDiffered" | "weekly" | "monthly" | "fullYear";
-
-enum WeekDays {
+export enum WeekDays {
   Sunday = "sunday",
   Monday = "monday",
   Tuesday = "tuesday",
@@ -26,8 +38,7 @@ export interface Availability {
 }
 
 
-
-export interface companyContract extends Document{
+export interface AssetCompanyContract extends Document{
   host : User,
   companyName: string,
   companyInHold: string,
@@ -35,24 +46,26 @@ export interface companyContract extends Document{
   fullFloor: boolean,
   contractEndDate:Date,
   subleasePermission: boolean,
+  building: Types.ObjectId,
+  assets: Types.ObjectId[]
 }
 
 
 export interface Asset extends Document {
+  host: User,
   assetDescription: string,
   roomNumber: string,
-  availability: Availability,
+  availability: WeekDays[],
   amenities: Types.ObjectId[],
   photoURLs: string[],
-  assetType: assetType,
-  publishingStatus: assetPubStatus,
+  assetType: AssetType,
+  publishingStatus: AssetPubStatus,
   peopleCapcity: number[],
   leaseCondition:{
     dailyPrice : number,
-    leaseType: leaseType[],
+    leaseType: LeaseType[],
   },
-  leasingCompany: companyContract,
-  building: AssetBuilding,
+  leasingCompany: Types.ObjectId |AssetCompanyContract,
 };
 
 
@@ -64,9 +77,9 @@ export interface AssetBuilding extends Document{
     country:string,
     geoLocalisation: GeoPoint,
   },
-  buildingAmenities: Amenities[],
+  buildingAmenities: Types.ObjectId[],
   buildingAccess: WeekDays[],
   buildingDescription: string,
-  assets:Asset[]
-  companiesRenting: companyContract[],
+  assets:Types.ObjectId[] | Asset[]
+  companiesRenting: Types.ObjectId[] | AssetCompanyContract[],
 }
