@@ -1,38 +1,22 @@
-import React, {
-  ChangeEvent,
-  createRef,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import {
-  Button,
-  FormLabel,
-  Grid,
-  IconButton,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { Asset, ListAssetReq } from "@monorepo/types";
+import React, { useContext, useEffect, useState } from "react";
+import { Fab, Grid, Typography } from "@mui/material";
+import { Asset } from "@monorepo/types";
 import { Add } from "@mui/icons-material";
 import { ServerContext } from "@monorepo/server-provider";
-import debounce from "lodash.debounce";
-import { formatLabel, renderSwitchesHOC } from "@monorepo/react-components";
-import toast from "react-hot-toast";
+import { axiosErrorToaster } from "@monorepo/react-components";
+import { AssetCard } from "@monorepo/react-components";
+import { useNavigate } from "react-router-dom";
 
-interface SpacesPageProps {}
-
-const SpacesPage = ({}: SpacesPageProps) => {
+const SpacesPage = () => {
   const [myAssets, setMyAssets] = useState<Asset[]>([]);
   const server = useContext(ServerContext);
-
+  const [creating, setCreating] = useState(false);
   const fetchedAssets = async () => {
     try {
       const res = await server?.axiosInstance.get("/api/assets/assets_list");
       res && setMyAssets(res.data);
     } catch (e) {
-      toast.error((e as any)?.response?.message || (e as any)?.response || e);
+      axiosErrorToaster(e);
     }
   };
 
@@ -40,24 +24,50 @@ const SpacesPage = ({}: SpacesPageProps) => {
     fetchedAssets().then();
   }, [server?.axiosInstance]);
 
-  return myAssets.length > 0 ? (
-    <Grid
-      container
-      direction="column"
-      rowSpacing={4}
-      width="92%"
-      height="80%"
-      padding="10% 4%"
-      sx={{ overflowX: "scroll" }}
-    >
-      {myAssets.map((asset) => (
-        <Grid item>
-          <Typography>{JSON.stringify(asset)}</Typography>
+  const navigate = useNavigate();
+
+  const createNew = async () => {
+    if (!creating) {
+      setCreating(true);
+      try {
+        const res = await server?.axiosInstance.post("api/assets/add_asset", {
+          officeName: "draft" + myAssets.length + 3,
+        });
+        const newAssetId = res?.data?.asset?._id.toString();
+        newAssetId && navigate("/space/?id=" + newAssetId);
+      } catch (e) {
+        axiosErrorToaster(e);
+      } finally {
+        setCreating(false);
+      }
+    }
+  };
+
+  return (
+    <>
+      <Fab
+        color="primary"
+        sx={{
+          position: "fixed",
+          bottom: "10%",
+          right: "5%",
+        }}
+        onClick={createNew}
+      >
+        <Add />
+      </Fab>
+      {myAssets.length > 0 ? (
+        <Grid container direction="column" rowSpacing={4}>
+          {myAssets.map((asset) => (
+            <Grid id={asset._id} item>
+              <AssetCard asset={asset} />
+            </Grid>
+          ))}
         </Grid>
-      ))}
-    </Grid>
-  ) : (
-    <Typography>No Assets yet</Typography>
+      ) : (
+        <Typography>No Assets yet</Typography>
+      )}
+    </>
   );
 };
 
