@@ -1,7 +1,16 @@
 import { createContext, useEffect, useState, useRef, ReactNode } from "react";
 import { Typography } from "@mui/material";
 import axios, { AxiosInstance } from "axios";
-import { frontendSettings } from "@monorepo/react-components";
+
+export const frontendSettings = () => {
+  try {
+    const envConfig = document.getElementById("env-config")?.textContent;
+    return JSON.parse(envConfig || "{}");
+  } catch (e) {
+    console.log("dev mode");
+    return import.meta.env;
+  }
+};
 
 const DEFAULT_TRY_INTERVAL = 3000;
 const GOOD_STATUS = "good";

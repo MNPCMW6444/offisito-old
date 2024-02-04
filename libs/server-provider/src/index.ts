@@ -1,1 +1,5 @@
-export { ServerContext, ServerProvider } from "./lib/context/ServerContext";
+export {
+  ServerContext,
+  ServerProvider,
+  frontendSettings,
+} from "./lib/context/ServerContext";

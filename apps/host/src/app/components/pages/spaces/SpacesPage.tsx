@@ -32,7 +32,7 @@ const SpacesPage = ({}: SpacesPageProps) => {
       const res = await server?.axiosInstance.get("/api/assets/assets_list");
       res && setMyAssets(res.data);
     } catch (e) {
-      toast(e as never);
+      toast.error((e as any)?.response?.message || (e as any)?.response || e);
     }
   };
 

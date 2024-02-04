@@ -23,7 +23,9 @@ const NearSpaces = () => {
         )
           .then((response) => setAsssetsNear(response.data))
           .catch((e) => {
-            toast("Error code " + e.response.status);
+            toast.error(
+              e.response.message || "Error code " + e.response.status,
+            );
           }),
     );
 
