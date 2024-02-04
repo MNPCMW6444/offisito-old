@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import {
@@ -29,36 +30,46 @@ const ListPage = () => {
   const [formState, setFormState] = useState<ListAssetReq>();
   const server = useContext(ServerContext);
 
-  const fetchAsset = async (id: string) => {
-    try {
-      const res = await server?.axiosInstance.get(
-        "/api/assets/asset_detail/" + id,
-      );
-      setFormState(res?.data.asset);
-    } catch (e) {
-      axiosErrorToaster(e);
-    }
-  };
+  const fetchAsset = useCallback(
+    async (id: string) => {
+      try {
+        const res = await server?.axiosInstance.get(
+          "/api/assets/asset_detail/" + id,
+        );
+        setFormState(res?.data.asset);
+      } catch (e) {
+        axiosErrorToaster(e);
+      }
+    },
+    [server?.axiosInstance],
+  );
 
   const useQuery = () => new URLSearchParams(useLocation().search);
   const query = useQuery();
 
+  const hasFetched = useRef(false);
+
   useEffect(() => {
     const id = query.get("id");
-    id && fetchAsset(id).then();
-  }, [query]);
+    if (id && !hasFetched.current) {
+      fetchAsset(id).then(() => {
+        hasFetched.current = true;
+      });
+    }
+  }, [query, fetchAsset]);
 
   const fileInputRef = createRef<HTMLInputElement>();
 
   const handleUpdate = async (updatedState: ListAssetReq) => {
     formState &&
-      (formState as Asset)._id &&
+      (formState as unknown as Asset)._id &&
       (await server?.axiosInstance.patch("/api/assets/", {
-        newAsset: { _id: (formState as Asset)._id, ...updatedState },
+        newAsset: { _id: (formState as unknown as Asset)._id, ...updatedState },
       }));
   };
 
-  const debouncedUpdate = useCallback(debounce(handleUpdate, 500), []);
+  const debouncedUpdate = debounce(handleUpdate, 500);
+
   useEffect(() => {
     return () => {
       debouncedUpdate.cancel();
@@ -101,7 +112,7 @@ const ListPage = () => {
     formData.append("photo", file);
     formState &&
       (await server?.axiosInstance.post(
-        "/api/assets/uploadPicture/" + (formState as Asset)._id,
+        "/api/assets/uploadPicture/" + (formState as unknown as Asset)._id,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -112,7 +123,7 @@ const ListPage = () => {
   const handleFileSelect = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
-      uploadPicture(file);
+      uploadPicture(file).then();
     }
   };
 
@@ -135,7 +146,7 @@ const ListPage = () => {
       });
   }, [formState]);
 
-  return (formState as Asset)?._id && formState?.amenities ? (
+  return (formState as unknown as Asset)?._id && formState?.amenities ? (
     <Grid
       container
       direction="column"
