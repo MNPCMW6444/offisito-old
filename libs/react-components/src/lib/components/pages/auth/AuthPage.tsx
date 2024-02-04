@@ -264,17 +264,17 @@ export const AuthPage = ({ client }: AuthPageProps) => {
       case Step.login:
         navigateButton.exists = true;
         navigateButton.clickHandler = () => setStep(Step.registerReq);
-        navigateButton.label = "I don't have an account";
+        navigateButton.label = "Register";
         resetButton.exists = true;
         resetButton.clickHandler = () => setStep(Step.passResetReq);
-        resetButton.label = "I forgot my password";
+        resetButton.label = "Forgot Password";
         break;
       case Step.registerReq:
         navigateButton.exists = true;
         navigateButton.clickHandler = () => setStep(Step.login);
         navigateButton.label = "Login instead";
         resetButton.exists = true;
-        resetButton.label = "I forgot my password";
+        resetButton.label = "Forgot Password";
         resetButton.clickHandler = () => setStep(Step.passResetReq);
         break;
       case Step.registerFin:
@@ -314,7 +314,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                   type="submit"
                   variant="outlined"
                   onClick={navigateButton.clickHandler}
-                  sx={{ fontSize: resetButton.exists ? "40%" : "80%" }}
+                  sx={{ fontSize: resetButton.exists ? "70%" : "90%" }}
                 >
                   {navigateButton.label}
                 </Button>
@@ -327,7 +327,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                   type="submit"
                   variant="outlined"
                   onClick={resetButton.clickHandler}
-                  sx={{ fontSize: navigateButton.exists ? "40%" : "80%" }}
+                  sx={{ fontSize: navigateButton.exists ? "70%" : "90%" }}
                 >
                   {resetButton.label}
                 </Button>

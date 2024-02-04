@@ -1,7 +1,7 @@
 import { Button, Grid, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const Dashboard = () => {
+const DashboardPage = () => {
   const navigate = useNavigate();
 
   return (
@@ -49,4 +49,4 @@ const Dashboard = () => {
     </Grid>
   );
 };
-export default Dashboard;
+export default DashboardPage;
