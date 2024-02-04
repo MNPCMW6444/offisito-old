@@ -26,7 +26,12 @@ router.post<RegisterReq, string>("/req", async (req, res, next) => {
       return res.status(400).send("email and client are required");
 
     const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).send("Please log in");
+    if (existingUser)
+      return res
+        .status(400)
+        .send(
+          "An account with this email already exists, Try to login instead",
+        );
 
     const key = v4();
     await new RegistrationRequest({

@@ -18,51 +18,43 @@ import { Asset, ListAssetReq } from "@monorepo/types";
 import { Add } from "@mui/icons-material";
 import { ServerContext } from "@monorepo/server-provider";
 import debounce from "lodash.debounce";
-import { formatLabel, renderSwitchesHOC } from "@monorepo/react-components";
+import {
+  axiosErrorToaster,
+  formatLabel,
+  renderSwitchesHOC,
+} from "@monorepo/react-components";
+import { useLocation } from "react-router-dom";
 
-interface ListPageProps {
-  fetchedAsset?: Asset;
-}
+const ListPage = () => {
+  const [formState, setFormState] = useState<ListAssetReq>();
+  const server = useContext(ServerContext);
 
-const ListPage = ({ fetchedAsset }: ListPageProps) => {
-  const [formState, setFormState] = useState<ListAssetReq>(
-    fetchedAsset
-      ? fetchedAsset
-      : {
-          officeName: "asd2",
-          desc: "asd",
-          amenities: {
-            parking: false,
-            computer: false,
-            freeWiFi: false,
-            lobbySpace: false,
-          },
-          availability: {
-            fri: false,
-            mon: false,
-            sat: false,
-            sun: false,
-            thu: false,
-            tues: false,
-            wed: false,
-          },
-          companyInHold: "",
-          floor: "",
-        },
-  );
+  const fetchAsset = async (id: string) => {
+    try {
+      const res = await server?.axiosInstance.get(
+        "/api/assets/asset_detail/" + id,
+      );
+      setFormState(res?.data.asset);
+    } catch (e) {
+      axiosErrorToaster(e);
+    }
+  };
+
+  const useQuery = () => new URLSearchParams(useLocation().search);
+  const query = useQuery();
 
   useEffect(() => {
-    console.log("fetchedAsset: ", fetchedAsset);
-    fetchedAsset && setFormState(JSON.parse(JSON.stringify(fetchedAsset)));
-  }, [fetchedAsset]);
+    const id = query.get("id");
+    id && fetchAsset(id).then();
+  }, [query]);
 
-  const server = useContext(ServerContext);
   const fileInputRef = createRef<HTMLInputElement>();
 
   const handleUpdate = async (updatedState: ListAssetReq) => {
-    fetchedAsset &&
+    formState &&
+      (formState as Asset)._id &&
       (await server?.axiosInstance.patch("/api/assets/", {
-        newAsset: { _id: fetchedAsset._id, ...updatedState },
+        newAsset: { _id: (formState as Asset)._id, ...updatedState },
       }));
   };
 
@@ -75,9 +67,11 @@ const ListPage = ({ fetchedAsset }: ListPageProps) => {
 
   const handleChange = (name: string, value: string | boolean) => {
     setFormState((prevState) => {
-      const updatedState = { ...prevState, [name]: value };
-      debouncedUpdate(updatedState);
-      return updatedState;
+      const updatedState = { ...(prevState || {}), [name]: value };
+      if (!updatedState?.officeName)
+        updatedState.officeName = "enter Office Name";
+      updatedState && debouncedUpdate(updatedState as ListAssetReq);
+      return updatedState as ListAssetReq;
     });
   };
 
@@ -94,7 +88,7 @@ const ListPage = ({ fetchedAsset }: ListPageProps) => {
       multiline
       variant="standard"
       label={label}
-      value={formState[name]}
+      value={formState ? formState[name] : ""}
       onChange={handleTextFieldChange}
       name={name}
     />
@@ -105,9 +99,9 @@ const ListPage = ({ fetchedAsset }: ListPageProps) => {
   const uploadPicture = async (file: File) => {
     const formData = new FormData();
     formData.append("photo", file);
-    fetchedAsset &&
+    formState &&
       (await server?.axiosInstance.post(
-        "/api/assets/uploadPicture/" + fetchedAsset._id,
+        "/api/assets/uploadPicture/" + (formState as Asset)._id,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -130,7 +124,18 @@ const ListPage = ({ fetchedAsset }: ListPageProps) => {
     await server?.axiosInstance.post("/api/assets/publish", {});
   };
 
-  return fetchedAsset?._id ? (
+  useEffect(() => {
+    if (!formState?.amenities)
+      setFormState((p) => {
+        if (p) {
+          const n = JSON.parse(JSON.stringify(p));
+          n.amenities = {};
+          return n;
+        } else return { amenities: {} };
+      });
+  }, [formState]);
+
+  return (formState as Asset)?._id && formState?.amenities ? (
     <Grid
       container
       direction="column"
@@ -147,15 +152,15 @@ const ListPage = ({ fetchedAsset }: ListPageProps) => {
       <Grid item>{renderTextField("desc", "Desc")}</Grid>
       <Grid item>
         {renderSwitches(
-          formState.amenities as unknown as { [key: string]: boolean },
+          formState?.amenities as unknown as { [key: string]: boolean },
           "amenities",
         )}
       </Grid>
-      {formState.availability && (
+      {formState?.availability && (
         <Grid item>
-          {formState.availability &&
+          {formState?.availability &&
             renderSwitches(
-              formState.availability as unknown as { [key: string]: boolean },
+              formState?.availability as unknown as { [key: string]: boolean },
               "availability",
             )}
         </Grid>

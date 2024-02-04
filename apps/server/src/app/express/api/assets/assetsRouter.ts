@@ -12,7 +12,7 @@ import {
 
 const assetsRouter = Router();
 
-assetsRouter.post("/add_asset/:host_id", createAsset);
+assetsRouter.post("/add_asset", createAsset);
 assetsRouter.get("/asset_detail/:asset_id", getAssetDetail);
 assetsRouter.put("/edit_asset/:asset_id", editAsset);
 assetsRouter.get("/assets_list", getAssetsList);

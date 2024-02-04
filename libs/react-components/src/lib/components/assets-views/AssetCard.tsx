@@ -6,7 +6,7 @@ interface AssetCardProps {
   asset: Asset;
 }
 
-const AssetCard = ({ asset }: AssetCardProps) => {
+export const AssetCard = ({ asset }: AssetCardProps) => {
   return (
     <Grid container direction="column" width="95%" padding="10%" rowSpacing={1}>
       <Grid item>
@@ -54,5 +54,3 @@ const AssetCard = ({ asset }: AssetCardProps) => {
     </Grid>
   );
 };
-
-export default AssetCard;
