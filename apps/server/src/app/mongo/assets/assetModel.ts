@@ -6,10 +6,9 @@ import { Asset, WeekDays, AssetPubStatus, AssetType, LeaseType } from "@monorepo
 
 
 
-export default () => {
-  const name = "asset";
 
-  const assetScema = new mongoose.Schema(
+
+  export  const assetScema = new mongoose.Schema(
     {
       roomNumber:{type:String , required: true},
       assetDescription: {type:String},
@@ -30,16 +29,17 @@ export default () => {
       timestamps: true,
     },
   )
-  .plugin(versioning, { collection: name + "s.history", mongoose });
+  .plugin(versioning, { collection: 'Asset' + "s.history", mongoose });
 
   if (!connection) throw new Error("Database not initialized");
 
-  let assetModel;
+  let AssetModel;
   if (mongoose.models.asset) {
-    assetModel = connection.model<Asset>(name);
+    AssetModel = connection.model<Asset>('Asset');
   } else {
-    assetModel = connection.model<Asset>(name, assetScema);
-  }
+    AssetModel = connection.model<Asset>('Asset', assetScema);
 
-  return assetModel; 
-};
+  }
+  export default AssetModel
+
+

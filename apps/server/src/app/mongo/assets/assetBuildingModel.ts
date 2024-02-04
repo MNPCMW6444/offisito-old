@@ -1,4 +1,4 @@
-import mongoose, { Schema, Types, Document, Model} from "mongoose";
+import mongoose, {Types, Model} from "mongoose";
 import { WeekDays } from "@monorepo/types";
 import { AssetBuilding } from "@monorepo/types";
 

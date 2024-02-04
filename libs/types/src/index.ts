@@ -10,5 +10,7 @@ export interface AssetsAmenities {
 export interface BuildingAmenities {
   name: string,
   extraCost:boolean,
+
 }
 
+// check the idea to show ame that are not avail.

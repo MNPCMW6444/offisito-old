@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import assetModel from "../../../mongo/assets/assetModel";
+import AssetModel from "../../../mongo/assets/assetModel";
 import { Asset } from "@monorepo/types";
 import { isValidObjectId } from "mongoose";
 import geoJsonModel from "../../../mongo/geo/geoPointModel";
@@ -9,10 +9,8 @@ import { authUser } from "../auth/logRouter";
 // host ID to be sent in the URL
 // status is on draft when saving
 export const createAsset = async (req: Request, res: Response) => {
-  const AssetModel = assetModel();
 
   console.log("in the create asset");
-  const Assets = assetModel();
   let geoJson_id;
   const host = await authUser(req.cookies.jwt);
 
@@ -25,7 +23,6 @@ export const createAsset = async (req: Request, res: Response) => {
       floor,
       availability,
       photoURLs,
-      status,
       coordinates,
     } = req.body;
 
@@ -76,7 +73,6 @@ export const createAsset = async (req: Request, res: Response) => {
 // #TODO - sending Back end the asset_id in url.
 
 export const getAssetDetail = async (req: Request, res: Response) => {
-  const AssetModel = assetModel();
 
   try {
     const asset_id = req.params.asset_id;
@@ -97,7 +93,6 @@ export const getAssetDetail = async (req: Request, res: Response) => {
 // #TODO - sending Back end the asset_id in url.
 
 export const editAsset = async (req: Request, res: Response) => {
-  const AssetModel = assetModel();
 
   console.log("in editing Asset B-E");
   try {
@@ -129,7 +124,6 @@ export const editAsset = async (req: Request, res: Response) => {
 // #TODO - sending Back end the asset_id in url.
 
 export const publishAsset = async (req: Request, res: Response) => {
-  const AssetModel = assetModel();
 
   try {
     const asset_id = req.params.asset_id;
@@ -155,12 +149,10 @@ export const publishAsset = async (req: Request, res: Response) => {
 // here Req Need to hold host_id in order to retrieve the host listing
 
 export const getAssetsList = async (req: Request, res: Response) => {
-  // const AssetModel = assetModel();
   const authenticatedHost = await authUser(req.cookies.jwt);
-  //const host_id = req.params.host_id;
 
   try {
-    const assetList = await assetModel().find({ host: authenticatedHost._id });
+    const assetList = await AssetModel().find({ host: authenticatedHost._id });
 
     if (assetList.lenght < 0) {
       console.log("there s no list for this host ");
@@ -174,7 +166,6 @@ export const getAssetsList = async (req: Request, res: Response) => {
 };
 
 export const deleteAsset = async (req: Request, res: Response) => {
-  const AssetModel = assetModel();
   try {
     const asset_id = req.params.asset_id;
 

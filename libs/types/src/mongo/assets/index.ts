@@ -82,4 +82,8 @@ export interface AssetBuilding extends Document{
   buildingDescription: string,
   assets:Types.ObjectId[] | Asset[]
   companiesRenting: Types.ObjectId[] | AssetCompanyContract[],
+  doorman: boolean,
+  security: boolean,
+  vip_service: boolean
 }
+
