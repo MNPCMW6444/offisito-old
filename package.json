@@ -52,7 +52,7 @@
     "lodash.debounce": "^4.0.8",
     "nx": "^18.0.0",
     "nx-cloud": "^18.0.0",
-    "prettier": "^3.2.4",
+    "prettier": "^3.2.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.1",
