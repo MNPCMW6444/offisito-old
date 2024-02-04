@@ -29,7 +29,7 @@ jobs:
           NEW_VERSION=$(node -p "require('./package.json').version")
           git config --global user.email "michael+cicd@offisito.com"
           git config --global user.name "GitHub Action"
-          git commit -am "chore(release): bump version to $NEW_VERSION [skip ci]"
+          git commit -am "CI/CD Version auto-increment to $NEW_VERSION"
           git tag v$NEW_VERSION
 
 
