@@ -2,22 +2,27 @@ import { ServerProvider } from "@monorepo/server-provider";
 import Router from "./components/Router";
 import {
   AuthContextProvider,
+  EnvBorder,
   useResponsiveness,
 } from "@monorepo/react-components";
 import styled from "@emotion/styled";
 import { Box, Grid, Typography } from "@mui/material";
 import { Toaster } from "react-hot-toast";
+import { frontendSettings } from "@monorepo/react-components";
 
 const whiteEnv =
-  import.meta.env.VITE_WHITE_ENV !== "prod"
-    ? import.meta.env.VITE_WHITE_ENV
+  frontendSettings().VITE_WHITE_ENV !== "prod"
+    ? frontendSettings().VITE_WHITE_ENV
     : undefined;
 
+// Now you can use envVariables.VITE_API_URL or any other variable you've set
+
 const MobileContainer = styled(Box)`
-  max-width: 375px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border: 2px solid black;
-  height: 100vh;
+  height: 96vh;
+  width: calc(98vh / 16 * 9);
+  margin-top: 2vh;
 `;
 
 const DesktopMessage = styled(Box)`
@@ -43,21 +48,25 @@ const App = () => {
     </>
   );
 
-  return isMobile ? (
-    app
-  ) : (
-    <Grid container justifyContent="center" columnSpacing={8}>
-      <Grid item>
-        <MobileContainer>{app}</MobileContainer>
-      </Grid>
-      <Grid item>
-        <DesktopMessage>
-          <Typography>
-            For the best experience, please use our app on a mobile device.
-          </Typography>
-        </DesktopMessage>
-      </Grid>
-    </Grid>
+  return (
+    <EnvBorder>
+      {isMobile ? (
+        app
+      ) : (
+        <Grid container justifyContent="center" columnSpacing={8} wrap="nowrap">
+          <Grid item>
+            <MobileContainer>{app}</MobileContainer>
+          </Grid>
+          <Grid item>
+            <DesktopMessage>
+              <Typography>
+                For the best experience, please use our app on a mobile device.
+              </Typography>
+            </DesktopMessage>
+          </Grid>
+        </Grid>
+      )}
+    </EnvBorder>
   );
 };
 

@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Box, useTheme } from "@mui/material";
 import { AuthContext, AuthPage } from "@monorepo/react-components";
-import HomePage from "./pages/home/HomePage";
+import Dashboard from "./pages/home/Dashboard";
 
 const Router = () => {
   const { user } = useContext(AuthContext);
@@ -15,7 +15,7 @@ const Router = () => {
         <Box bgcolor={backgroundColor}>
           <Box component="main">
             <Routes>
-              <Route path="/*" element={<HomePage />} />
+              <Route path="/*" element={<Dashboard />} />
               {/*      <Route path="/contacts" element={<ContactsPage />} />
                     <Route path="/sessions" element={<SessionsPage />} />
                     <Route path="/chat" element={<ChatPage />} />

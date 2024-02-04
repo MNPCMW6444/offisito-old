@@ -25,8 +25,8 @@ export const WhiteTypography = styled(Typography)(({ theme }) => ({
 
 const loadingMessage = (
   <Grid
-    height="100vh"
-    width="100vw"
+    height="100%"
+    width="100%"
     container
     justifyContent="center"
     alignItems="center"
