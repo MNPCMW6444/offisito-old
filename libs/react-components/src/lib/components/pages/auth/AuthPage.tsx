@@ -36,7 +36,7 @@ interface LabelsConstants {
 export const LABELS: LabelsConstants = {
   IDLE: {
     [Step.login]: "Login",
-    [Step.registerReq]: "Send Email",
+    [Step.registerReq]: "Register",
     [Step.registerFin]: "Register",
     [Step.passResetReq]: "Send Email",
     [Step.passResetFin]: "Change Password",
@@ -63,7 +63,8 @@ export const AuthPage = ({ client }: AuthPageProps) => {
   const [key, setKey] = useState<string>();
   const [fullName, setFullName] = useState<string>("");
   const [buttonLabel, setButtonLabel] = useState<keyof LabelsConstants>("IDLE");
-  const [step, setStep] = useState<Step>(Step.login);
+  const [step, setStep] = useState<Step>(Step.registerReq);
+  const [emailReason, setEmailReason] = useState<boolean>(true);
   const { refreshUserData } = useContext(AuthContext);
 
   const { isMobileOrTabl } = useResponsiveness();
@@ -73,6 +74,11 @@ export const AuthPage = ({ client }: AuthPageProps) => {
 
   const useQuery = () => new URLSearchParams(useLocation().search);
   const query = useQuery();
+
+  useEffect(() => {
+    step === Step.passResetReq && setEmailReason(false);
+    step === Step.registerReq && setEmailReason(true);
+  }, [step]);
 
   useEffect(() => {
     const registerKLey = query.get("regcode");
@@ -266,8 +272,10 @@ export const AuthPage = ({ client }: AuthPageProps) => {
       case Step.registerReq:
         navigateButton.exists = true;
         navigateButton.clickHandler = () => setStep(Step.login);
-        navigateButton.label = "I already have an account";
-        resetButton.exists = false;
+        navigateButton.label = "Login instead";
+        resetButton.exists = true;
+        resetButton.label = "I forgot my password";
+        resetButton.clickHandler = () => setStep(Step.passResetReq);
         break;
       case Step.registerFin:
         navigateButton.exists = false;
@@ -276,7 +284,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
       case Step.passResetReq:
         navigateButton.exists = true;
         navigateButton.clickHandler = () => setStep(Step.login);
-        navigateButton.label = "Back toLogin";
+        navigateButton.label = "Back to Login";
         resetButton.exists = false;
         break;
       case Step.passResetFin:
@@ -304,11 +312,9 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                 <Button
                   color="secondary"
                   type="submit"
-                  variant="contained"
+                  variant="outlined"
                   onClick={navigateButton.clickHandler}
-                  sx={{
-                    fontSize: "clamp(70%, 100%, 5vw)", // Adjust as needed
-                  }}
+                  sx={{ fontSize: resetButton.exists ? "40%" : "80%" }}
                 >
                   {navigateButton.label}
                 </Button>
@@ -319,11 +325,9 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                 <Button
                   color="secondary"
                   type="submit"
-                  variant="contained"
+                  variant="outlined"
                   onClick={resetButton.clickHandler}
-                  sx={{
-                    fontSize: "clamp(70%, 100%, 5vw)", // Adjust as needed
-                  }}
+                  sx={{ fontSize: navigateButton.exists ? "40%" : "80%" }}
                 >
                   {resetButton.label}
                 </Button>
@@ -350,8 +354,9 @@ export const AuthPage = ({ client }: AuthPageProps) => {
         </Grid>
         <Grid item>
           {step === Step.checkEmail ? (
-            <Typography>
-              We sent {email} a link to activate your account!
+            <Typography textAlign="center">
+              We sent {email} a link to{" "}
+              {emailReason ? "activate your account" : "reset your passwrod"}!
             </Typography>
           ) : (
             <>
