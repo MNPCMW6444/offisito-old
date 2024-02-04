@@ -1,19 +1,10 @@
 import { ReactNode, useEffect } from "react";
 import Box from "@mui/material/Box";
+import { frontendSettings } from "@monorepo/server-provider";
 
 interface EnvBorderContextProps {
   children: ReactNode;
 }
-
-export const frontendSettings = () => {
-  try {
-    const envConfig = document.getElementById("env-config")?.textContent;
-    return JSON.parse(envConfig || "{}");
-  } catch (e) {
-    console.log("dev mode");
-    return import.meta.env;
-  }
-};
 
 export const EnvBorder = ({ children }: EnvBorderContextProps) => {
   useEffect(() => {

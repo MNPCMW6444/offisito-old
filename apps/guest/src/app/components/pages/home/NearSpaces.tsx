@@ -1,13 +1,13 @@
 import { Badge, Grid, Typography } from "@mui/material";
-import AssetCard from "./AssetCard";
+import { AssetCard } from "@monorepo/react-components";
 import { useContext, useEffect, useState } from "react";
 import { Asset } from "@monorepo/types";
 import { findMe } from "@monorepo/utils";
 import { ServerContext } from "@monorepo/server-provider";
-import toast from "react-hot-toast";
+import { axiosErrorToaster } from "@monorepo/react-components";
 
 const NearSpaces = () => {
-  const [asssetsNear, setAsssetsNear] = useState<Asset[]>([]);
+  const [assetsNear, setassetsNear] = useState<Asset[]>([]);
 
   const server = useContext(ServerContext);
 
@@ -21,10 +21,8 @@ const NearSpaces = () => {
             )
           : server.axiosInstance.get(`/api/assets/nearandom`)
         )
-          .then((response) => setAsssetsNear(response.data))
-          .catch((e) => {
-            toast("Error code " + e.response.status);
-          }),
+          .then((response) => setassetsNear(response.data))
+          .catch((error) => axiosErrorToaster(error)),
     );
 
   useEffect(() => {
@@ -50,7 +48,7 @@ const NearSpaces = () => {
         width="100%"
         wrap="nowrap"
       >
-        {asssetsNear.map((asset) => (
+        {assetsNear.map((asset) => (
           <Grid item width="100%">
             <AssetCard asset={asset} />
           </Grid>

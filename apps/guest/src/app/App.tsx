@@ -8,7 +8,7 @@ import {
 import styled from "@emotion/styled";
 import { Box, Grid, Typography } from "@mui/material";
 import { Toaster } from "react-hot-toast";
-import { frontendSettings } from "@monorepo/react-components";
+import { frontendSettings } from "@monorepo/server-provider";
 
 const whiteEnv =
   frontendSettings().VITE_WHITE_ENV !== "prod"
@@ -40,7 +40,7 @@ const App = () => {
   const app = (
     <>
       <Toaster />
-      <ServerProvider env={whiteEnv}>
+      <ServerProvider>
         <AuthContextProvider>
           <Router />
         </AuthContextProvider>

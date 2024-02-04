@@ -5,10 +5,8 @@ import Button from "@mui/material/Button";
 import { Grid, LinearProgress, Paper, Typography } from "@mui/material";
 import image from "../../../../assets/backgroundOffice.jpg";
 import { AuthContext } from "../../../context";
-import toast from "react-hot-toast";
-import { useResponsiveness } from "../../../";
+import { axiosErrorToaster, useResponsiveness } from "../../../";
 import { ServerContext } from "@monorepo/server-provider";
-import { AxiosError } from "axios";
 import { useLocation } from "react-router-dom";
 import { LoginReq, RegisterFin, RegisterReq } from "@monorepo/types";
 import zxcvbn from "zxcvbn";
@@ -72,13 +70,13 @@ export const AuthPage = ({ client }: AuthPageProps) => {
   const server = useContext(ServerContext);
   const axiosInstance = server?.axiosInstance;
 
-  const useQuery = () => new URLSearchParams(useLocation().search);
-  const query = useQuery();
-
   useEffect(() => {
     step === Step.passResetReq && setEmailReason(false);
     step === Step.registerReq && setEmailReason(true);
   }, [step]);
+
+  const useQuery = () => new URLSearchParams(useLocation().search);
+  const query = useQuery();
 
   useEffect(() => {
     const registerKLey = query.get("regcode");
@@ -165,13 +163,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                   client,
                 })
                 .then(() => refreshUserData())
-                .catch((error) =>
-                  toast.error(
-                    error.response.status === 401
-                      ? "Wrong Password"
-                      : error?.message,
-                  ),
-                )
+                .catch((error) => axiosErrorToaster(error))
                 .finally(() => setButtonLabel("IDLE"));
           };
         case Step.registerReq:
@@ -187,7 +179,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                   },
                 )
                 .then(() => setStep(Step.checkEmail))
-                .catch((error) => toast.error((error as AxiosError)?.message))
+                .catch((error) => axiosErrorToaster(error))
                 .finally(() => setButtonLabel("IDLE"));
           };
         case Step.registerFin:
@@ -207,7 +199,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                     },
                   )
                   .then(() => refreshUserData())
-                  .catch((error) => toast.error((error as AxiosError)?.message))
+                  .catch((error) => axiosErrorToaster(error))
                   .finally(() => setButtonLabel("IDLE"));
             }
           };
@@ -221,7 +213,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                   client,
                 })
                 .then(() => setStep(Step.checkEmail))
-                .catch((error) => toast.error((error as AxiosError)?.message))
+                .catch((error) => axiosErrorToaster(error))
                 .finally(() => setButtonLabel("IDLE"));
           };
         case Step.passResetFin:
@@ -238,7 +230,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                     type: client === "guest" ? "member" : "host",
                   })
                   .then(() => refreshUserData())
-                  .catch((error) => toast.error((error as AxiosError)?.message))
+                  .catch((error) => axiosErrorToaster(error))
                   .finally(() => setButtonLabel("IDLE"));
             }
           };
@@ -272,7 +264,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
       case Step.registerReq:
         navigateButton.exists = true;
         navigateButton.clickHandler = () => setStep(Step.login);
-        navigateButton.label = "Login instead";
+        navigateButton.label = "Login";
         resetButton.exists = true;
         resetButton.label = "Forgot Password";
         resetButton.clickHandler = () => setStep(Step.passResetReq);

@@ -14,7 +14,7 @@ export const createAsset = async (req: Request, res: Response) => {
   console.log("in the create asset");
   const Assets = assetModel();
   let geoJson_id;
-  const host_id = req.params.host_id;
+  const host = await authUser(req.cookies.jwt);
 
   try {
     const {
@@ -29,7 +29,7 @@ export const createAsset = async (req: Request, res: Response) => {
       coordinates,
     } = req.body;
 
-    if (!isValidObjectId(host_id)) {
+    if (!isValidObjectId(host._id)) {
       return res.status(500).json({ msg: "Not Vlaid User" });
     }
 
@@ -49,7 +49,7 @@ export const createAsset = async (req: Request, res: Response) => {
     }
 
     const newAsset = new AssetModel({
-      host: host_id,
+      host: host._id,
       officeName,
       desc,
       amenities,
@@ -87,7 +87,7 @@ export const getAssetDetail = async (req: Request, res: Response) => {
       return res.status(500).json({ msg: "no Such Asset" });
     }
 
-    res.status(200).json({ msg: "found Asset", assset: findAsset });
+    res.status(200).json({ msg: "found Asset", asset: findAsset });
   } catch (error) {
     console.error("no such asset", error);
     res.status(500).json({ msg: "Internal Error" });

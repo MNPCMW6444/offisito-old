@@ -4,6 +4,7 @@ import { Box, useTheme } from "@mui/material";
 import { AuthContext, AuthPage } from "@monorepo/react-components";
 import DashboardPage from "./pages/home/DashboardPage";
 import SpacesPage from "./pages/spaces/SpacesPage";
+import ListPage from "./pages/spaces/ListPage";
 
 const Router = () => {
   const { user } = useContext(AuthContext);
@@ -18,6 +19,7 @@ const Router = () => {
             <Routes>
               <Route path="/*" element={<DashboardPage />} />
               <Route path="/spaces" element={<SpacesPage />} />
+              <Route path="/space" element={<ListPage />} />
             </Routes>
           </Box>
         </Box>
