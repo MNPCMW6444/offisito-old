@@ -28,7 +28,7 @@ const MobileContainer = styled(Box)`
 const DesktopMessage = styled(Box)`
   text-align: center;
   margin-left: 20px;
-  margin-top: 40px;
+  margin-top: 300px;
   font-size: 18px;
   color: #666;
   align-self: center;
@@ -59,8 +59,9 @@ const App = () => {
           </Grid>
           <Grid item>
             <DesktopMessage>
-              <Typography>
-                For the best experience, please use our app on a mobile device.
+              <Typography variant="h5">
+                For the best experience please use offisito app on a mobile
+                device
               </Typography>
             </DesktopMessage>
           </Grid>
