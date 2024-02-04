@@ -1,11 +1,10 @@
-import { Types, Document } from "mongoose";
+import { Document, ObjectId } from "mongoose";
 import { User } from "../auth";
- import { Amenities } from "../../index";
+import { Amenities } from "../../index";
 
 type assetPubStatus = "draft" | "pending" | "active" | "paused" | "archived";
 
-type assetType =  "office" | "openSpace" | "meetingRoom";
-
+type assetType = "office" | "openSpace" | "meetingRoom";
 
 enum WeekDays {
   Sunday = "sunday",
@@ -18,43 +17,39 @@ enum WeekDays {
 }
 
 export interface Availability {
-  days_of_week: WeekDays[],
-  start_date: Date,
-  end_date : Date,
+  days_of_week: WeekDays[];
+  start_date: Date;
+  end_date: Date;
 }
 
-
-
 export interface Asset extends Document {
-  assetDescription: string,
-  roomNumber: string,
-  availability: Availability,
-  amenities: Types.ObjectId[],
-  photoURLs: string[],
-  assetType: assetType,
-  publishingStatus: assetPubStatus,
-  peopleCapcity: number[],
-};
+  assetDescription: string;
+  roomNumber: string;
+  availability: Availability;
+  amenities: ObjectId[];
+  photoURLs: string[];
+  assetType: assetType;
+  publishingStatus: assetPubStatus;
+  peopleCapcity: number[];
+}
 
-
-export interface AssetBuilding extends Document{
-  host : User,
-  buildingName: string,
-  companyInHold: string,
-  address:{
-    street:string,
-    city:string,
-    country:string,
+export interface AssetBuilding extends Document {
+  host: User;
+  buildingName: string;
+  companyInHold: string;
+  address: {
+    street: string;
+    city: string;
+    country: string;
     geoLocalisation: {
-      type: 'Point';
+      type: "Point";
       coordinates: [number, number];
-    },
-  },
-  floorNumber : number,
-  fullFloor: boolean,
-  buildingAmenities: Amenities,
-  buildingAccess: WeekDays[],
-  buildingDescription: string,
-  assets:Asset[]
-  
+    };
+  };
+  floorNumber: number;
+  fullFloor: boolean;
+  buildingAmenities: ObjectId[];
+  buildingAccess: WeekDays[];
+  buildingDescription: string;
+  assets: Asset[];
 }
