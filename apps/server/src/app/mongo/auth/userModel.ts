@@ -7,10 +7,6 @@ export default () => {
   const name = "user";
   const userModel = new mongoose.Schema(
     {
-      /* phone: {
-         type: String,
-         unique: true,
-       },*/
       email: {
         type: String,
         unique: true,

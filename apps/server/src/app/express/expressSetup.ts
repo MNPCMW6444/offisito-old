@@ -6,6 +6,7 @@ import express from "express";
 import api from "./api";
 import settings from "../../config";
 import errorModel from "../mongo/logs/errorModel";
+import { getAddressByPoint } from "../google-geocoding";
 
 const app = express();
 const port = 5556;
@@ -18,18 +19,6 @@ const middlewares = [
     origin: Object.values(settings.clientDomains),
     credentials: true,
   }),
-  async (err, _, res, next) => {
-    const Error = errorModel();
-    if (res.statusCode === 500 && Error) {
-      try {
-        await new Error({ stringifiedError: JSON.stringify(err) }).save();
-        console.log("500 Error was logged to mongo");
-      } catch (e) {
-        console.log("Error logging error to mongo: ", e);
-      }
-    } else console.log("Error logging error to mongo!");
-    next(err);
-  },
 ];
 
 /*settings.whiteEnv !== "prod" &&
@@ -66,6 +55,19 @@ export default async () => {
     app.get("/api", handler);
 
     app.use("/api", api);
+
+    app.use(async (err, res) => {
+      const Error = errorModel();
+      if (res.statusCode === 500 && Error) {
+        try {
+          await new Error({ stringifiedError: JSON.stringify(err) }).save();
+          console.log("500 Error was logged to mongo");
+        } catch (e) {
+          console.log("Error logging error to mongo: ", e);
+        }
+        return res.status(500).send("Server error");
+      }
+    });
 
     app.listen(port, "0.0.0.0", () => {
       console.log(

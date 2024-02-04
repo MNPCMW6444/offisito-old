@@ -22,6 +22,8 @@ interface Settings {
     secretKey: string;
     region: string;
   };
+  googleGeoCoding: string;
+  stripeApiKey: string;
 }
 
 dotenv.config();
@@ -71,6 +73,8 @@ const settings: Settings = {
           secretKey: process.env.AWS_SECRET_KEY || "",
           region: process.env.AWS_REGION || "",
         },
+        googleGeoCoding: process.env.GOOGLE_GEO_CODING || "",
+        stripeApiKey: process.env.STRIPE_API_KEY || "",
       }
     : {
         mongoURI: process.env.MONGO_URI || "mongodb://localhost:27017/error",
@@ -92,6 +96,8 @@ const settings: Settings = {
           secretKey: process.env.AWS_SECRET_KEY || "",
           region: process.env.AWS_REGION || "",
         },
+        googleGeoCoding: process.env.GOOGLE_GEO_CODING || "",
+        stripeApiKey: process.env.STRIPE_API_KEY || "",
       }),
   nodeEnv: process.env.NODE_ENV,
 };

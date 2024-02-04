@@ -10,13 +10,12 @@ export interface User extends Document {
   type: UserType;
 }
 
-export interface RequestForAccount extends Document {
+export interface RegistrationRequest extends Document {
   email: string;
   key: string;
 }
 
-export interface Otp extends Document {
-  user: User;
-  otp: string;
+export interface PassResetRequest extends Document {
+  email: string;
+  key: string;
 }
-

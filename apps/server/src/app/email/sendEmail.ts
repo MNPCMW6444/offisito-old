@@ -1,6 +1,8 @@
-import { SES } from "@aws-sdk/client-ses";
+//import { SES } from "@aws-sdk/client-ses";
+import sendgrid from "@sendgrid/mail";
 import settings from "../../config";
 
+/*
 const ses = new SES({
   region: settings.aws.region,
 
@@ -8,36 +10,41 @@ const ses = new SES({
     accessKeyId: settings.aws.keyID,
     secretAccessKey: settings.aws.secretKey,
   },
-});
+});*/
 
 export const sendEmail = async (to: string, subject: string, html: string) => {
-  settings.nodeEnv === "development" && console.log(html);
-
-  const params = {
-    Source: `service@offisito.com`,
-    Destination: {
-      ToAddresses: [to],
-    },
-    Message: {
-      Body: {
-        Html: {
+  try {
+    /*const params = {
+      Source: `service@offisito.com`,
+      Destination: {
+        ToAddresses: [to],
+      },
+      Message: {
+        Body: {
+          Html: {
+            Charset: "UTF-8",
+            Data: html,
+          },
+        },
+        Subject: {
           Charset: "UTF-8",
-          Data: html,
+          Data: subject,
         },
       },
-      Subject: {
-        Charset: "UTF-8",
-        Data: subject,
-      },
-    },
-  };
+    };*/
+    //const data = await ses.sendEmail(params);
 
-  try {
-    const data = await ses.sendEmail(params);
-    console.log("Email sent:", data);
-    return data;
+    sendgrid.setApiKey(settings.sendgridApiKey);
+
+    await sendgrid.send({
+      to, // Change to your recipient
+      from: "service@offisito.com", // Change to your verified sender
+      subject,
+      html,
+    });
+
+    console.log("Successfully sent email to " + to);
   } catch (error) {
     console.error("Error sending email:", error);
-    throw error;
   }
 };

@@ -1,20 +1,16 @@
-import React, { createContext, useEffect, useState, useRef } from "react";
+import { createContext, useEffect, useState, useRef, ReactNode } from "react";
 import { Typography } from "@mui/material";
 import axios, { AxiosInstance } from "axios";
+import { frontendSettings } from "@monorepo/react-components";
 
-// Constants
 const DEFAULT_TRY_INTERVAL = 3000;
 const GOOD_STATUS = "good";
 const BAD_MESSAGE = "Server is not available. Please try again later.";
-const DEVELOPMENT_BASE_URL = "http://localhost:5556/";
-const PRODUCTION_BASE_URL = "https://server.offisito.com/";
 
-// Types and Interfaces
 interface ServerProviderProps {
-  children: React.ReactNode;
+  children: ReactNode;
   tryInterval?: number;
-  env?: "preprod";
-  customErrorTSX?: React.ReactNode;
+  customErrorTSX?: ReactNode;
 }
 
 interface ServerContextProps {
@@ -22,13 +18,10 @@ interface ServerContextProps {
   version: string;
 }
 
-// Context creation
 export const ServerContext = createContext<ServerContextProps | null>(null);
 
-// Component
 export const ServerProvider = ({
   tryInterval,
-  env,
   customErrorTSX,
   children,
 }: ServerProviderProps) => {
@@ -37,11 +30,11 @@ export const ServerProvider = ({
   const [version, setVersion] = useState<string>("");
   const statusRef = useRef(status);
 
-  // Helper functions
+  const { VITE_WHITE_ENV } = frontendSettings();
   const getBaseURL = () =>
-    process.env.NODE_ENV === "development"
-      ? DEVELOPMENT_BASE_URL
-      : `${env ? `https://${env}.` : ""}${PRODUCTION_BASE_URL}`;
+    VITE_WHITE_ENV === "local"
+      ? "http://localhost:5556/"
+      : `https://${VITE_WHITE_ENV === "preprod" ? "pre" : ""}server.offisito.com/`;
 
   const axiosInstance = axios.create({
     baseURL: getBaseURL(),
@@ -71,7 +64,6 @@ export const ServerProvider = ({
     }
   };
 
-  // Effects
   useEffect(() => {
     statusRef.current = status;
   }, [status]);
@@ -82,7 +74,6 @@ export const ServerProvider = ({
     }
   }, [axiosInstance, interval]);
 
-  // Render
   if (status === GOOD_STATUS) {
     return (
       <ServerContext.Provider value={{ axiosInstance, version }}>

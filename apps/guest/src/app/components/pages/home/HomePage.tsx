@@ -5,14 +5,14 @@ import HomeTop from "./HomeTop";
 import AvaliableSpaces from "./AvaliableSpaces";
 
 const HomePage = () => (
-  <Grid container direction="row">
-    <Grid item>
+  <Grid container direction="column" rowSpacing={4}>
+    <Grid item width="100%" padding="5% 5% 0">
       <HomeTop />
     </Grid>
-    <Grid item>
+    <Grid item paddingLeft="4%" paddingTop="2%" width="96%">
       <ImageCarousel />
     </Grid>
-    <Grid item>
+    <Grid item width="100%">
       <NearSpaces />
     </Grid>
     <Grid item>
@@ -20,5 +20,4 @@ const HomePage = () => (
     </Grid>
   </Grid>
 );
-
 export default HomePage;

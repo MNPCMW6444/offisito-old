@@ -1,11 +1,11 @@
-import { Amenities, Asset, Availability } from "@monorepo/types";
+import { Asset, Availability } from "@monorepo/types";
 import { useContext, useEffect, useState } from "react";
 import { ServerContext } from "@monorepo/server-provider";
 import { Divider, Grid, Typography } from "@mui/material";
 import { ImageCarousel } from "./ImageCarousel";
 import Box from "@mui/material/Box";
 import { LocationOn } from "@mui/icons-material";
-import { renderAmenityIcon } from "../../utils/amenitiesIcons";
+import { AmenitiesView } from "../../assets-views";
 
 interface ListingPageProps {
   _id?: string;
@@ -14,7 +14,7 @@ interface ListingPageProps {
 // TODO integrate to styled components yoad@offisito.com
 interface AvailabilityProps {
   name: string;
-  isFilled: boolean;
+  isFilled?: boolean;
 }
 
 const AvailabilityBox = ({ name, isFilled }: AvailabilityProps) => (
@@ -42,7 +42,7 @@ export const ListingPage = ({ _id }: ListingPageProps) => {
     <Grid container direction="column">
       <Grid item>
         <ImageCarousel
-          imagesArray={listing.photoURLs.map((url) => ({
+          imagesArray={listing.photoURLs?.map((url) => ({
             imgPath: url,
             alt: "",
             label: "",
@@ -72,28 +72,27 @@ export const ListingPage = ({ _id }: ListingPageProps) => {
         {/*TODO: itai@offisito.com*/}
         <Grid item>{"listing.address??"}</Grid>
       </Grid>
-      <Grid item container justifyItems="center">
-        {Object.keys(listing.amenities).map(
-          (amenity) =>
-            listing.amenities[amenity as keyof Amenities] && (
-              <Grid item>{renderAmenityIcon(amenity as keyof Amenities)}</Grid>
-            ),
-        )}
-      </Grid>
+      <AmenitiesView amenities={listing.amenities} />
       <Divider />
       <Grid item>
         <Typography>Availability</Typography>
       </Grid>
-      <Grid item container columnSpacing={2}>
-        {Object.keys(listing.availability).map((key) => (
-          <Grid item>
-            <AvailabilityBox
-              name={key}
-              isFilled={listing.availability[key as keyof Availability]}
-            />
-          </Grid>
-        ))}
-      </Grid>
+      {listing.availability && (
+        <Grid item container columnSpacing={2}>
+          {Object.keys(listing.availability).map((key) => (
+            <Grid item>
+              <AvailabilityBox
+                name={key}
+                isFilled={
+                  listing.availability
+                    ? listing.availability[key as keyof Availability]
+                    : undefined
+                }
+              />
+            </Grid>
+          ))}
+        </Grid>
+      )}
       <Grid item>
         <Typography>Space includes:</Typography>
       </Grid>

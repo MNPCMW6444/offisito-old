@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 import { versioning } from "@mnpcmw6444/mongoose-auto-versioning";
 import { connection } from "../connection";
-import { RequestForAccount } from "@monorepo/types";
+import { PassResetRequest } from "@monorepo/types";
 
 export default () => {
-  const name = "requestForAccount";
+  const name = "passResetRequest";
 
-  const requestForAccountModel = new mongoose.Schema(
+  const passResetRequestModel = new mongoose.Schema(
     {
       email: {
         type: String,
@@ -24,15 +24,15 @@ export default () => {
 
   if (!connection) throw new Error("Database not initialized");
 
-  let requestForAccountModelR;
-  if (mongoose.models.requestForAccount) {
-    requestForAccountModelR = connection.model<RequestForAccount>(name);
+  let passResetRequestModelR;
+  if (mongoose.models.passResetRequest) {
+    passResetRequestModelR = connection.model<PassResetRequest>(name);
   } else {
-    requestForAccountModelR = connection.model<RequestForAccount>(
+    passResetRequestModelR = connection.model<PassResetRequest>(
       name,
-      requestForAccountModel,
+      passResetRequestModel,
     );
   }
 
-  return requestForAccountModelR; // connection.model("requestForAccount", requestForAccountModel);
+  return passResetRequestModelR; // connection.model("passResetRequest", passResetRequestModel);
 };

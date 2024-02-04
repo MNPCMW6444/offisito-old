@@ -20,6 +20,11 @@
 
 //   region: settings.aws.region,
 // });
+// const s3 = new S3({
+//   credentials: {
+//     accessKeyId: settings.aws.keyID,
+//     secretAccessKey: settings.aws.secretKey,
+//   },
 
 // const upload = multer({});
 
