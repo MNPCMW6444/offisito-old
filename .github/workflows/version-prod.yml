@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   prepare:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     environment: production
     steps:
       - name: Checkout repository
@@ -46,7 +46,7 @@ jobs:
 
   build_server:
     needs: prepare
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -81,7 +81,7 @@ jobs:
 
   build_guest:
     needs: prepare
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -117,7 +117,7 @@ jobs:
 
   build_host:
     needs: prepare
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -154,7 +154,7 @@ jobs:
 
   deploy_to_ecs:
     needs: [ prepare, build_server, build_guest, build_host ]
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
