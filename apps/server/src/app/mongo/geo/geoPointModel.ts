@@ -1,7 +1,7 @@
 import { connection } from "../connection";
 import mongoose from "mongoose";
 import { versioning } from "@mnpcmw6444/mongoose-auto-versioning";
-import { GeoJSONPoint } from "@monorepo/types";
+import { GeoPoint } from "../../../../../../libs/types/src/mongo/geo";
 
 export default () => {
   const name = "geoPoint";
@@ -22,9 +22,9 @@ export default () => {
 
   let geoPointModelR;
   if (mongoose.models.geoPoint) {
-    geoPointModelR = connection.model<GeoJSONPoint>(name);
+    geoPointModelR = connection.model<GeoPoint>(name);
   } else {
-    geoPointModelR = connection.model<GeoJSONPoint>(name, geoPointModel);
+    geoPointModelR = connection.model<GeoPoint>(name, geoPointModel);
   }
 
   return geoPointModelR;

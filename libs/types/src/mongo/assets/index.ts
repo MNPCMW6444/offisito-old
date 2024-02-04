@@ -1,6 +1,7 @@
 import { Document, ObjectId } from "mongoose";
 import { User } from "../auth";
 import { Amenities } from "../../index";
+import { GeoPoint } from "../geo";
 
 type assetPubStatus = "draft" | "pending" | "active" | "paused" | "archived";
 
@@ -41,10 +42,7 @@ export interface AssetBuilding extends Document {
     street: string;
     city: string;
     country: string;
-    geoLocalisation: {
-      type: "Point";
-      coordinates: [number, number];
-    };
+    geoLocalisation: GeoPoint;
   };
   floorNumber: number;
   fullFloor: boolean;
