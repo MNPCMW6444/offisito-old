@@ -15,7 +15,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Asset, ListAssetReq } from "@monorepo/types";
+import { Asset, CreateAssetReq } from "@monorepo/types";
 import { Add } from "@mui/icons-material";
 import { ServerContext } from "@monorepo/server-provider";
 import debounce from "lodash.debounce";
@@ -27,7 +27,7 @@ import {
 import { useLocation } from "react-router-dom";
 
 const FormPage = () => {
-  const [formState, setFormState] = useState<ListAssetReq>();
+  const [formState, setFormState] = useState<CreateAssetReq>();
   const server = useContext(ServerContext);
 
   const fetchAsset = useCallback(
@@ -60,12 +60,18 @@ const FormPage = () => {
 
   const fileInputRef = createRef<HTMLInputElement>();
 
-  const handleUpdate = async (updatedState: ListAssetReq) => {
+  const handleUpdate = async (updatedState: CreateAssetReq) => {
     formState &&
       (formState as unknown as Asset)._id &&
-      (await server?.axiosInstance.patch("/api/assets/", {
-        newAsset: { _id: (formState as unknown as Asset)._id, ...updatedState },
-      }));
+      (await server?.axiosInstance.patch(
+        "/api/assets/edit_asset" + formState._id,
+        {
+          newAsset: {
+            _id: (formState as unknown as Asset)._id,
+            ...updatedState,
+          },
+        },
+      ));
   };
 
   const debouncedUpdate = debounce(handleUpdate, 500);
@@ -79,10 +85,7 @@ const FormPage = () => {
   const handleChange = (name: string, value: string | boolean) => {
     setFormState((prevState) => {
       const updatedState = { ...(prevState || {}), [name]: value };
-      if (!updatedState?.officeName)
-        updatedState.officeName = "enter Office Name";
-      updatedState && debouncedUpdate(updatedState as ListAssetReq);
-      return updatedState as ListAssetReq;
+      return updatedState;
     });
   };
 

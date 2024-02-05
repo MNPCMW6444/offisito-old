@@ -1,63 +1,50 @@
 import { connection } from "../connection";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { versioning } from "@mnpcmw6444/mongoose-auto-versioning";
-import { Asset } from "@monorepo/types";
+import { Asset, AssetPubStatus, AssetType, LeaseType } from "@monorepo/types";
+import { AvailabilitySchema } from "./availabilitySchema";
 
 export default () => {
   const name = "asset";
-
-  const assetModel = new mongoose.Schema(
+  const assetSchema = new mongoose.Schema(
     {
-      host: {
-        type: mongoose.Schema.Types.ObjectId,
+      host: { type: Types.ObjectId, ref: "User", required: true },
+      assetDescription: { type: String },
+      roomNumber: { type: String, required: true },
+      assetAvailability: [AvailabilitySchema],
+      amenities: [{ type: Types.ObjectId, ref: "AssetAmenities" }],
+      photoURLs: [{ type: String }],
+      assetType: {
+        type: [String],
+        enum: Object.values(AssetType),
         required: true,
       },
-      officeName: {
-        type: String,
-        unique: true,
+      publishingStatus: { type: String, enum: Object.values(AssetPubStatus) },
+      peopleCapacity: [{ type: Number }],
+      leaseCondition: {
+        dailyPrice: { type: Number, required: true },
+        leaseType: {
+          type: String,
+          enum: Object.values(LeaseType),
+          required: true,
+        },
       },
-      desc: String,
-      amenities: {
-        freeWiFi: Boolean,
-        parking: Boolean,
-        lobbySpace: Boolean,
-        computer: Boolean,
-      },
-      companyInHold: String,
-      floor: String,
-      availability: {
-        sun: Boolean,
-        mon: Boolean,
-        tues: Boolean,
-        wed: Boolean,
-        thu: Boolean,
-        fri: Boolean,
-        sat: Boolean,
-      },
-      photoURLs: [String],
-      status: {
-        type: String,
-        enum: ["draft", "pending", "active", "paused", "archived"],
-        required: false,
-      },
-      location: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "GeoJSONPoint",
-      },
+      leasingCompany: { type: Types.ObjectId, ref: "AssetCompanyContract" },
     },
     {
       timestamps: true,
     },
-  ).plugin(versioning, { collection: name + "s.history", mongoose });
+  ).plugin(versioning, { collection: name + ".history", mongoose });
+  console.log("createing ASSET SCHEMA ");
+  console.log("conenction", connection);
 
   if (!connection) throw new Error("Database not initialized");
 
-  let assetModelR;
-  if (mongoose.models.asset) {
-    assetModelR = connection.model<Asset>(name);
+  let AssetModel;
+  if (mongoose.models[name]) {
+    AssetModel = connection.model<Asset>(name);
   } else {
-    assetModelR = connection.model<Asset>(name, assetModel);
+    AssetModel = connection.model<Asset>(name, assetSchema);
   }
-
-  return assetModelR; // connection.model("asset", assetModel);
+  return AssetModel;
 };

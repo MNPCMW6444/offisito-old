@@ -1,19 +1,16 @@
 export * from "./mongo";
 export * from "./api";
 
-export interface Amenities {
-  freeWiFi: boolean;
-  parking: boolean;
-  lobbySpace: boolean;
-  computer: boolean;
+
+export interface AssetsAmenities {
+  name: string,
+  extraCost:boolean,
 }
 
-export interface Availability {
-  sun: boolean;
-  mon: boolean;
-  tues: boolean;
-  wed: boolean;
-  thu: boolean;
-  fri: boolean;
-  sat: boolean;
+export interface BuildingAmenities {
+  name: string,
+  extraCost:boolean,
+
 }
+
+// check the idea to show ame that are not avail.

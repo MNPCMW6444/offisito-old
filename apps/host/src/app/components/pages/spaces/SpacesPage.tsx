@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Fab, Grid, Typography } from "@mui/material";
-import { Asset } from "@monorepo/types";
+import { Asset, CreateAssetReq } from "@monorepo/types";
 import { Add } from "@mui/icons-material";
 import { ServerContext } from "@monorepo/server-provider";
 import { axiosErrorToaster } from "@monorepo/react-components";
@@ -31,8 +31,9 @@ const SpacesPage = () => {
       setCreating(true);
       try {
         const res = await server?.axiosInstance.post("api/assets/add_asset", {
-          officeName: "draft" + myAssets.length + 3,
-        });
+          roomNumber: "1213",
+          leaseCondition: { dailyPrice: 1, leaseType: "daily" },
+        } as CreateAssetReq);
         const newAssetId = res?.data?.asset?._id.toString();
         newAssetId && navigate("/space/?id=" + newAssetId);
       } catch (e) {
