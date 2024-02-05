@@ -9,7 +9,7 @@ import {
 } from "./assetsController";
 import { CheckBuildingAddress } from "./buildingsControlers";
 import { AddCompanyLease } from "./companyController";
-
+import { AddBuildingAssets } from "./buildingsControlers";
 const assetsRouter = Router();
 
 // Company Routers
@@ -18,7 +18,7 @@ assetsRouter.post("/add_company_lease", AddCompanyLease);
 
 // BuildingRouters
 assetsRouter.get("check_building_address", CheckBuildingAddress)
-// assetsRouter.post("/add_building", AddBuilding);
+assetsRouter.post("/add_building", AddBuildingAssets);
 
 
 // Assets Router

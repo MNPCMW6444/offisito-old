@@ -1,8 +1,9 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import AssetBuildingModel from "../../../mongo/assets/assetBuildingModel";
-
+import { Request } from "../../middleware";
 
 export const CheckBuildingAddress =async (req:Request, res: Response) => {
+    
         const buildingModel = AssetBuildingModel()
     try{
         const {address} = req.body;
@@ -22,23 +23,38 @@ export const CheckBuildingAddress =async (req:Request, res: Response) => {
 };
 
 
-// export const AddBuildingAssets =async (req:Request, res:Response) => {
-    
-//     try {
+export const AddBuildingAssets =async (req:Request, res:Response) => {
+    const assetBuildingModel = AssetBuildingModel();
+    try {
         
-//         const {
-//             buildingName,
-//             address,
-//             buildingAmenities,
-//             buildingAccess,
-//             buildingDescription, 
+        const {
+            buildingName,
+            address,
+            buildingAmenities,
+            buildingAccess,
+            buildingDescription, 
+            doorman,
+            security, 
+            vip_service
             
-//         }= req.body
+        }= req.body
 
     
+    const buildingAddressData = new assetBuildingModel({
+            buildingName,
+            address,
+            buildingAmenities,
+            buildingAccess,
+            buildingDescription, 
+            doorman,
+            security, 
+            vip_service});
 
-//     } catch (error) {
-//         res.status(500).json({msg: "Internal Error Adding Building"})
-//     }
+    const BuildingSaved = buildingAddressData.save();
 
-// }
+    res.status(201).json({msg: "Building Added Succesfuly", buildingData: BuildingSaved})
+    } catch (error) {
+        res.status(500).json({msg: "Internal Error Adding Building"})
+    }
+
+}

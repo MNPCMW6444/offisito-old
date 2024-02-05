@@ -11,54 +11,38 @@ import geoJsonModel from "../../../mongo/geo/geoPointModel";
 export const createAsset = async (req: Request, res: Response) => {
   const AssetModel = assetModel();
 
-  console.log("in the create asset");
-  const Assets = assetModel();
-  let geoJson_id;
   const host = req.user;
 
   try {
     const {
-      officeName,
-      desc,
+      assetDescription,
+      roomNumber,
+      assetAvailability,
       amenities,
-      companyInHold,
-      floor,
-      availability,
       photoURLs,
-      status,
-      coordinates,
+      assetType,
+      publishingStatus,
+      peopleCapacity,
+      leaseCondition,
+      leasingCompany
     } = req.body;
 
     if (!isValidObjectId(host._id)) {
       return res.status(500).json({ msg: "Not Vlaid User" });
     }
 
-    const GeoJSONModel = geoJsonModel();
-    const assetLocation = new GeoJSONModel({
-      type: "Point",
-      coordinates,
-    });
-
-    try {
-      const savedLocation = await assetLocation.save();
-
-      geoJson_id = savedLocation._id;
-    } catch (locationError) {
-      console.log("error Saving Location:", locationError);
-      res.status(500).json({ error: "error Saving Location" });
-    }
-
     const newAsset = new AssetModel({
       host: host._id,
-      officeName,
-      desc,
+      assetDescription,
+      roomNumber,
+      assetAvailability,
       amenities,
-      companyInHold,
-      floor,
-      availability,
       photoURLs,
-      status: "draft",
-      location: geoJson_id,
+      assetType,
+      publishingStatus,
+      peopleCapacity,
+      leaseCondition,
+      leasingCompany
     });
 
     const savedNewAsset = await newAsset.save();

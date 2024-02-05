@@ -15,7 +15,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Asset, ListAssetReq } from "@monorepo/types";
+import { Asset } from "@monorepo/types";
 import { Add } from "@mui/icons-material";
 import { ServerContext } from "@monorepo/server-provider";
 import debounce from "lodash.debounce";
@@ -27,7 +27,7 @@ import {
 import { useLocation } from "react-router-dom";
 
 const FormPage = () => {
-  const [formState, setFormState] = useState<ListAssetReq>();
+  // const [formState, setFormState] = useState<ListAssetReq>();
   const server = useContext(ServerContext);
 
   const fetchAsset = useCallback(

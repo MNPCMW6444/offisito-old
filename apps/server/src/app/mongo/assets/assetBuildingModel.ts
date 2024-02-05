@@ -5,7 +5,7 @@ import { AvailabilitySchema } from "./availabilitySchema";
 
 
 export default () => {
-    const name = "AssetCompanyContract";
+    const name = "assetBuilding";
 
     // const assetBuilding = AssetBuilding()
 const AssetBuildingSchema = new mongoose.Schema({
@@ -47,20 +47,13 @@ if (mongoose.models.asset) {
     AssetBuildingModel = connection.model<AssetBuilding>(name);
 } else {
     AssetBuildingModel = connection.model<AssetBuilding>(name, AssetBuildingSchema);
+    AssetBuildingModel.schema.index({ geoLocalisation: "2dsphere" });
+
 
 }
 return AssetBuildingModel
 
-// const AssetBuildingModel: Model<AssetBuilding> = (() => {
-//     const existingModel = mongoose.models.AssetBuilding;
-//     if (existingModel) {
-//         return existingModel;
-//     } else {
-//         const model = mongoose.model<AssetBuilding>('AssetBuilding', AssetBuildingSchema);
-//         model.schema.index({ geoLocalisation: "2dsphere" });
-//         return model;
-//     }
-// })();
+
 }
 
 
