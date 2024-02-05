@@ -39,7 +39,7 @@ router.post<RegisterReq, string>("/req", async (req, res, next) => {
       key,
     }).save();
 
-    const url = `${client === "guest" ? settings.clientDomains.guest : client === "host" ? settings.clientDomains.host : settings.clientDomains.admin}/register?code=${key}`;
+    const url = `${client === "guest" ? settings.clientDomains.guest : client === "host" ? settings.clientDomains.host : settings.clientDomains.admin}/?regcode=${key}`;
 
     const { subject, body } =
       client === "guest" ? memberRegisterReq(url) : hostRegisterReq(url);
