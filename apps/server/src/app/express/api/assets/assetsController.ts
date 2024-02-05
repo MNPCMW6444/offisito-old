@@ -154,7 +154,7 @@ export const publishAsset = async (req: Request, res: Response) => {
 
 // here Req Need to hold host_id in order to retrieve the host listing
 
-export const getAssetsList = async (req: Request, res: Response) => {
+export const getAssetsList = async (req: Request, res: Response, next) => {
   // const AssetModel = assetModel();
   const authenticatedHost = req.user;
   //const host_id = req.params.host_id;
@@ -168,8 +168,8 @@ export const getAssetsList = async (req: Request, res: Response) => {
     } else {
       res.status(200).json(assetList);
     }
-  } catch (err) {
-    res.status(500).json({ msg: "Internal Error in Fetching Users Assets" });
+  } catch (error) {
+    next(error);
   }
 };
 
