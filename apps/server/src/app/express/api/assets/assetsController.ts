@@ -3,7 +3,6 @@ import { Request } from "../../middleware";
 import assetModel from "../../../mongo/assets/assetModel";
 import { Asset } from "@monorepo/types";
 import { isValidObjectId } from "mongoose";
-import geoJsonModel from "../../../mongo/geo/geoPointModel";
 
 // #TODO: Front end will add a coordinate Array with longitude, longitude in req.body
 // host ID to be sent in the URL
