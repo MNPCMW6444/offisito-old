@@ -26,7 +26,7 @@ import {
 } from "@monorepo/react-components";
 import { useLocation } from "react-router-dom";
 
-const ListPage = () => {
+const FormPage = () => {
   const [formState, setFormState] = useState<ListAssetReq>();
   const server = useContext(ServerContext);
 
@@ -138,14 +138,22 @@ const ListPage = () => {
   useEffect(() => {
     if (!formState?.amenities)
       setFormState((p) => {
-        if (p) {
-          const n = JSON.parse(JSON.stringify(p));
-          n.amenities = {};
-          return n;
-        } else return { amenities: {} };
+        const n = p ? JSON.parse(JSON.stringify(p)) : {};
+        n.amenities = {};
+        n.availability = {
+          sun: false,
+          mon: false,
+          tues: false,
+          wed: false,
+          thu: false,
+          fri: false,
+          sat: false,
+        };
+        return n;
       });
   }, [formState]);
 
+  console.log(formState);
   return (formState as unknown as Asset)?._id && formState?.amenities ? (
     <Grid
       container
@@ -167,7 +175,7 @@ const ListPage = () => {
           "amenities",
         )}
       </Grid>
-      {formState?.availability && (
+      {
         <Grid item>
           {formState?.availability &&
             renderSwitches(
@@ -175,7 +183,7 @@ const ListPage = () => {
               "availability",
             )}
         </Grid>
-      )}
+      }
       <Grid item container alignItems="center" columnSpacing={4}>
         <Grid item>{renderTextField("companyInHold", "Company in Hold")}</Grid>
         <Grid item>{renderTextField("floor", "Floor")}</Grid>
@@ -204,4 +212,4 @@ const ListPage = () => {
   );
 };
 
-export default ListPage;
+export default FormPage;

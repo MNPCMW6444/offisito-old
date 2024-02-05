@@ -2,7 +2,13 @@ import { useContext, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { Grid, LinearProgress, Paper, Typography } from "@mui/material";
+import {
+  Grid,
+  LinearProgress,
+  Paper,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import image from "../../../../assets/backgroundOffice.jpg";
 import { AuthContext } from "../../../context";
 import { axiosErrorToaster, useResponsiveness } from "../../../";
@@ -12,6 +18,8 @@ import { LoginReq, RegisterFin, RegisterReq } from "@monorepo/types";
 import zxcvbn from "zxcvbn";
 import { MIN_PASSWORD_STRENGTH } from "@monorepo/utils";
 import { Flag } from "@mui/icons-material";
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { version } from "../../../../../../../package.json";
 
 enum Step {
   login,
@@ -340,9 +348,11 @@ export const AuthPage = ({ client }: AuthPageProps) => {
           </Typography>
         </Grid>
         <Grid item>
-          <Typography variant="h6" textAlign="center">
-            Offisito
-          </Typography>
+          <Tooltip title={version} placement="right-start">
+            <Box {...{} /*component="img" src={} */} width="100%" height="100%">
+              Application Logo
+            </Box>
+          </Tooltip>
         </Grid>
         <Grid item>
           {step === Step.checkEmail ? (

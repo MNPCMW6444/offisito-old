@@ -4,26 +4,17 @@ import settings from "../../../../config";
 import bcrypt from "bcrypt";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import { LoginReq, User, User as UserType } from "@monorepo/types";
+import { Request } from "../../middleware";
 
 const router = Router();
 
-export const authUser = async (token: string): Promise<User> => {
+router.get("/", async (req: Request, res, next) => {
   try {
-    const validatedUser = jsonwebtoken.verify(token, settings.jwtSecret);
-    return userModel().findById((validatedUser as JwtPayload).id);
-  } catch (err) {
-    return null;
-  }
-};
-
-router.get<undefined, UserType | string>("/", async (req, res, next) => {
-  try {
-    const user = await authUser(req.cookies.jwt);
-    if (!user) {
+    if (!req.user) {
       return res.status(401).send("Not Logged In");
     }
-    user.passwordHash = "secret";
-    return res.json(user);
+    req.user.passwordHash = "secret";
+    return res.json(req.user);
   } catch (error) {
     next(error);
   }

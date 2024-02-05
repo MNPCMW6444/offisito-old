@@ -5,17 +5,12 @@ interface Settings {
   nodeEnv: "development" | "production";
   mongoURI: string;
   jwtSecret: string;
-  //smsSid: string;
-  //smsSecret: string;
-  //smsService: string;
   sendgridApiKey: string;
   clientDomains: {
     admin: string;
     host: string;
     guest: string;
   };
-  //pushPrivate: string;
-  //stripeSecret: string;
   whiteEnv: "local" | "preprod" | "prod";
   aws: {
     keyID: string;
@@ -24,6 +19,7 @@ interface Settings {
   };
   googleGeoCoding: string;
   stripeApiKey: string;
+  push: string;
 }
 
 dotenv.config();
@@ -49,9 +45,6 @@ const settings: Settings = {
     ? {
         mongoURI: process.env.MONGO_URI || "",
         jwtSecret: process.env.JWT_SECRET || "",
-        // smsSid: process.env.SMS_SID || "",
-        // smsSecret: process.env.SMS_SECRET || "",
-        // smsService: process.env.SMS_SERVICE || "",
         sendgridApiKey: process.env.SENDGRID || "",
         clientDomains:
           (process.env.WHITE_ENV || "prod") === "preprod"
@@ -65,8 +58,6 @@ const settings: Settings = {
                 host: "https://host.offisito.com",
                 admin: "https://admin.offisito.com",
               },
-        // pushPrivate: process.env.PUSH_PRIVATE || "",
-        // stripeSecret: process.env.STRIPE_SECRET || "",
         whiteEnv: process.env.WHITE_ENV || "prod",
         aws: {
           keyID: process.env.AWS_KEY_ID || "",
@@ -75,21 +66,18 @@ const settings: Settings = {
         },
         googleGeoCoding: process.env.GOOGLE_GEO_CODING || "",
         stripeApiKey: process.env.STRIPE_API_KEY || "",
+        push: process.env.PUSH || "",
       }
     : {
         mongoURI: process.env.MONGO_URI || "mongodb://localhost:27017/error",
         jwtSecret: process.env.JWT_SECRET || "xxxx",
-        // smsSid: process.env.SMS_SID || "",
-        // smsSecret: process.env.SMS_SECRET || "",
-        // smsService: process.env.SMS_SERVICE || "",
+
         sendgridApiKey: process.env.SENDGRID || "",
         clientDomains: {
           guest: "http://localhost:4100",
           host: "http://localhost:4200",
           admin: "http://localhost:4300",
         },
-        // pushPrivate: process.env.PUSH_PRIVATE || "",
-        //  stripeSecret: process.env.STRIPE_SECRET || "",
         whiteEnv: process.env.WHITE_ENV || "preprod",
         aws: {
           keyID: process.env.AWS_KEY_ID || "",
@@ -98,6 +86,7 @@ const settings: Settings = {
         },
         googleGeoCoding: process.env.GOOGLE_GEO_CODING || "",
         stripeApiKey: process.env.STRIPE_API_KEY || "",
+        push: process.env.PUSH || "",
       }),
   nodeEnv: process.env.NODE_ENV,
 };

@@ -1,18 +1,20 @@
-import { Request, Response } from "express";
-import AssetModel from "../../../mongo/assets/assetModel";
+import { Response } from "express";
+import { Request } from "../../middleware";
+import assetModel from "../../../mongo/assets/assetModel";
 import { Asset } from "@monorepo/types";
 import { isValidObjectId } from "mongoose";
 import geoJsonModel from "../../../mongo/geo/geoPointModel";
-import { authUser } from "../auth/logRouter";
 
 // #TODO: Front end will add a coordinate Array with longitude, longitude in req.body
 // host ID to be sent in the URL
 // status is on draft when saving
 export const createAsset = async (req: Request, res: Response) => {
-  const assetModel = AssetModel()
+  const AssetModel = assetModel();
+
   console.log("in the create asset");
+  const Assets = assetModel();
   let geoJson_id;
-  const host = await authUser(req.cookies.jwt);
+  const host = req.user;
 
   try {
     const {
@@ -23,6 +25,7 @@ export const createAsset = async (req: Request, res: Response) => {
       floor,
       availability,
       photoURLs,
+      status,
       coordinates,
     } = req.body;
 
@@ -45,7 +48,7 @@ export const createAsset = async (req: Request, res: Response) => {
       res.status(500).json({ error: "error Saving Location" });
     }
 
-    const newAsset = new assetModel({
+    const newAsset = new AssetModel({
       host: host._id,
       officeName,
       desc,
@@ -73,11 +76,12 @@ export const createAsset = async (req: Request, res: Response) => {
 // #TODO - sending Back end the asset_id in url.
 
 export const getAssetDetail = async (req: Request, res: Response) => {
-  const assetModel = AssetModel()
+  const AssetModel = assetModel();
+
   try {
     const asset_id = req.params.asset_id;
 
-    const findAsset = await assetModel.findById(asset_id);
+    const findAsset = await AssetModel.findById(asset_id);
 
     if (!findAsset) {
       return res.status(500).json({ msg: "no Such Asset" });
@@ -93,7 +97,8 @@ export const getAssetDetail = async (req: Request, res: Response) => {
 // #TODO - sending Back end the asset_id in url.
 
 export const editAsset = async (req: Request, res: Response) => {
-  const assetModel = AssetModel()
+  const AssetModel = assetModel();
+
   console.log("in editing Asset B-E");
   try {
     const asset_id = req.params.asset_id;
@@ -104,7 +109,7 @@ export const editAsset = async (req: Request, res: Response) => {
 
     const updatedAssetData: Partial<Asset> = req.body;
 
-    const updatedAsset = await assetModel.findOneAndUpdate(
+    const updatedAsset = await AssetModel.findOneAndUpdate(
       { _id: asset_id },
       updatedAssetData,
       { new: true },
@@ -124,13 +129,14 @@ export const editAsset = async (req: Request, res: Response) => {
 // #TODO - sending Back end the asset_id in url.
 
 export const publishAsset = async (req: Request, res: Response) => {
-  const assetModel = AssetModel()
+  const AssetModel = assetModel();
+
   try {
     const asset_id = req.params.asset_id;
     if (!isValidObjectId) {
       return res.status(404).json({ msg: "Not a Valid ID" });
     }
-    const publishedAsset = await assetModel.findByIdAndUpdate(
+    const publishedAsset = await AssetModel.findByIdAndUpdate(
       { _id: asset_id },
       { status: "active" },
     );
@@ -149,10 +155,12 @@ export const publishAsset = async (req: Request, res: Response) => {
 // here Req Need to hold host_id in order to retrieve the host listing
 
 export const getAssetsList = async (req: Request, res: Response) => {
-  const authenticatedHost = await authUser(req.cookies.jwt);
+  // const AssetModel = assetModel();
+  const authenticatedHost = req.user;
+  //const host_id = req.params.host_id;
 
   try {
-    const assetList = await AssetModel().find({ host: authenticatedHost._id });
+    const assetList = await assetModel().find({ host: authenticatedHost._id });
 
     if (assetList.lenght < 0) {
       console.log("there s no list for this host ");
@@ -166,14 +174,14 @@ export const getAssetsList = async (req: Request, res: Response) => {
 };
 
 export const deleteAsset = async (req: Request, res: Response) => {
-  const assetModel = AssetModel()
+  const AssetModel = assetModel();
   try {
     const asset_id = req.params.asset_id;
 
     if (!isValidObjectId) {
       return res.status(401).json({ msg: "not a valid ID" });
     }
-    const deleteAssetResults = await assetModel.deleteOne({ _id: asset_id });
+    const deleteAssetResults = await AssetModel.deleteOne({ _id: asset_id });
 
     if (deleteAssetResults.deleteCount > 0) {
       res.status(200).json({ msg: "Asset Deleted", asset_id: deleteAsset });
