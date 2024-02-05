@@ -1,14 +1,13 @@
 import { Request, Response } from "express";
 import AssetBuildingModel from "../../../mongo/assets/assetBuildingModel";
-import { buildGenerator } from "typescript-json-schema";
-import { RestoreObjectCommand } from "@aws-sdk/client-s3";
 
-const CheckBuildingAddress =async (req:Request, res: Response) => {
-    
+
+export const CheckBuildingAddress =async (req:Request, res: Response) => {
+        const buildingModel = AssetBuildingModel()
     try{
         const {address} = req.body;
 
-        const BuildingAddressCheck = await AssetBuildingModel.findOne({address });
+        const BuildingAddressCheck = await buildingModel.findOne({address });
         if(BuildingAddressCheck){
             return res.json({assetBuildingID: BuildingAddressCheck._id})
         }else{
@@ -20,25 +19,26 @@ const CheckBuildingAddress =async (req:Request, res: Response) => {
         return res.status(500).json({msg: "Internal Server Erro Checking Street"})
     }
 
+};
 
 
-
-const AddBuildingAssets =async (req:Request, res:Response) => {
+// export const AddBuildingAssets =async (req:Request, res:Response) => {
     
-    try {
+//     try {
         
-        const {
-            buildingName,
-            address,
-            buildingAmenities,
-            buildingAccess,
-            buildingDescription
-        }= req.body
+//         const {
+//             buildingName,
+//             address,
+//             buildingAmenities,
+//             buildingAccess,
+//             buildingDescription, 
+            
+//         }= req.body
 
     
 
-    } catch (error) {
-        res.status(500).json({msg: "Internal Error Adding Building"})
-    }
+//     } catch (error) {
+//         res.status(500).json({msg: "Internal Error Adding Building"})
+//     }
 
-}
+// }

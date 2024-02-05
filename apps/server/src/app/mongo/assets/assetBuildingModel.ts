@@ -1,8 +1,13 @@
-import mongoose, {Types, Model} from "mongoose";
-import { WeekDays } from "@monorepo/types";
+import mongoose, {Types} from "mongoose";
+import { connection } from "../connection";
 import { AssetBuilding } from "@monorepo/types";
+import { AvailabilitySchema } from "./availabilitySchema";
 
 
+export default () => {
+    const name = "AssetCompanyContract";
+
+    // const assetBuilding = AssetBuilding()
 const AssetBuildingSchema = new mongoose.Schema({
   buildingName: {type: String, required: true},
   address: {
@@ -10,7 +15,7 @@ const AssetBuildingSchema = new mongoose.Schema({
     city: {type: String, required:true},
     country: {type: String, required:true},
     geoLocalisation:{
-        tyep:{
+        type:{
             type:String,
             enum: ["Point"],
             required:true
@@ -21,25 +26,41 @@ const AssetBuildingSchema = new mongoose.Schema({
         }
     }
   },
-  
   buildingAmenities:{type: Types.ObjectId, ref: 'BuildingAmenities'},
-  buildingAccess:[{type:String, enum: Object.values(WeekDays) ,required:true}],
+  buildingAccess:[AvailabilitySchema],
   buildingDescription:{type:String},
   assets:[{type: Types.ObjectId, ref: 'Asset'}],
   companiesRenting:[{type: Types.ObjectId, ref: 'AssetCompanyContract'}],
-  
+  doorman:{type:Boolean},
+  security:{type:Boolean},
+  vip_service:{type:Boolean}
 })
 
+if (!connection)
+    throw new Error("Database not initialized");
 
-const AssetBuildingModel: Model<AssetBuilding> = (() => {
-    const existingModel = mongoose.models.AssetBuilding;
-    if (existingModel) {
-        return existingModel;
-    } else {
-        const model = mongoose.model<AssetBuilding>('AssetBuilding', AssetBuildingSchema);
-        model.schema.index({ geoLocalisation: "2dsphere" });
-        return model;
-    }
-})();
 
-export default AssetBuildingModel
+
+
+let AssetBuildingModel;
+if (mongoose.models.asset) {
+    AssetBuildingModel = connection.model<AssetBuilding>(name);
+} else {
+    AssetBuildingModel = connection.model<AssetBuilding>(name, AssetBuildingSchema);
+
+}
+return AssetBuildingModel
+
+// const AssetBuildingModel: Model<AssetBuilding> = (() => {
+//     const existingModel = mongoose.models.AssetBuilding;
+//     if (existingModel) {
+//         return existingModel;
+//     } else {
+//         const model = mongoose.model<AssetBuilding>('AssetBuilding', AssetBuildingSchema);
+//         model.schema.index({ geoLocalisation: "2dsphere" });
+//         return model;
+//     }
+// })();
+}
+
+

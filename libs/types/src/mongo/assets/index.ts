@@ -1,6 +1,7 @@
 import { Types, Document } from "mongoose";
 import { User } from "../auth";
 import { GeoPoint } from "../geo";
+import  {Availability}  from "./availability";
 
  export enum AssetPubStatus{ Draft = 'draft',
                              Pending = 'pending',
@@ -21,21 +22,7 @@ import { GeoPoint } from "../geo";
                     FullYear = 'fullYear',
  }
 
-export enum WeekDays {
-  Sunday = "sunday",
-  Monday = "monday",
-  Tuesday = "tuesday",
-  Wednesday = "wednesday",
-  Thursday = "thursday",
-  Friday = "friday",
-  Saturday = "saturday",
-}
 
-export interface Availability {
-  days_of_week: WeekDays[],
-  start_date: Date,
-  end_date : Date,
-}
 
 
 export interface AssetCompanyContract extends Document{
@@ -55,17 +42,17 @@ export interface Asset extends Document {
   host: User,
   assetDescription: string,
   roomNumber: string,
-  availability: WeekDays[],
+  assetAvailability: Availability[],
   amenities: Types.ObjectId[],
   photoURLs: string[],
   assetType: AssetType,
   publishingStatus: AssetPubStatus,
-  peopleCapcity: number[],
+  peopleCapacity: number[],
   leaseCondition:{
     dailyPrice : number,
     leaseType: LeaseType[],
   },
-  leasingCompany: Types.ObjectId |AssetCompanyContract,
+  leasingCompany: Types.ObjectId | AssetCompanyContract,
 };
 
 
@@ -78,10 +65,10 @@ export interface AssetBuilding extends Document{
     geoLocalisation: GeoPoint,
   },
   buildingAmenities: Types.ObjectId[],
-  buildingAccess: WeekDays[],
+  buildingAccess: Availability[],
   buildingDescription: string,
-  assets:Types.ObjectId[] | Asset[]
-  companiesRenting: Types.ObjectId[] | AssetCompanyContract[],
+  assets:Types.ObjectId[] ,
+  companiesRenting: Types.ObjectId[] ,
   doorman: boolean,
   security: boolean,
   vip_service: boolean

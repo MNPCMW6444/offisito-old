@@ -4,7 +4,7 @@ import { authUser } from "../auth/logRouter";
 import { isValidObjectId } from "mongoose";
 
 export const AddCompanyLease =async (req:Request, res:Response) => {
-
+    const assetCompanyModel = AssetCompanyContractModel()
     const host = await authUser(req.cookies.jtw)
 
     try {
@@ -22,7 +22,7 @@ export const AddCompanyLease =async (req:Request, res:Response) => {
             return res.status(400).json({error: "Not A valid Host Id"})
         }
 
-        const newCompnay = new AssetCompanyContractModel({
+        const newCompnay = new assetCompanyModel({
             host:host._id,
             companyName,
             companyInHold,

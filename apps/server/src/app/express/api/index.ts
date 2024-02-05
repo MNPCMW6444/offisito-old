@@ -1,6 +1,6 @@
 import { Router } from "express";
 import auth from "./auth";
-import assets from "./assets/assetsRouter";
+import assets from "./assets/Routers";
 import geo from "./geo/geoRouter";
 
 const router = Router();

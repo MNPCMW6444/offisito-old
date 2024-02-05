@@ -7,6 +7,7 @@ import {
   deleteAsset,
   publishAsset,
 } from "./assetsController";
+import { CheckBuildingAddress } from "./buildingsControlers";
 import { AddCompanyLease } from "./companyController";
 
 const assetsRouter = Router();
@@ -17,7 +18,7 @@ assetsRouter.post("/add_company_lease", AddCompanyLease);
 
 // BuildingRouters
 assetsRouter.get("check_building_address", CheckBuildingAddress)
-assetsRouter.post("/add_building", AddBuilding);
+// assetsRouter.post("/add_building", AddBuilding);
 
 
 // Assets Router
