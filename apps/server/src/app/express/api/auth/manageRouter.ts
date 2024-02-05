@@ -28,7 +28,7 @@ router.post<PassResetReq, string>("/passresetreq", async (req, res, next) => {
       key,
     }).save();
 
-    const url = `${client === "guest" ? settings.clientDomains.guest : client === "host" ? settings.clientDomains.host : settings.clientDomains.admin}/register?code=${key}`;
+    const url = `${client === "guest" ? settings.clientDomains.guest : client === "host" ? settings.clientDomains.host : settings.clientDomains.admin}/?rescode=${key}`;
 
     const { subject, body } = resetPassword(url);
     sendEmail(email, subject, body).then(
