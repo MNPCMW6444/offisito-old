@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { Response } from "express";
+import { Request } from "../../middleware";
 import assetModel from "../../../mongo/assets/assetModel";
 import { Asset } from "@monorepo/types";
 import { isValidObjectId } from "mongoose";
 import geoJsonModel from "../../../mongo/geo/geoPointModel";
-import { authUser } from "../auth/logRouter";
 
 // #TODO: Front end will add a coordinate Array with longitude, longitude in req.body
 // host ID to be sent in the URL
@@ -14,7 +14,7 @@ export const createAsset = async (req: Request, res: Response) => {
   console.log("in the create asset");
   const Assets = assetModel();
   let geoJson_id;
-  const host = await authUser(req.cookies.jwt);
+  const host = req.user;
 
   try {
     const {
@@ -156,7 +156,7 @@ export const publishAsset = async (req: Request, res: Response) => {
 
 export const getAssetsList = async (req: Request, res: Response) => {
   // const AssetModel = assetModel();
-  const authenticatedHost = await authUser(req.cookies.jwt);
+  const authenticatedHost = req.user;
   //const host_id = req.params.host_id;
 
   try {
