@@ -4,7 +4,7 @@ export const subscribe = (req, res) => {
   res.setHeader("Connection", "keep-alive");
 
   setTimeout(() => {
-    res.write(`watching db...: `);
+    res.write(`data: ${JSON.stringify({ message: "watching db..." })}\n\n`);
   }, 1000);
 
   req.on("close", () => {
