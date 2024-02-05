@@ -1,20 +1,20 @@
-/*
 import webpush from "web-push";
-//import settings from "../../config";
+import settings from "../../config";
 
-// VAPID keys should be generated once and stored securely
-/!*const vapidKeys = {
-    publicKey: 'BOX9mgkzgqKdn0j6vi-86nqWXoo24Ir4NAPwLe3M-lHgZpBLT153asOtuX1ocALmL3aRzBWgoRhjDAC80-llb6g',
-    privateKey: settings?.pushPrivate
+const vapidKeys = {
+  publicKey:
+    "BFGe7oDdXd6dQYvCdBsu_46CBUmtAZ-viJsQX3P5r9S78Pp_3nL5X8D57WLebwn-xG8W9559a2UbahoWh4DT0Fs",
+  privateKey: settings.push,
 };
 
 webpush.setVapidDetails(
-    'mailto:michael@failean.com',
-    vapidKeys.publicKey,
-    vapidKeys.privateKey || (() => {
-        throw new Error('No private key set')
-    })()
-);*!/
+  "mailto:michael@offisito.com",
+  vapidKeys.publicKey,
+  vapidKeys.privateKey ||
+    (() => {
+      throw new Error("No private key set");
+    })(),
+);
 
 export const sendPushNotification = async (
   subscription: any,
@@ -31,4 +31,3 @@ export const sendPushNotification = async (
     console.error("Error sending notification:", error);
   }
 };
-*/
