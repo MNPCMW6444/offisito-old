@@ -8,7 +8,7 @@ export default () => {
   const name = "asset";
   const assetSchema = new mongoose.Schema(
     {
-      host: { type: Types.ObjectId, ref: "User", required: true },
+      host: { type: Types.ObjectId, ref:"User", required: true },
       assetDescription: { type: String },
       roomNumber: { type: String, required: true },
       assetAvailability: [AvailabilitySchema],

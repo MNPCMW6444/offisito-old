@@ -17,7 +17,7 @@ assetsRouter.post("/add_company_lease", AddCompanyLease);
 
 
 // BuildingRouters
-assetsRouter.get("check_building_address", CheckBuildingAddress)
+assetsRouter.get("/check_building_address", CheckBuildingAddress)
 assetsRouter.post("/add_building", AddBuildingAssets);
 
 
