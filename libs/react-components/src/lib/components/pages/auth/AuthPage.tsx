@@ -87,12 +87,12 @@ export const AuthPage = ({ client }: AuthPageProps) => {
   const query = useQuery();
 
   useEffect(() => {
-    const registerKLey = query.get("regcode");
+    const registerKey = query.get("regcode");
     const resetKey = query.get("rescode");
-    const key = registerKLey || resetKey;
+    const key = registerKey || resetKey;
     if (key) {
       setKey(key);
-      registerKLey && setStep(Step.registerFin);
+      registerKey && setStep(Step.registerFin);
       resetKey && setStep(Step.passResetFin);
     }
   }, [query]);
@@ -362,7 +362,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
             </Typography>
           ) : (
             <>
-              {step !== Step.registerFin && (
+              {step !== Step.registerFin && step !== Step.passResetFin && (
                 <>
                   <TextField
                     margin="dense"
@@ -381,7 +381,9 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                   )}
                 </>
               )}
-              {(step === Step.login || step === Step.registerFin) && (
+              {(step === Step.login ||
+                step === Step.registerFin ||
+                step === Step.passResetFin) && (
                 <>
                   <TextField
                     margin="dense"
@@ -398,40 +400,43 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                       {getErrorMessage("password")}
                     </Typography>
                   )}
-                  {step === Step.registerFin && (
-                    <Box
-                      position="relative"
-                      display="flex"
-                      alignItems="center"
-                      width="100%"
-                      mt={1}
-                    >
-                      <LinearProgress
-                        variant="determinate"
-                        value={getStrengthBarValue(passwordStrength)}
-                        color={progressBarColor}
-                        style={{ width: "100%" }}
-                      />
+                  {step === Step.registerFin ||
+                    (step === Step.passResetFin && (
                       <Box
-                        position="absolute"
-                        left={`${(MIN_PASSWORD_STRENGTH / 4) * 100 - 5}%`}
-                        top={0}
+                        position="relative"
+                        display="flex"
+                        alignItems="center"
+                        width="100%"
+                        mt={1}
                       >
-                        <Grid container>
-                          <Grid item>
-                            <Flag />
+                        <LinearProgress
+                          variant="determinate"
+                          value={getStrengthBarValue(passwordStrength)}
+                          color={progressBarColor}
+                          style={{ width: "100%" }}
+                        />
+                        <Box
+                          position="absolute"
+                          left={`${(MIN_PASSWORD_STRENGTH / 4) * 100 - 5}%`}
+                          top={0}
+                        >
+                          <Grid container>
+                            <Grid item>
+                              <Flag />
+                            </Grid>
+                            <Grid item>
+                              <Typography>Min</Typography>
+                            </Grid>
                           </Grid>
-                          <Grid item>
-                            <Typography>Min</Typography>
-                          </Grid>
-                        </Grid>
+                        </Box>
                       </Box>
-                    </Box>
-                  )}
+                    ))}
                 </>
               )}
-              {step === Step.registerFin && <br />}
-              {step === Step.registerFin && (
+              {(step === Step.registerFin || step == Step.passResetFin) && (
+                <br />
+              )}
+              {(step === Step.registerFin || step == Step.passResetFin) && (
                 <>
                   <TextField
                     margin="dense"
