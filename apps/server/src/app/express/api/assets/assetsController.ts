@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { Request } from "../../middleware";
 import assetModel from "../../../mongo/assets/assetModel";
-import { Asset } from "@monorepo/types";
+import { Asset, CreateAssetReq } from "@monorepo/types";
 import { isValidObjectId } from "mongoose";
 
 // #TODO: Front end will add a coordinate Array with longitude, longitude in req.body
@@ -23,8 +23,8 @@ export const createAsset = async (req: Request, res: Response) => {
       publishingStatus,
       peopleCapacity,
       leaseCondition,
-      leasingCompany
-    } = req.body;
+      leasingCompany,
+    } = req.body as CreateAssetReq;
 
     if (!isValidObjectId(host._id)) {
       return res.status(500).json({ msg: "Not Vlaid User" });
@@ -41,7 +41,7 @@ export const createAsset = async (req: Request, res: Response) => {
       publishingStatus,
       peopleCapacity,
       leaseCondition,
-      leasingCompany
+      leasingCompany,
     });
 
     const savedNewAsset = await newAsset.save();

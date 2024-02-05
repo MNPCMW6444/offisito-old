@@ -16,7 +16,7 @@ import { MIN_PASSWORD_STRENGTH } from "@monorepo/utils";
 
 const router = Router();
 
-router.post<RegisterReq, string>("/req", async (req, res, next) => {
+router.post("/req", async (req, res, next) => {
   try {
     const User = userModel();
     const RegistrationRequest = registrationRequestModel();

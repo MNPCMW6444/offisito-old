@@ -50,7 +50,7 @@ export interface Asset extends Document {
   peopleCapacity?: number[];
   leaseCondition: {
     dailyPrice: number;
-    leaseType?: LeaseType[];
+    leaseType: LeaseType;
   };
   leasingCompany?: ObjectId;
 }
