@@ -14,9 +14,3 @@ export interface AssetCompanyContract extends Document{
     building?: Types.ObjectId |AssetBuilding,
   }
   
-
-//   insurence for the property?
-// insurence for the liability / individual 
-// who is in charge of cancelation policy?
-// how to draw the line between what is required by the Ownner/ leaser/ offisito?
-

@@ -22,7 +22,3 @@ export interface AssetBuilding extends Document{
     assetsList? : Types.ObjectId | Asset
   }
   
-
-// question to answer:
-// can a buillding have sets of requestAnimationFrame. or rool?
-

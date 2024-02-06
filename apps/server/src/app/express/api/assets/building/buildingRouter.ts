@@ -5,7 +5,7 @@ const buildingRouter = Router();
 
 
 // BuildingRouters
-buildingRouter.get("/check_building_address", CheckBuildingAddress)
+buildingRouter.get("/autocomplete_building_add", CheckBuildingAddress)
 buildingRouter.post("/add_building", AddBuildingAssets);
 
 export default buildingRouter;

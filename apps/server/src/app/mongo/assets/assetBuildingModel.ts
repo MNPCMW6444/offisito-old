@@ -42,12 +42,12 @@ if (!connection)
 
 
 let AssetBuildingModel;
-if (mongoose.models.asset) {
+if (mongoose.models.assetBuilding) {
     AssetBuildingModel = connection.model<AssetBuilding>(name);
 } else {
     AssetBuildingModel = connection.model<AssetBuilding>(name, AssetBuildingSchema);
-    AssetBuildingModel.schema.index({ geoLocalisation: "2dsphere" });
-    
+    // AssetBuildingModel.schema.index({ "address.geoLocalisation": "2dsphere" });
+
 }
 return AssetBuildingModel
 

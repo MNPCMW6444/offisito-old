@@ -5,6 +5,7 @@ import { isValidObjectId } from "mongoose";
 
 export const AddCompanyLease = async (req: Request, res: Response) => {
   const assetCompanyModel = AssetCompanyContractModel();
+  
   // const host = req.user;
 
   try {
@@ -16,6 +17,7 @@ export const AddCompanyLease = async (req: Request, res: Response) => {
       fullFloor,
       contractEndDate,
       subleasePermission,
+      building,
     } = req.body;
 
     // if (!isValidObjectId(host._id)) {
@@ -23,15 +25,24 @@ export const AddCompanyLease = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Not A valid Host Id" });
     }
 
+    if(!building){
+      return res.status(400).json({error: "Please add building first "})
+    }
+
+    if(!building){
+      res.json({msg:"please putt address"})
+    }
+
     const newCompnay = new assetCompanyModel({
+       host,
       // host: host._id,
-      host,
       companyName,
       companyInHold,
       floorNumber,
       fullFloor,
       contractEndDate,
       subleasePermission,
+      building
     });
 
     const savedCompany = await newCompnay.save();
@@ -42,6 +53,7 @@ export const AddCompanyLease = async (req: Request, res: Response) => {
     });
   } catch (err) {
     console.error("error in creating New AssetCompany", err);
-    res.status(500).json({ err: "Internal Server Error, Company Not added" });
+    res.status(500).json({ msg: "Internal Server Error, Company Not added", err});
   }
 };
+// 65c285c0192e0d2b1280be1e
