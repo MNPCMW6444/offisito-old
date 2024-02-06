@@ -26,7 +26,7 @@ import {
 } from "@monorepo/react-components";
 import { useLocation } from "react-router-dom";
 
-const FormPage = () => {
+const SpaceForm = () => {
   const [formState, setFormState] = useState<CreateAssetReq>();
   const server = useContext(ServerContext);
 
@@ -215,4 +215,4 @@ const FormPage = () => {
   );
 };
 
-export default FormPage;
+export default SpaceForm;
