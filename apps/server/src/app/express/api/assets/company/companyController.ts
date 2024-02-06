@@ -1,14 +1,15 @@
 import { Response } from "express";
-import { Request } from "../../middleware";
-import AssetCompanyContractModel from "../../../mongo/assets/assetCompanyModel";
+import { Request } from "../../../middleware";
+import AssetCompanyContractModel from "../../../../mongo/assets/assetCompanyModel";
 import { isValidObjectId } from "mongoose";
 
 export const AddCompanyLease = async (req: Request, res: Response) => {
   const assetCompanyModel = AssetCompanyContractModel();
-  const host = req.user;
+  // const host = req.user;
 
   try {
     const {
+      host,
       companyName,
       companyInHold,
       floorNumber,
@@ -17,12 +18,14 @@ export const AddCompanyLease = async (req: Request, res: Response) => {
       subleasePermission,
     } = req.body;
 
-    if (!isValidObjectId(host._id)) {
+    // if (!isValidObjectId(host._id)) {
+      if (!isValidObjectId(host)) {
       return res.status(400).json({ error: "Not A valid Host Id" });
     }
 
     const newCompnay = new assetCompanyModel({
-      host: host._id,
+      // host: host._id,
+      host,
       companyName,
       companyInHold,
       floorNumber,

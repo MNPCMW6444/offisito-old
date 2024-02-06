@@ -11,7 +11,7 @@ export default () => {
     host:{type: Types.ObjectId , ref: "User", required:true},
     companyName:{type: String,  required:true},
     companyInHold:{type: String,  },
-    floorNumber:{type: Number,  },
+    floorNumber:{type: String,  },
     fullFloor:{type: Boolean,  },
     contractEndDate:{type: Date,  },
     subleasePermission:{type:Boolean,  },

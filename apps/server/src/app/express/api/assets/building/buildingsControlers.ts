@@ -1,6 +1,6 @@
 import { Response } from "express";
-import AssetBuildingModel from "../../../mongo/assets/assetBuildingModel";
-import { Request } from "../../middleware";
+import AssetBuildingModel from "../../../../mongo/assets/assetBuildingModel";
+import { Request } from "../../../middleware";
 
 export const CheckBuildingAddress =async (req:Request, res: Response) => {
     

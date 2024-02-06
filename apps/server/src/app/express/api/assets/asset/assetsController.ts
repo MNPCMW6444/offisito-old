@@ -1,7 +1,8 @@
 import { Response } from "express";
-import { Request } from "../../middleware";
-import assetModel from "../../../mongo/assets/assetModel";
+import { Request } from "../../../middleware";
+import assetModel from "../../../../mongo/assets/assetModel";
 import { Asset, CreateAssetReq } from "@monorepo/types";
+
 import { isValidObjectId } from "mongoose";
 
 // #TODO: Front end will add a coordinate Array with longitude, longitude in req.body

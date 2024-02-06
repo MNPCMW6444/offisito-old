@@ -40,3 +40,13 @@ export interface Asset extends Document {
 
   };
   
+
+// who is manageing the price calculation?
+// do we ask for a basic daily price, then do we create a global caluclation per contract type?
+// will someone who take rental contract will pay the same for oneweek ration or one year 
+// what are cancelation policies?
+// Who will ose the money?
+
+// any issues on some part to have many renter a year - on legal /Tax wise?
+// will offisito well have agreemeent for ex then short tiem renter will be under their contract ?
+// 

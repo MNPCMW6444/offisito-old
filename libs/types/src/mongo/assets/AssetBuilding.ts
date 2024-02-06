@@ -1,5 +1,5 @@
 import { Types, Document } from "mongoose";
-import { GeoPoint } from "../geo/GeoPoint";
+import { GeoPoint } from "../geo";
 import { Availability } from "./Availability";
 import { Asset } from "./Asset";
 
@@ -23,4 +23,6 @@ export interface AssetBuilding extends Document{
   }
   
 
+// question to answer:
+// can a buillding have sets of requestAnimationFrame. or rool?
 
