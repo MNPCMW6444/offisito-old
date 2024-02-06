@@ -1,7 +1,7 @@
 import { ReactNode, useEffect } from "react";
 import Box from "@mui/material/Box";
 import { frontendSettings } from "@monorepo/server-provider";
-import { isNight } from "@monorepo/react-styles";
+import { isNight, themeForMVP } from "@monorepo/react-styles";
 
 interface EnvBorderContextProps {
   children: ReactNode;
@@ -39,8 +39,9 @@ export const EnvBorder = ({ children }: EnvBorderContextProps) => {
           ? { border: "4px solid orange" }
           : { border: "4px solid blue" },
   };
+
   return (
-    <Box {...props} bgcolor={isNight() ? "#121212" : "white"}>
+    <Box {...props} bgcolor={themeForMVP?.palette?.background?.default}>
       {children}
     </Box>
   );

@@ -1,27 +1,28 @@
-import { createMuiTheme, ThemeOptions } from "@mui/material";
+import { ThemeOptions } from "@mui/material";
 
-// Function to determine if it's night
 export const isNight = () => {
-  // Implement your logic to determine if it's night
-  // For example, based on the current time
   const hour = new Date().getHours();
-  return hour < 6 || hour >= 22;
+  return hour < 6 || hour >= 18;
 };
 
-export const themeForMVP: ThemeOptions = createMuiTheme({
+export const themeForMVP: ThemeOptions = {
   palette: {
     mode: isNight() ? "dark" : "light",
     primary: {
       main: "#b6d244",
-      contrastText: isNight() ? "white" : "black", // Adjust for visibility in dark mode
+      contrastText: isNight() ? "#ffffff" : "#0000000", // Adjust for visibility in dark mode
     },
     secondary: {
       main: "#575a50",
-      contrastText: isNight() ? "white" : "black", // Adjust for visibility in dark mode
+      contrastText: isNight() ? "#ffffff" : "#0000000", // Adjust for visibility in dark mode
     },
     text: {
-      primary: isNight() ? "white" : "black", // Text color for visibility in both modes
+      primary: isNight() ? "#ffffff" : "#0000000", // Text color for visibility in both modes
       secondary: isNight() ? "#b3b3b3" : "grey", // Secondary text color for visibility
+    },
+    background: {
+      default: isNight() ? "#101714" : "#f3f3f0",
+      paper: isNight() ? "#101714" : "#f3f3f0",
     },
   },
   typography: {
@@ -52,4 +53,4 @@ export const themeForMVP: ThemeOptions = createMuiTheme({
     },
     // ... any other typography settings you have
   },
-});
+};

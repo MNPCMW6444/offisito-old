@@ -11,7 +11,7 @@ import { Toaster } from "react-hot-toast";
 
 const MobileContainer = styled(Box)`
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border: 2px solid black;
+  border: 2px solid #0000000;
   height: 96vh;
   width: calc(98vh / 16 * 9);
   margin-top: 2vh;
