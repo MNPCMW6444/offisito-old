@@ -1,6 +1,5 @@
 
-
 export interface GeoPoint extends Document {
-  type: "Point";
-  coordinates: [number, number];
-}
+    type: "Point";
+    coordinates: [number, number];
+  }
