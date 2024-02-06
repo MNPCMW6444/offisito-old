@@ -1,4 +1,9 @@
-import { AssetCompanyContract } from "@monorepo/types";
+import { AssetCompanyContract, CreateAssetReq } from "@monorepo/types";
+import { axiosErrorToaster } from "@monorepo/react-components";
+import { useContext, useEffect, useState } from "react";
+import { ServerContext } from "@monorepo/server-provider";
+import { useNavigate } from "react-router-dom";
+import { Fab } from "@mui/material";
 
 const ProfilesPage = () => {
   const [myProfiles, setMyProfiles] = useState<AssetCompanyContract[]>([]);
@@ -6,7 +11,11 @@ const ProfilesPage = () => {
   const [creating, setCreating] = useState(false);
   const fetchedProfiles = async () => {
     try {
-      const res = await server?.axiosInstance.get("/api/assets/xoxo");
+      const res = await server?.axiosInstance.get(
+        "/api/host/company/get_company_lease/",
+      );
+
+      //TODO from here
       res && setMyProfiles(res.data);
     } catch (e) {
       axiosErrorToaster(e);
