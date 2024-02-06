@@ -11,13 +11,11 @@ export default () => {
     host:{type: Types.ObjectId , ref: "User", required:true},
     companyName:{type: String,  required:true},
     companyInHold:{type: String,  },
-    floorNumber:{type: Number,  },
+    floorNumber:{type: String,  },
     fullFloor:{type: Boolean,  },
     contractEndDate:{type: Date,  },
     subleasePermission:{type:Boolean,  },
-    building: {type: Types.ObjectId, ref: "AssetBuilding", },
-    assets: {type: Types.ObjectId, ref:"Asset" },
-    
+    building: {type: Types.ObjectId, ref: "AssetBuilding", },    
 })
 .plugin(versioning, { collection: name + "s.history", mongoose });
 

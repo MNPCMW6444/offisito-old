@@ -8,7 +8,6 @@ export default () => {
   const name = "asset";
   const assetSchema = new mongoose.Schema(
     {
-      host: { type: Types.ObjectId, ref: "User", required: true },
       assetDescription: { type: String },
       roomNumber: { type: String, required: true },
       assetAvailability: [AvailabilitySchema],
@@ -22,14 +21,13 @@ export default () => {
       publishingStatus: { type: String, enum: Object.values(AssetPubStatus) },
       peopleCapacity: [{ type: Number }],
       leaseCondition: {
-        dailyPrice: { type: Number, required: true },
+        dailyPrice: { type: Number},
         leaseType: {
           type: String,
           enum: Object.values(LeaseType),
-          required: true,
         },
       },
-      leasingCompany: { type: Types.ObjectId, ref: "AssetCompanyContract" },
+      leasingCompany: { type: Types.ObjectId, ref: "AssetCompanyContract" , required:true},
     },
     {
       timestamps: true,
