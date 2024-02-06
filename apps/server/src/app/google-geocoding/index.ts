@@ -19,7 +19,6 @@ export const getAddressByPoint = async (lat: number, long: number) => {
 };
 
 
-
 export const getPointByAddress = async (address: string) => {
   try {
     const res = await axios.get(

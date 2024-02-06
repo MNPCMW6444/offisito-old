@@ -37,6 +37,11 @@ const DashboardPage = () => {
           <Button onClick={() => navigate("/spaces")}>My Spaces</Button>
         </Grid>
         <Grid item>
+          <Button onClick={() => navigate("/profiles")}>
+            Complete my first company profile
+          </Button>
+        </Grid>
+        <Grid item>
           <Typography>Stats</Typography>
         </Grid>
         <Grid item>

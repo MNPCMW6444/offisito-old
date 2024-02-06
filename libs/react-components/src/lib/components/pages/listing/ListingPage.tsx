@@ -19,8 +19,8 @@ interface AvailabilityProps {
 
 const AvailabilityBox = ({ name, isFilled }: AvailabilityProps) => (
   <Box
-    color={isFilled ? "white" : "black"}
-    bgcolor={isFilled ? "black" : "white"}
+    color={isFilled ? "#ffffff" : "#0000000"}
+    bgcolor={isFilled ? "#0000000" : "#ffffff"}
   >
     {name}
   </Box>
