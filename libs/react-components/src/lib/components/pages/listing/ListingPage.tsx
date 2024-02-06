@@ -50,9 +50,9 @@ export const ListingPage = ({ _id }: ListingPageProps) => {
         />
       </Grid>
       <Grid item container alignItems="center" justifyContent="center">
-        <Grid item width="65%">
+        {/*  <Grid item width="65%">
           <Typography>{listing.officeName}</Typography>
-        </Grid>
+        </Grid>*/}
         <Grid item container>
           <Grid item>
             <Typography>Day: </Typography>
@@ -77,7 +77,7 @@ export const ListingPage = ({ _id }: ListingPageProps) => {
       <Grid item>
         <Typography>Availability</Typography>
       </Grid>
-      {listing.availability && (
+      {/*    {listing.availability && (
         <Grid item container columnSpacing={2}>
           {Object.keys(listing.availability).map((key) => (
             <Grid item>
@@ -92,7 +92,7 @@ export const ListingPage = ({ _id }: ListingPageProps) => {
             </Grid>
           ))}
         </Grid>
-      )}
+      )}*/}
       <Grid item>
         <Typography>Space includes:</Typography>
       </Grid>
