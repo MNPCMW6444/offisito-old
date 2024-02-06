@@ -1,6 +1,7 @@
 import { ReactNode, useEffect } from "react";
 import Box from "@mui/material/Box";
 import { frontendSettings } from "@monorepo/server-provider";
+import { isNight } from "@monorepo/react-styles";
 
 interface EnvBorderContextProps {
   children: ReactNode;
@@ -15,13 +16,10 @@ export const EnvBorder = ({ children }: EnvBorderContextProps) => {
           viewportHeight;
     };
 
-    // Adjust the height on initial render
     adjustHeight();
 
-    // Add event listener to adjust the height on window resize
     window.addEventListener("resize", adjustHeight);
 
-    // Cleanup the event listener on component unmount
     return () => window.removeEventListener("resize", adjustHeight);
   }, []);
 
@@ -41,5 +39,9 @@ export const EnvBorder = ({ children }: EnvBorderContextProps) => {
           ? { border: "4px solid orange" }
           : { border: "4px solid blue" },
   };
-  return <Box {...props}>{children}</Box>;
+  return (
+    <Box {...props} bgcolor={isNight() ? "#121212" : "white"}>
+      {children}
+    </Box>
+  );
 };

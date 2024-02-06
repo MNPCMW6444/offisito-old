@@ -8,14 +8,6 @@ import {
 import styled from "@emotion/styled";
 import { Box, Grid, Typography } from "@mui/material";
 import { Toaster } from "react-hot-toast";
-import { frontendSettings } from "@monorepo/server-provider";
-
-const whiteEnv =
-  frontendSettings().VITE_WHITE_ENV !== "prod"
-    ? frontendSettings().VITE_WHITE_ENV
-    : undefined;
-
-// Now you can use envVariables.VITE_API_URL or any other variable you've set
 
 const MobileContainer = styled(Box)`
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);

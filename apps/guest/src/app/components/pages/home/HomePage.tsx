@@ -5,7 +5,7 @@ import HomeTop from "./HomeTop";
 import AvaliableSpaces from "./AvaliableSpaces";
 
 const HomePage = () => (
-  <Grid container direction="column" rowSpacing={4}>
+  <Grid container direction="column" rowSpacing={4} height="100%">
     <Grid item width="100%" padding="5% 5% 0">
       <HomeTop />
     </Grid>

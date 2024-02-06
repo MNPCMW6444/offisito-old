@@ -1,4 +1,4 @@
-import { Badge, Grid, Typography } from "@mui/material";
+import { Badge, Grid, IconButton, Typography } from "@mui/material";
 import { AssetCard } from "@monorepo/react-components";
 import { useContext, useEffect, useState } from "react";
 import { Asset } from "@monorepo/types";
@@ -33,7 +33,12 @@ const NearSpaces = () => {
     <Grid container direction="column">
       <Grid item container justifyItems="center" columnSpacing={4}>
         <Grid item>
-          <Typography>Spaces near you</Typography>
+          <Typography color="primary">Spaces near you</Typography>
+        </Grid>
+        <Grid item>
+          <IconButton>
+            <Typography>Spaces near you</Typography>
+          </IconButton>
         </Grid>
         <Grid item>
           <Badge>See all</Badge>
