@@ -48,12 +48,12 @@ export interface CreateAssetReq {
   assetAvailability?: string;
   amenities?: string;
   photoURLs?: string;
-  assetType?: string;
+  assetType: string;
   publishingStatus?: string;
   peopleCapacity?: string;
   leaseCondition: {
-    dailyPrice: number;
-    leaseType: LeaseType;
+    dailyPrice?: number;
+    leaseType?: LeaseType;
   };
-  leasingCompany?: string;
+  leasingCompany: string;
 }

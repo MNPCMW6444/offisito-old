@@ -15,9 +15,7 @@ export default () => {
     fullFloor:{type: Boolean,  },
     contractEndDate:{type: Date,  },
     subleasePermission:{type:Boolean,  },
-    building: {type: Types.ObjectId, ref: "AssetBuilding", },
-    assets: {type: Types.ObjectId, ref:"Asset" },
-    
+    building: {type: Types.ObjectId, ref: "AssetBuilding", },    
 })
 .plugin(versioning, { collection: name + "s.history", mongoose });
 

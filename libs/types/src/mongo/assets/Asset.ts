@@ -26,7 +26,7 @@ export enum AssetPubStatus{ Draft = 'draft',
 export interface Asset extends Document {
     assetDescription?: string,
     roomNumber: string,
-    assetAvailability: Availability[],
+    assetAvailability?: Availability[],
     amenities?: Types.ObjectId[],
     photoURLs?: string[],
     assetType: AssetType,

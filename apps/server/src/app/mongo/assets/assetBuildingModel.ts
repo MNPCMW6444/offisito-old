@@ -29,11 +29,10 @@ const AssetBuildingSchema = new mongoose.Schema({
   buildingAmenities:{type: Types.ObjectId, ref: 'BuildingAmenities'},
   buildingAccess:[AvailabilitySchema],
   buildingDescription:{type:String},
-  assets:[{type: Types.ObjectId, ref: 'Asset'}],
-  companiesRenting:[{type: Types.ObjectId, ref: 'AssetCompanyContract'}],
   doorman:{type:Boolean},
   security:{type:Boolean},
-  vip_service:{type:Boolean}
+  vip_service:{type:Boolean},
+  assets:[{type: Types.ObjectId, ref: 'Asset'}],
 })
 
 if (!connection)
@@ -48,8 +47,7 @@ if (mongoose.models.asset) {
 } else {
     AssetBuildingModel = connection.model<AssetBuilding>(name, AssetBuildingSchema);
     AssetBuildingModel.schema.index({ geoLocalisation: "2dsphere" });
-
-
+    
 }
 return AssetBuildingModel
 
