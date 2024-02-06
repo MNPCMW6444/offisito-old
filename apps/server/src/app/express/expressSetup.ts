@@ -39,6 +39,7 @@ const middlewares = [
     });*/
 
 export default async () => {
+  console.log("Starting Server...");
   try {
     middlewares.forEach((middleware) => app.use(middleware));
 
@@ -59,12 +60,17 @@ export default async () => {
 
     app.use(serverErrorHandler);
 
-    app.listen(port, "0.0.0.0", () => {
+    app.listen(port, "0.0.0.0", () =>
       console.log(
-        `Server is ready at http${settings.whiteEnv === "local" ? "://localhost:" + port + "/docs" : "s://" + settings.whiteEnv + "server.offisito.com" + settings.whiteEnv !== "prod" ? "/docs" : ""}`,
-      );
-    });
+        "Server is ready at http" +
+          (settings.whiteEnv === "local"
+            ? "://localhost:" + port + "/"
+            : "s://" +
+              (settings.whiteEnv === "preprod" ? "pre" : "") +
+              "server.offisito.com/"),
+      ),
+    );
   } catch (e) {
-    throw new Error("Express setup failed: " + e);
+    throw new Error("Express setup failed: " + JSON.stringify(e));
   }
 };

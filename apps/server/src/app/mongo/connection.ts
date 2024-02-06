@@ -4,7 +4,6 @@ import settings from "../../config";
 export let connection: mongoose.Connection | null = null;
 
 export const connect = async () => {
-  console.log("***********CONNECTED ");
   settings.nodeEnv === "development" && mongoose.set("debug", true);
   try {
     await mongoose.connect(
