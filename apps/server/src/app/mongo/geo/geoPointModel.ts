@@ -6,7 +6,7 @@ import { GeoPoint } from "@monorepo/types";
 export default () => {
   const name = "geoPoint";
 
-  const geoPointModel = new mongoose.Schema(
+  const geoPointSchema = new mongoose.Schema(
     {
       coordinates: {
         type: [Number],
@@ -20,12 +20,12 @@ export default () => {
 
   if (!connection) throw new Error("Database not initialized");
 
-  let geoPointModelR;
+  let geoPointModel;
   if (mongoose.models.geoPoint) {
-    geoPointModelR = connection.model<GeoPoint>(name);
+    geoPointModel = connection.model<GeoPoint>(name);
   } else {
-    geoPointModelR = connection.model<GeoPoint>(name, geoPointModel);
+    geoPointModel = connection.model<GeoPoint>(name, geoPointSchema);
   }
 
-  return geoPointModelR;
+  return geoPointModel;
 };

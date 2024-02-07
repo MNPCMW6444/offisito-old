@@ -6,11 +6,11 @@ import { isValidObjectId } from "mongoose";
 export const AddCompanyLease = async (req: Request, res: Response) => {
   const assetCompanyModel = AssetCompanyContractModel();
   
-  // const host = req.user;
+  const host = req.user;
 
   try {
     const {
-      host,
+      // host,
       companyName,
       companyInHold,
       floorNumber,
@@ -20,17 +20,13 @@ export const AddCompanyLease = async (req: Request, res: Response) => {
       building,
     } = req.body;
 
-    // if (!isValidObjectId(host._id)) {
-      if (!isValidObjectId(host)) {
+    if (!isValidObjectId(host._id)) {
+      // if (!isValidObjectId(host)) {
       return res.status(400).json({ error: "Not A valid Host Id" });
     }
 
     if(!building){
       return res.status(400).json({error: "Please add building first "})
-    }
-
-    if(!building){
-      res.json({msg:"please putt address"})
     }
 
     const newCompnay = new assetCompanyModel({
@@ -56,4 +52,17 @@ export const AddCompanyLease = async (req: Request, res: Response) => {
     res.status(500).json({ msg: "Internal Server Error, Company Not added", err});
   }
 };
-// 65c285c0192e0d2b1280be1e
+
+
+
+export const getCompanyDetail =async (req:Request, res:Response) => {
+  const comapnyContract = AssetCompanyContractModel();
+  
+  const {company_id}= req.body;
+  try {
+    const findCompany = 
+
+  } catch (error) {
+    
+  }
+}
