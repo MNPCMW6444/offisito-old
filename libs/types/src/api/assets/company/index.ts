@@ -1,13 +1,11 @@
-import { User } from "../../../mongo";
-import { Types } from "mongoose";
+import { ObjectId } from "mongoose";
 
-export interface CreateCompanyReq{
-    host : User,
-    companyName: string,
-    companyInHold?: string,
-    floorNumber : string,
-    fullFloor?: boolean,
-    contractEndDate?:Date,
-    subleasePermission?: boolean,
-    building?: Types.ObjectId,
+export interface CreateCompanyReq {
+  companyName: string;
+  companyInHold?: string;
+  floorNumber: string;
+  fullFloor?: boolean;
+  contractEndDate?: Date;
+  subleasePermission?: boolean;
+  building: ObjectId;
 }

@@ -1,6 +1,3 @@
-
-
-export interface GeoPointReq {
-    type: string,
-    coordinates: [number]
+export interface X {
+  x: any;
 }
