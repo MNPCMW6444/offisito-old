@@ -1,12 +1,3 @@
-import React, {
-  ChangeEvent,
-  createRef,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
 import {
   Button,
   FormLabel,
@@ -15,22 +6,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Asset, CreateAssetReq } from "@monorepo/types";
+import { useState } from "react";
 import { Add } from "@mui/icons-material";
-import { ServerContext } from "@monorepo/server-provider";
-import debounce from "lodash.debounce";
-import {
-  axiosErrorToaster,
-  formatLabel,
-  renderSwitchesHOC,
-} from "@monorepo/react-components";
-import { useLocation } from "react-router-dom";
 
 const ProfileForm = () => {
-  const [formState, setFormState] = useState<CreateAssetReq>();
+  const [formState, setFormState] = useState<CreateProfileReq>();
   const server = useContext(ServerContext);
 
-  const fetchAsset = useCallback(
+  const fetchProfile = useCallback(
     async (id: string) => {
       try {
         const res = await server?.axiosInstance.get(
@@ -52,22 +35,22 @@ const ProfileForm = () => {
   useEffect(() => {
     const id = query.get("id");
     if (id && !hasFetched.current) {
-      fetchAsset(id).then(() => {
+      fetchProfile(id).then(() => {
         hasFetched.current = true;
       });
     }
-  }, [query, fetchAsset]);
+  }, [query, fetchProfile]);
 
   const fileInputRef = createRef<HTMLInputElement>();
 
-  const handleUpdate = async (updatedState: CreateAssetReq) => {
+  const handleUpdate = async (updatedState: CreateProfileReq) => {
     formState &&
-      (formState as unknown as Asset)._id &&
+      (formState as unknown as Profile)._id &&
       (await server?.axiosInstance.patch(
         "/api/assets/edit_asset" + formState._id,
         {
-          newAsset: {
-            _id: (formState as unknown as Asset)._id,
+          newProfile: {
+            _id: (formState as unknown as Profile)._id,
             ...updatedState,
           },
         },
@@ -97,7 +80,7 @@ const ProfileForm = () => {
     handleChange(key, checked);
   };
 
-  const renderTextField = (name: keyof ListAssetReq, label: string) => (
+  const renderTextField = (name: keyof ListProfileReq, label: string) => (
     <TextField
       multiline
       variant="standard"
@@ -115,7 +98,7 @@ const ProfileForm = () => {
     formData.append("photo", file);
     formState &&
       (await server?.axiosInstance.post(
-        "/api/assets/uploadPicture/" + (formState as unknown as Asset)._id,
+        "/api/assets/uploadPicture/" + (formState as unknown as Profile)._id,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -157,7 +140,7 @@ const ProfileForm = () => {
   }, [formState]);
 
   console.log(formState);
-  return (formState as unknown as Asset)?._id && formState?.amenities ? (
+  return (formState as unknown as Profile)?._id && formState?.amenities ? (
     <Grid
       container
       direction="column"

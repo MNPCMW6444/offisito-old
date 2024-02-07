@@ -1,4 +1,9 @@
-import { AssetBuilding, AssetCompanyContract, User } from "@monorepo/types";
+import {
+  AssetBuilding,
+  AssetCompanyContract,
+  CreateCompanyReq,
+  User,
+} from "@monorepo/types";
 import { AuthContext, axiosErrorToaster } from "@monorepo/react-components";
 import { useContext, useEffect, useState } from "react";
 import { ServerContext } from "@monorepo/server-provider";
@@ -36,13 +41,11 @@ const ProfilesPage = () => {
       setCreating(true);
       try {
         const res = await server?.axiosInstance.post<
-          undefined,
-          undefined,
-          {
-            xyx: string;
-          }
+          any,
+          any,
+          CreateCompanyReq
         >("api/host/company/add_company_lease", {
-          companyName: user?.name as string,
+          companyName: user?.name | "name_error",
           floorNumber: Math.random().toString(),
         });
         const newAssetId = res?.data?.asset?._id.toString();
