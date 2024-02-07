@@ -32,8 +32,7 @@ export const AddCompanyLease = async (req: Request, res: Response) => {
     }
 
     const newCompnay = new assetCompanyModel({
-      host,
-      // host: host._id,
+      host: host._id,
       companyName,
       companyInHold,
       floorNumber,
