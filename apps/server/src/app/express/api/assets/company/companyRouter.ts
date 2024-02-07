@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { AddCompanyLease } from "./companyController";
+import { AddCompanyLease, getCompanyDetail } from "./companyController";
 
 const companyRouter =  Router();
 
@@ -7,7 +7,7 @@ const companyRouter =  Router();
 
 // Company Routers
 companyRouter.post("/add_company_lease", AddCompanyLease);
-companyRouter.get("/get_company_lease/:company_id", );
+companyRouter.get("/get_company_lease/:company_id", getCompanyDetail);
 companyRouter.put("/edit_company_lease/:company_id", );
 companyRouter.delete("/delete_company_lease", );
 

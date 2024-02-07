@@ -2,6 +2,7 @@ import { Response } from "express";
 import { Request } from "../../../middleware";
 import AssetCompanyContractModel from "../../../../mongo/assets/assetCompanyModel";
 import { isValidObjectId } from "mongoose";
+import assetBuildingModel from "apps/server/src/app/mongo/assets/assetBuildingModel";
 
 export const AddCompanyLease = async (req: Request, res: Response) => {
   const assetCompanyModel = AssetCompanyContractModel();
@@ -56,13 +57,31 @@ export const AddCompanyLease = async (req: Request, res: Response) => {
 
 
 export const getCompanyDetail =async (req:Request, res:Response) => {
-  const comapnyContract = AssetCompanyContractModel();
+  const companyContract = AssetCompanyContractModel();
+  const companyBuilding = assetBuildingModel();
+  const {company_id}= req.params;
   
-  const {company_id}= req.body;
   try {
-    const findCompany = 
+  
+    if(!isValidObjectId(company_id)){
+      return res.status(400).json({msg:"Not valid company ID"})
+    } 
+
+    const findCompany = await companyContract.findById(company_id);
+
+    if (!findCompany){
+      return res.status(404).json({msg: "Company Not found"})
+    }
+    const building_id =  findCompany.building;
+    const findBuilding = await companyBuilding.findById(building_id);
+    if(!findBuilding){
+      res.status(200).json({msg: "Success fetching", companyData: findCompany, building:  "Please add the building address"})
+      
+    }
+    res.status(200).json({msg: "Success fetching", companyData: findCompany, building: findBuilding})
 
   } catch (error) {
-    
+    console.error("Internal request Error, Company Detail", error);
+    res.status(500).json({msg:"internal Server error", error})
   }
 }
