@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { Fab, Grid, Typography } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import { Types } from "mongoose";
+import ObjectId = module;
 
 const ProfilesPage = () => {
   const [myProfiles, setMyProfiles] = useState<AssetCompanyContract[]>([]);
@@ -45,8 +46,9 @@ const ProfilesPage = () => {
           any,
           CreateCompanyReq
         >("api/host/company/add_company_lease", {
-          companyName: user?.name | "name_error",
+          companyName: user?.name || "name_error",
           floorNumber: Math.random().toString(),
+          building: new ObjectId("324324"),
         });
         const newAssetId = res?.data?.asset?._id.toString();
         newAssetId && navigate("/profile/?id=" + newAssetId);
