@@ -83,7 +83,6 @@ export const getAssetDetail = async (req: Request, res: Response) => {
 export const editAsset = async (req: Request, res: Response) => {
   const AssetModel = assetModel();
 
-  console.log("in editing Asset B-E");
   try {
     const asset_id = req.params.asset_id;
 
