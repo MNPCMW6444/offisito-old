@@ -6,7 +6,7 @@ import { Error } from "@monorepo/types";
 export default () => {
   const name = "error";
 
-  const errorModel = new mongoose.Schema(
+  const errorSchema = new mongoose.Schema(
     {
       error: {
         type: String,
@@ -20,12 +20,12 @@ export default () => {
 
   if (!connection) throw new Error("Database not initialized");
 
-  let errorModelR;
+  let errorModel;
   if (mongoose.models.error) {
-    errorModelR = connection.model<Error>(name);
+    errorModel = connection.model<Error>(name);
   } else {
-    errorModelR = connection.model<Error>(name, errorModel);
+    errorModel = connection.model<Error>(name, errorSchema);
   }
 
-  return errorModelR;
+  return errorModel;
 };

@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { Availability } from "../../../mongo";
 import { GeoPoint } from "../../../mongo";
 
-export interface CreateBuildingReq {
+export interface createBuildingReq {
     buildingName: string,
     address:{
       street:string,

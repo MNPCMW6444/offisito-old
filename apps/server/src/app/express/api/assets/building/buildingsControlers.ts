@@ -1,6 +1,8 @@
 import { Response } from "express";
 import AssetBuildingModel from "../../../../mongo/assets/assetBuildingModel";
 import { Request } from "../../../middleware";
+import { crudResponse } from "../crudResponse";
+import { createBuildingReq } from "@monorepo/types";
 
 export const CheckBuildingAddress =async (req:Request, res: Response) => {
     
@@ -8,18 +10,30 @@ export const CheckBuildingAddress =async (req:Request, res: Response) => {
     try{
         const {coordinates} = req.body;
 
-        const BuildingAddressCheck = await buildingModel.findOne({
+        const buildingAddressCheck = await buildingModel.findOne({
             coordinates });
 
-        if(BuildingAddressCheck){
-            return res.json({assetBuildingID: BuildingAddressCheck})
-        }else{
-            return res.json({message: "Building address Doesnt exisit Yet"})
+        if(!buildingAddressCheck){
+            const response: crudResponse<null> ={
+                success:false,
+                error:"Not A valid Building ID"
+            }
+
+            return res.json(response)
         }
+        
+        const response:crudResponse<typeof buildingAddressCheck>={
+            success: true,
+            data: buildingAddressCheck,
+        }
+        res.status(200).json(response)
     
     }catch(error){
-        console.error("Error Checking Address")
-        return res.status(500).json({msg: "Internal Server Erro Checking Street"})
+        const response:crudResponse<null>={
+            success:false,
+            error: "internal Error"
+        }
+        return res.status(500).json(response)
     }
 
 };
@@ -39,7 +53,7 @@ export const AddBuildingAssets =async (req:Request, res:Response) => {
             security, 
             vip_service
             
-        }= req.body
+        }= req.body as createBuildingReq
 
     
     const buildingAddressData = new assetBuildingModel({
@@ -52,9 +66,24 @@ export const AddBuildingAssets =async (req:Request, res:Response) => {
             security, 
             vip_service});
 
-    const BuildingSaved = await buildingAddressData.save();
+    const buildingSaved = await buildingAddressData.save();
 
-    res.status(201).json({msg: "Building Added Succesfuly", buildingData: BuildingSaved})
+    if(!buildingSaved){
+        const response : crudResponse<null> ={
+            success:false,
+            error:"Unable to add Building Address"
+        }
+        res.status(400).json(response)
+    }
+
+
+    const response:crudResponse<typeof buildingAddressData>={
+        success: true,
+        data: buildingSaved,
+        msg: "building Added Successfuly"
+    }
+
+    res.status(201).json(response)
     } catch (error) {
         res.status(500).json({msg: "Internal Error Adding Building", error})
     }
