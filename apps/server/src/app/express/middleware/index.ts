@@ -6,7 +6,7 @@ import { Request as ExpressRequest } from "express";
 import { User } from "@monorepo/types";
 
 export interface Request extends ExpressRequest {
-  user?: User;
+  user: User | null;
 }
 
 export const serverErrorHandler = async (err, res) => {

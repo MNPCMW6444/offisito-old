@@ -1,35 +1,40 @@
-import { Button, Grid, Typography } from "@mui/material";
-import SearchBar from "./SearchBar";
-import React, { useState } from "react";
-import { formatLabel, renderSwitchesHOC } from "@monorepo/react-components";
-import { Amenities } from "@monorepo/types";
+import { Button, Grid, Typography } from '@mui/material';
+import SearchBar from './SearchBar';
+import React, { useState } from 'react';
+import { formatLabel, renderSwitchesHOC } from '@monorepo/react-components';
+import { Amenities } from '@monorepo/types';
 
 const SearchPage = () => {
-  const [query, setQuery] = useState<string>("");
+  const [query, setQuery] = useState<string>('');
   const [amenities, setAmenities] = useState<Amenities>({
     freeWiFi: false,
     parking: false,
     lobbySpace: false,
-    computer: false,
+    computer: false
   });
 
   const renderSwitches = renderSwitchesHOC(
     (name: string, value: boolean) =>
       setAmenities((prevState) => ({
         ...prevState,
-        [name.split(".")[1]]: value,
+        [name.split('.')[1]]: value
       })),
-    formatLabel,
+    formatLabel
   );
 
   return (
     <Grid container direction="column" alignItems="center">
       <Grid item height="15%" />
       <Grid item>
-        <Typography>Find your</Typography>
+        <Typography
+          color="primary">Find your</Typography>
       </Grid>
       <Grid item>
-        <Typography>Offisito</Typography>
+        <Typography color="
+          primary
+        >
+          Offisito
+        </Typography>
       </Grid>
       <Grid item width="100%">
         <SearchBar query={query} setQuery={setQuery} />
@@ -37,7 +42,7 @@ const SearchPage = () => {
       <Grid item>
         {renderSwitches(
           amenities as unknown as { [key: string]: boolean },
-          "amenities",
+          'amenities'
         )}
       </Grid>
       <Grid item>

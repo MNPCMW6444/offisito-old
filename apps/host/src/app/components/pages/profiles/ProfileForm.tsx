@@ -151,14 +151,14 @@ const ProfileForm = () => {
       sx={{ overflowX: "scroll" }}
     >
       <Grid item>
-        <Typography>List a Space</Typography>
+        <Typography color="primary">List a Space</Typography>
       </Grid>
-      <Grid item>{renderTextField("officeName", "Office Name")}</Grid>
-      <Grid item>{renderTextField("desc", "Desc")}</Grid>
+      <Grid item>{renderTextField(" officeName", " Office Name")}</Grid>
+      <Grid item>{renderTextField(" desc", " Desc")}</Grid>
       <Grid item>
         {renderSwitches(
           formState?.amenities as unknown as { [key: string]: boolean },
-          "amenities",
+          " amenities",
         )}
       </Grid>
       {
@@ -166,17 +166,19 @@ const ProfileForm = () => {
           {formState?.availability &&
             renderSwitches(
               formState?.availability as unknown as { [key: string]: boolean },
-              "availability",
+              " availability",
             )}
         </Grid>
       }
-      <Grid item container alignItems="center" columnSpacing={4}>
-        <Grid item>{renderTextField("companyInHold", "Company in Hold")}</Grid>
-        <Grid item>{renderTextField("floor", "Floor")}</Grid>
+      <Grid item container alignItems=" center" columnSpacing={4}>
+        <Grid item>
+          {renderTextField(" companyInHold", " Company in Hold")}
+        </Grid>
+        <Grid item>{renderTextField(" floor", " Floor")}</Grid>
       </Grid>
       <Grid item>
-        <FormLabel component="legend">Property Pictures</FormLabel>
-        <IconButton onClick={addPicture}>
+        <FormLabel component=" legend">Property Pictures</FormLabel>
+        <IconButton variant="contained" onClick={addPicture}>
           <Add sx={{ fontSize: "250%" }} />
         </IconButton>
         <input
@@ -192,9 +194,10 @@ const ProfileForm = () => {
           Publish
         </Button>
       </Grid>
+      ;
     </Grid>
   ) : (
-    <Typography>Error</Typography>
+    <Typography color="primary">Error</Typography>
   );
 };
 

@@ -1,6 +1,6 @@
-import { Asset, Availability } from "@monorepo/types";
-import { Badge, Box, Divider, Grid, Typography } from "@mui/material";
-import { AmenitiesView } from "@monorepo/react-components";
+import { Asset, Availability } from '@monorepo/types';
+import { Badge, Box, Divider, Grid, Typography } from '@mui/material';
+import { AmenitiesView } from '@monorepo/react-components';
 
 interface AssetCardProps {
   asset: Asset;
@@ -12,29 +12,29 @@ export const AssetCard = ({ asset }: AssetCardProps) => {
       <Grid item>
         <Box
           component="img"
-          src={asset.photoURLs ? asset.photoURLs[0] : ""}
+          src={asset.photoURLs ? asset.photoURLs[0] : ''}
         ></Box>
       </Grid>
       <Grid item>
-        <Typography>{asset.officeName}</Typography>
+        <Typography color="primary">{asset.officeName}</Typography>
       </Grid>
       {asset.availability && (
         <Grid item>
-          <Typography>
-            Available -{" "}
-            {Object.keys(asset.availability)
-              .filter((key) =>
-                asset.availability
-                  ? asset.availability[key as keyof Availability]
-                  : true,
-              )
-              .join(", ")}
-            .
-          </Typography>
-        </Grid>
+          <Typography color="primary">
+          Available -{' '}
+          {Object.keys(asset.availability)
+            .filter((key) =>
+              asset.availability
+                ? asset.availability[key as keyof Availability]
+                : true
+            )
+            .join(', ')}
+          .
+        </Typography>
+      </Grid>
       )}
       <Grid item>
-        <Divider sx={{ borderStyle: "dashed" }}> </Divider>
+        <Divider sx={{ borderStyle: 'dashed' }}> </Divider>
       </Grid>
       <Grid
         item
@@ -48,7 +48,7 @@ export const AssetCard = ({ asset }: AssetCardProps) => {
         </Grid>
         <Grid item>
           {/*<PriceBadge />*/}
-          <Badge>{"asset.price"}$</Badge>
+          <Badge>{'asset.price'}$</Badge>
         </Grid>
       </Grid>
     </Grid>

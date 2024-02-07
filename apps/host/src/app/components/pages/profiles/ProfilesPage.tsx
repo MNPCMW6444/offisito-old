@@ -1,17 +1,11 @@
-import {
-  AssetBuilding,
-  AssetCompanyContract,
-  CreateCompanyReq,
-  User,
-} from "@monorepo/types";
-import { AuthContext, axiosErrorToaster } from "@monorepo/react-components";
-import { useContext, useEffect, useState } from "react";
-import { ServerContext } from "@monorepo/server-provider";
-import { useNavigate } from "react-router-dom";
-import { Fab, Grid, Typography } from "@mui/material";
-import { Add } from "@mui/icons-material";
-import { Types } from "mongoose";
-import ObjectId = module;
+import { AssetBuilding, AssetCompanyContract, User } from '@monorepo/types';
+import { AuthContext, axiosErrorToaster } from '@monorepo/react-components';
+import { useContext, useEffect, useState } from 'react';
+import { ServerContext } from '@monorepo/server-provider';
+import { useNavigate } from 'react-router-dom';
+import { Fab, Grid, Typography } from '@mui/material';
+import { Add } from '@mui/icons-material';
+import { Types } from 'mongoose';
 
 const ProfilesPage = () => {
   const [myProfiles, setMyProfiles] = useState<AssetCompanyContract[]>([]);
@@ -20,7 +14,7 @@ const ProfilesPage = () => {
   const fetchedProfiles = async () => {
     try {
       const res = await server?.axiosInstance.get(
-        "/api/host/company/get_company_lease/",
+        '/api/host/company/get_company_lease/'
       );
 
       //TODO from here
@@ -42,16 +36,17 @@ const ProfilesPage = () => {
       setCreating(true);
       try {
         const res = await server?.axiosInstance.post<
-          any,
-          any,
-          CreateCompanyReq
-        >("api/host/company/add_company_lease", {
-          companyName: user?.name || "name_error",
-          floorNumber: Math.random().toString(),
-          building: new ObjectId("324324"),
+          undefined,
+          undefined,
+          {
+            xyx: string;
+          }
+        >('api/host/company/add_company_lease', {
+          companyName: user?.name as string,
+          floorNumber: Math.random().toString()
         });
         const newAssetId = res?.data?.asset?._id.toString();
-        newAssetId && navigate("/profile/?id=" + newAssetId);
+        newAssetId && navigate('/profile/?id=' + newAssetId);
       } catch (e) {
         axiosErrorToaster(e);
       } finally {
@@ -65,9 +60,9 @@ const ProfilesPage = () => {
       <Fab
         color="primary"
         sx={{
-          position: "fixed",
-          bottom: "10%",
-          right: "5%",
+          position: 'fixed',
+          bottom: '10%',
+          right: '5%'
         }}
         onClick={createNew}
       >
@@ -82,7 +77,7 @@ const ProfilesPage = () => {
           ))}
         </Grid>
       ) : (
-        <Typography>No Profiles yet</Typography>
+        <Typography color="primary">No Profiles yet</Typography>
       )}
     </>
   );

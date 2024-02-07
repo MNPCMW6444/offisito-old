@@ -51,7 +51,7 @@ const App = () => {
           </Grid>
           <Grid item>
             <DesktopMessage>
-              <Typography variant="h5">
+              <Typography color="primary" variant="h5">
                 For the best experience please use offisito app on a mobile
                 device
               </Typography>

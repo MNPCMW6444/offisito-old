@@ -9,48 +9,85 @@ export const themeForMVP: ThemeOptions = {
   palette: {
     mode: isNight() ? "dark" : "light",
     primary: {
-      main: "#b6d244",
-      contrastText: isNight() ? "#ffffff" : "#0000000", // Adjust for visibility in dark mode
+      main: isNight() ? "#badeab" : "#4e6500", // Light background for night mode
+      contrastText: isNight() ? "#101714" : "#ffffff", // Dark text for night, light text for day
     },
     secondary: {
       main: "#575a50",
-      contrastText: isNight() ? "#ffffff" : "#0000000", // Adjust for visibility in dark mode
+      contrastText: "#ffffff", // Light text for both modes against dark background
+    },
+    error: {
+      main: "#f44336",
+      contrastText: "#ffffff",
+    },
+    warning: {
+      main: "#ff9800",
+      contrastText: "#ffffff",
+    },
+    info: {
+      main: "#2196f3",
+      contrastText: "#ffffff",
+    },
+    success: {
+      main: "#4caf50",
+      contrastText: "#ffffff",
     },
     text: {
-      primary: isNight() ? "#ffffff" : "#0000000", // Text color for visibility in both modes
-      secondary: isNight() ? "#b3b3b3" : "grey", // Secondary text color for visibility
+      primary: isNight() ? "#ffffff" : "#000000",
+      secondary: isNight() ? "#b3b3b3" : "#757575",
     },
     background: {
       default: isNight() ? "#101714" : "#f3f3f0",
-      paper: isNight() ? "#101714" : "#f3f3f0",
+      paper: isNight() ? "#024910" : "#cfdcce",
     },
   },
   typography: {
     fontFamily: '"Inter", "Arial", sans-serif',
     h1: {
       fontFamily: '"Open Sans", "Arial", sans-serif',
+      fontWeight: 700,
+      fontSize: "2.25rem",
     },
     h2: {
       fontFamily: '"Open Sans", "Arial", sans-serif',
+      fontWeight: 700,
+      fontSize: "2rem",
     },
     h3: {
       fontFamily: '"Open Sans", "Arial", sans-serif',
+      fontWeight: 700,
+      fontSize: "1.75rem",
     },
     h4: {
       fontFamily: '"Open Sans", "Arial", sans-serif',
+      fontWeight: 700,
+      fontSize: "1.5rem",
     },
     h5: {
       fontFamily: '"Open Sans", "Arial", sans-serif',
+      fontWeight: 700,
+      fontSize: "1.25rem",
     },
     h6: {
       fontFamily: '"Open Sans", "Arial", sans-serif',
+      fontWeight: 700,
+      fontSize: "1rem",
     },
     subtitle1: {
       fontFamily: '"Open Sans", "Arial", sans-serif',
+      fontSize: "0.875rem",
     },
     subtitle2: {
       fontFamily: '"Open Sans", "Arial", sans-serif',
+      fontSize: "0.875rem",
     },
-    // ... any other typography settings you have
+    body1: {
+      fontFamily: '"Inter", "Arial", sans-serif',
+      fontSize: "1rem",
+    },
+    body2: {
+      fontFamily: '"Inter", "Arial", sans-serif',
+      fontSize: "0.875rem",
+    },
   },
 };
