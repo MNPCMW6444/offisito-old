@@ -1,9 +1,11 @@
-import { AssetCompanyContract, CreateAssetReq } from "@monorepo/types";
-import { axiosErrorToaster } from "@monorepo/react-components";
+import { AssetBuilding, AssetCompanyContract, User } from "@monorepo/types";
+import { AuthContext, axiosErrorToaster } from "@monorepo/react-components";
 import { useContext, useEffect, useState } from "react";
 import { ServerContext } from "@monorepo/server-provider";
 import { useNavigate } from "react-router-dom";
-import { Fab } from "@mui/material";
+import { Fab, Grid, Typography } from "@mui/material";
+import { Add } from "@mui/icons-material";
+import { Types } from "mongoose";
 
 const ProfilesPage = () => {
   const [myProfiles, setMyProfiles] = useState<AssetCompanyContract[]>([]);
@@ -28,19 +30,23 @@ const ProfilesPage = () => {
 
   const navigate = useNavigate();
 
+  const { user } = useContext(AuthContext);
   const createNew = async () => {
     if (!creating) {
       setCreating(true);
       try {
-        const res = await server?.axiosInstance.post(
-          "api/assets/add_company_lease",
+        const res = await server?.axiosInstance.post<
+          undefined,
+          undefined,
           {
-            roomNumber: "1213",
-            leaseCondition: { dailyPrice: 1, leaseType: "daily" },
-          } as CreateAssetReq,
-        );
+            xyx: string;
+          }
+        >("api/host/company/add_company_lease", {
+          companyName: user?.name as string,
+          floorNumber: Math.random().toString(),
+        });
         const newAssetId = res?.data?.asset?._id.toString();
-        newAssetId && navigate("/space/?id=" + newAssetId);
+        newAssetId && navigate("/profile/?id=" + newAssetId);
       } catch (e) {
         axiosErrorToaster(e);
       } finally {
@@ -64,9 +70,9 @@ const ProfilesPage = () => {
       </Fab>
       {myProfiles.length > 0 ? (
         <Grid container direction="column" rowSpacing={4}>
-          {myProfiles.map((asset) => (
-            <Grid id={asset._id} item>
-              <AssetCard asset={asset} />
+          {myProfiles.map((profile) => (
+            <Grid id={profile._id} item>
+              {JSON.stringify(profile)}
             </Grid>
           ))}
         </Grid>
