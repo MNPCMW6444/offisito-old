@@ -39,13 +39,3 @@ export interface Asset extends Document {
   };
   leasingCompany: Types.ObjectId | AssetCompanyContract;
 }
-
-export interface AssetsAmenities {
-  name: string;
-  extraCost: boolean;
-}
-
-export interface BuildingAmenities {
-  name: string;
-  extraCost: boolean;
-}

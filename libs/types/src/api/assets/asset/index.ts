@@ -1,14 +1,16 @@
-import { LeaseType } from "../../../mongo";
+import { Types } from "mongoose";
+import { AssetPubStatus, Availability, LeaseType } from "../../../mongo";
+
 
 export interface CreateAssetReq {
   assetDescription?: string;
   roomNumber: string;
-  assetAvailability?: string;
-  amenities?: string;
-  photoURLs?: string;
+  assetAvailability?: Availability[];
+  amenities?: Types.ObjectId[];
+  photoURLs?: string[];
   assetType: string;
-  publishingStatus?: string;
-  peopleCapacity?: string;
+  publishingStatus?: AssetPubStatus;
+  peopleCapacity?: number[];
   leaseCondition: {
     dailyPrice?: number;
     leaseType?: LeaseType;
