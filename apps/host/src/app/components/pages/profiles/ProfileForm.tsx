@@ -6,11 +6,29 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import {
+  ChangeEvent,
+  createRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Add } from "@mui/icons-material";
+import { ServerContext } from "@monorepo/server-provider";
+import { AssetCompanyContract, CreateEditCompanyReq } from "@monorepo/types";
+import {
+  axiosErrorToaster,
+  formatLabel,
+  renderSwitchesHOC,
+} from "@monorepo/react-components";
+import { useLocation } from "react-router-dom";
+import debounce from "lodash.debounce";
+import { PrimaryText } from "@monorepo/react-styles";
 
 const ProfileForm = () => {
-  const [formState, setFormState] = useState<CreateProfileReq>();
+  const [formState, setFormState] = useState<AssetCompanyContract>();
   const server = useContext(ServerContext);
 
   const fetchProfile = useCallback(
@@ -43,14 +61,14 @@ const ProfileForm = () => {
 
   const fileInputRef = createRef<HTMLInputElement>();
 
-  const handleUpdate = async (updatedState: CreateProfileReq) => {
+  const handleUpdate = async (updatedState: CreateEditCompanyReq) => {
     formState &&
-      (formState as unknown as Profile)._id &&
+      formState._id &&
       (await server?.axiosInstance.patch(
         "/api/assets/edit_asset" + formState._id,
         {
           newProfile: {
-            _id: (formState as unknown as Profile)._id,
+            _id: formState._id,
             ...updatedState,
           },
         },
@@ -66,10 +84,10 @@ const ProfileForm = () => {
   }, [debouncedUpdate]);
 
   const handleChange = (name: string, value: string | boolean) => {
-    setFormState((prevState) => {
-      const updatedState = { ...(prevState || {}), [name]: value };
-      return updatedState;
-    });
+    formState &&
+      setFormState(
+        (prevState) => ({ ...(prevState || {}), [name]: value }) as any,
+      );
   };
 
   const handleTextFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -80,7 +98,7 @@ const ProfileForm = () => {
     handleChange(key, checked);
   };
 
-  const renderTextField = (name: keyof ListProfileReq, label: string) => (
+  const renderTextField = (name: keyof CreateEditCompanyReq, label: string) => (
     <TextField
       multiline
       variant="standard"
@@ -98,7 +116,7 @@ const ProfileForm = () => {
     formData.append("photo", file);
     formState &&
       (await server?.axiosInstance.post(
-        "/api/assets/uploadPicture/" + (formState as unknown as Profile)._id,
+        "/api/assets/uploadPicture/" + formState._id,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -121,26 +139,8 @@ const ProfileForm = () => {
     await server?.axiosInstance.post("/api/assets/publish", {});
   };
 
-  useEffect(() => {
-    if (!formState?.amenities)
-      setFormState((p) => {
-        const n = p ? JSON.parse(JSON.stringify(p)) : {};
-        n.amenities = {};
-        n.availability = {
-          sun: false,
-          mon: false,
-          tues: false,
-          wed: false,
-          thu: false,
-          fri: false,
-          sat: false,
-        };
-        return n;
-      });
-  }, [formState]);
-
   console.log(formState);
-  return (formState as unknown as Profile)?._id && formState?.amenities ? (
+  return formState?._id ? (
     <Grid
       container
       direction="column"
@@ -151,34 +151,14 @@ const ProfileForm = () => {
       sx={{ overflowX: "scroll" }}
     >
       <Grid item>
-        <Typography color="primary">List a Space</Typography>
+        <PrimaryText>List a Space</PrimaryText>
       </Grid>
-      <Grid item>{renderTextField(" officeName", " Office Name")}</Grid>
-      <Grid item>{renderTextField(" desc", " Desc")}</Grid>
-      <Grid item>
-        {renderSwitches(
-          formState?.amenities as unknown as { [key: string]: boolean },
-          " amenities",
-        )}
-      </Grid>
-      {
-        <Grid item>
-          {formState?.availability &&
-            renderSwitches(
-              formState?.availability as unknown as { [key: string]: boolean },
-              " availability",
-            )}
-        </Grid>
-      }
-      <Grid item container alignItems=" center" columnSpacing={4}>
-        <Grid item>
-          {renderTextField(" companyInHold", " Company in Hold")}
-        </Grid>
-        <Grid item>{renderTextField(" floor", " Floor")}</Grid>
+      <Grid item container alignItems="center" columnSpacing={4}>
+        <Grid item>{renderTextField("companyInHold", "Company in Hold")}</Grid>
       </Grid>
       <Grid item>
-        <FormLabel component=" legend">Property Pictures</FormLabel>
-        <IconButton variant="contained" onClick={addPicture}>
+        <FormLabel component="legend">Property Pictures</FormLabel>
+        <IconButton onClick={addPicture}>
           <Add sx={{ fontSize: "250%" }} />
         </IconButton>
         <input
@@ -197,7 +177,7 @@ const ProfileForm = () => {
       ;
     </Grid>
   ) : (
-    <Typography color="primary">Error</Typography>
+    <PrimaryText>Error</PrimaryText>
   );
 };
 

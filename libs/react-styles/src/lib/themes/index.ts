@@ -9,12 +9,12 @@ export const themeForMVP: ThemeOptions = {
   palette: {
     mode: isNight() ? "dark" : "light",
     primary: {
-      main: isNight() ? "#badeab" : "#4e6500", // Light background for night mode
-      contrastText: isNight() ? "#101714" : "#ffffff", // Dark text for night, light text for day
+      main: isNight() ? "#badeab" : "#4e6500",
+      contrastText: isNight() ? "#101714" : "#ffffff",
     },
     secondary: {
       main: "#575a50",
-      contrastText: "#ffffff", // Light text for both modes against dark background
+      contrastText: "#ffffff",
     },
     error: {
       main: "#f44336",

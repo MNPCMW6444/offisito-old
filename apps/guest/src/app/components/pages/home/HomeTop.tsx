@@ -25,7 +25,7 @@ const HomeTop = () => {
       <Grid item>
         <IconButton>
           <LocationOn />
-          <Typography color="primary">{address}</Typography>
+          <PrimaryText>{address}</PrimaryText>
         </IconButton>
       </Grid>
       <Grid item>

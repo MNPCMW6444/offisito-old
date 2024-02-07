@@ -1,6 +1,7 @@
 import { Button, Grid, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
+import { PrimaryText } from "@monorepo/react-styles";
 
 const DashboardPage = () => {
   const navigate = useNavigate();
@@ -16,28 +17,28 @@ const DashboardPage = () => {
       wrap="nowrap"
     >
       <Grid item alignSelf="flex-start">
-        <Typography color="primary" variant="h4" paddingLeft="50px">
+        <PrimaryText variant="h4" paddingLeft="50px">
           Dashboard
-        </Typography>
+        </PrimaryText>
       </Grid>
       <Grid item container justifyContent="space-around" alignItems="center">
         <Grid item>
-          <Typography color="primary">Stats</Typography>
+          <PrimaryText>Stats</PrimaryText>
         </Grid>
         <Grid item>
-          <Typography color="primary">Stats</Typography>
+          <PrimaryText>Stats</PrimaryText>
         </Grid>
         <Grid item>
-          <Typography color="primary">Stats</Typography>
+          <PrimaryText>Stats</PrimaryText>
         </Grid>
         <Grid item>
-          <Typography color="primary">Stats</Typography>
+          <PrimaryText>Stats</PrimaryText>
         </Grid>
       </Grid>
       <Grid item>
-        <Typography color="primary">Nav:</Typography>
+        <PrimaryText>Nav:</PrimaryText>
       </Grid>
-      <Grid item container justifyContent=" space-around" alignItems=" center">
+      <Grid item container justifyContent="space-around" alignItems="center">
         <Grid item>
           <Button variant="contained" onClick={() => navigate("/spaces")}>
             My Spaces
@@ -57,9 +58,7 @@ const DashboardPage = () => {
         rowSpacing={2}
       >
         <Grid item>
-          <Typography color="primary">
-            All Rights Reserved © 2024 Offisito Inc.
-          </Typography>
+          <PrimaryText>All Rights Reserved © 2024 Offisito Inc.</PrimaryText>
         </Grid>
         <Grid
           item
@@ -69,10 +68,10 @@ const DashboardPage = () => {
           columnSpacing={2}
         >
           <Grid item>
-            <Typography color="primary">Terms of use</Typography>
+            <PrimaryText>Terms of use</PrimaryText>
           </Grid>
           <Grid item>
-            <Typography color="primary">Privacy policy</Typography>
+            <PrimaryText>Privacy policy</PrimaryText>
           </Grid>
         </Grid>
       </Grid>

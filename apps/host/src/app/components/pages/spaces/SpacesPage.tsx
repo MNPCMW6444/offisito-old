@@ -1,11 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Fab, Grid, Typography } from '@mui/material';
-import { Asset, CreateAssetReq } from '@monorepo/types';
-import { Add } from '@mui/icons-material';
-import { ServerContext } from '@monorepo/server-provider';
-import { axiosErrorToaster } from '@monorepo/react-components';
-import { AssetCard } from '@monorepo/react-components';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from "react";
+import { Fab, Grid, Typography } from "@mui/material";
+import { Asset, CreateEditAssetReq } from "@monorepo/types";
+import { Add } from "@mui/icons-material";
+import { ServerContext } from "@monorepo/server-provider";
+import { axiosErrorToaster } from "@monorepo/react-components";
+import { AssetCard } from "@monorepo/react-components";
+import { useNavigate } from "react-router-dom";
+import mongoose, { ObjectId } from "mongoose";
+import { PrimaryText } from "@monorepo/react-styles";
 
 const SpacesPage = () => {
   const [myAssets, setMyAssets] = useState<Asset[]>([]);
@@ -13,7 +15,9 @@ const SpacesPage = () => {
   const [creating, setCreating] = useState(false);
   const fetchedAssets = async () => {
     try {
-      const res = await server?.axiosInstance.get('/api/assets/assets_list');
+      const res = await server?.axiosInstance.get(
+        "/api/host/asset/assets_list",
+      );
       res && setMyAssets(res.data);
     } catch (e) {
       axiosErrorToaster(e);
@@ -30,12 +34,18 @@ const SpacesPage = () => {
     if (!creating) {
       setCreating(true);
       try {
-        const res = await server?.axiosInstance.post('api/assets/add_asset', {
-          roomNumber: '1213',
-          leaseCondition: { dailyPrice: 1, leaseType: 'daily' }
-        } as CreateAssetReq);
-        const newAssetId = res?.data?.asset?._id.toString();
-        newAssetId && navigate('/space/?id=' + newAssetId);
+        const res = await server?.axiosInstance.post<
+          any,
+          any,
+          CreateEditAssetReq
+        >("api/host/asset/add_asset", {
+          roomNumber: "1213",
+          assetType: "office",
+          leaseCondition: {},
+          leasingCompany: "65c3a27a03f4a55dd5e9da6d" as unknown as ObjectId,
+        });
+        const newAssetId = res?.data?.data?._id.toString();
+        newAssetId && navigate("/space/?id=" + newAssetId);
       } catch (e) {
         axiosErrorToaster(e);
       } finally {
@@ -49,9 +59,9 @@ const SpacesPage = () => {
       <Fab
         color="primary"
         sx={{
-          position: 'fixed',
-          bottom: '10%',
-          right: '5%'
+          position: "fixed",
+          bottom: "10%",
+          right: "5%",
         }}
         onClick={createNew}
       >
@@ -66,7 +76,7 @@ const SpacesPage = () => {
           ))}
         </Grid>
       ) : (
-        <Typography color="primary">No Assets yet</Typography>
+        <PrimaryText>No Assets yet</PrimaryText>
       )}
     </>
   );

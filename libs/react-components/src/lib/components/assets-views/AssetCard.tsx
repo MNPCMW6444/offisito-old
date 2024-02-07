@@ -16,22 +16,22 @@ export const AssetCard = ({ asset }: AssetCardProps) => {
         ></Box>
       </Grid>
       <Grid item>
-        <Typography color="primary">{asset.officeName}</Typography>
+        <PrimaryText>{asset.officeName}</PrimaryText>
       </Grid>
       {asset.availability && (
         <Grid item>
-          <Typography color="primary">
-          Available -{' '}
-          {Object.keys(asset.availability)
-            .filter((key) =>
-              asset.availability
-                ? asset.availability[key as keyof Availability]
-                : true
-            )
-            .join(', ')}
-          .
-        </Typography>
-      </Grid>
+          <PrimaryText>
+            Available -{' '}
+            {Object.keys(asset.availability)
+              .filter((key) =>
+                asset.availability
+                  ? asset.availability[key as keyof Availability]
+                  : true
+              )
+              .join(', ')}
+            .
+          </PrimaryText>
+        </Grid>
       )}
       <Grid item>
         <Divider sx={{ borderStyle: 'dashed' }}> </Divider>

@@ -1,25 +1,26 @@
-import { useContext, useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+import { useContext, useEffect, useState } from "react";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 import {
   Grid,
   LinearProgress,
   Paper,
   Tooltip,
-  Typography
-} from '@mui/material';
-import image from '../../../../assets/backgroundOffice.jpg';
-import { AuthContext } from '../../../context';
-import { axiosErrorToaster, useResponsiveness } from '../../../';
-import { ServerContext } from '@monorepo/server-provider';
-import { useLocation } from 'react-router-dom';
-import { LoginReq, RegisterFin, RegisterReq } from '@monorepo/types';
-import zxcvbn from 'zxcvbn';
-import { MIN_PASSWORD_STRENGTH } from '@monorepo/utils';
-import { Flag } from '@mui/icons-material';
+  Typography,
+} from "@mui/material";
+import image from "../../../../assets/backgroundOffice.jpg";
+import { AuthContext } from "../../../context";
+import { axiosErrorToaster, useResponsiveness } from "../../../";
+import { ServerContext } from "@monorepo/server-provider";
+import { useLocation } from "react-router-dom";
+import { LoginReq, RegisterFin, RegisterReq } from "@monorepo/types";
+import zxcvbn from "zxcvbn";
+import { MIN_PASSWORD_STRENGTH } from "@monorepo/utils";
+import { Flag } from "@mui/icons-material";
 // eslint-disable-next-line @nx/enforce-module-boundaries
-import { version } from '../../../../../../../package.json';
+import { version } from "../../../../../../../package.json";
+import { PrimaryText } from "@monorepo/react-styles";
 
 enum Step {
   login,
@@ -41,34 +42,34 @@ interface LabelsConstants {
 
 export const LABELS: LabelsConstants = {
   IDLE: {
-    [Step.login]: 'Login',
-    [Step.registerReq]: 'Register',
-    [Step.registerFin]: 'Register',
-    [Step.passResetReq]: 'Send Email',
-    [Step.passResetFin]: 'Change Password',
-    [Step.checkEmail]: ''
+    [Step.login]: "Login",
+    [Step.registerReq]: "Register",
+    [Step.registerFin]: "Register",
+    [Step.passResetReq]: "Send Email",
+    [Step.passResetFin]: "Change Password",
+    [Step.checkEmail]: "",
   },
   DOING: {
-    [Step.login]: 'Checking password...',
-    [Step.registerReq]: 'Sending email...',
-    [Step.registerFin]: 'Registering...',
-    [Step.passResetReq]: 'Sending Email...',
-    [Step.passResetFin]: 'Saving Your Password...',
-    [Step.checkEmail]: ''
-  }
+    [Step.login]: "Checking password...",
+    [Step.registerReq]: "Sending email...",
+    [Step.registerFin]: "Registering...",
+    [Step.passResetReq]: "Sending Email...",
+    [Step.passResetFin]: "Saving Your Password...",
+    [Step.checkEmail]: "",
+  },
 };
 
 interface AuthPageProps {
-  client: 'host' | 'guest';
+  client: "host" | "guest";
 }
 
 export const AuthPage = ({ client }: AuthPageProps) => {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [passwordAgain, setPasswordAgain] = useState<string>('');
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [passwordAgain, setPasswordAgain] = useState<string>("");
   const [key, setKey] = useState<string>();
-  const [fullName, setFullName] = useState<string>('');
-  const [buttonLabel, setButtonLabel] = useState<keyof LabelsConstants>('IDLE');
+  const [fullName, setFullName] = useState<string>("");
+  const [buttonLabel, setButtonLabel] = useState<keyof LabelsConstants>("IDLE");
   const [step, setStep] = useState<Step>(Step.registerReq);
   const [emailReason, setEmailReason] = useState<boolean>(true);
   const { refreshUserData } = useContext(AuthContext);
@@ -87,8 +88,8 @@ export const AuthPage = ({ client }: AuthPageProps) => {
   const query = useQuery();
 
   useEffect(() => {
-    const registerKey = query.get('regcode');
-    const resetKey = query.get('rescode');
+    const registerKey = query.get("regcode");
+    const resetKey = query.get("rescode");
     const key = registerKey || resetKey;
     if (key) {
       setKey(key);
@@ -103,7 +104,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
     email: true,
     password: true,
     passwordAgain: true,
-    fullName: true
+    fullName: true,
   });
 
   useEffect(() => {
@@ -114,25 +115,25 @@ export const AuthPage = ({ client }: AuthPageProps) => {
         (step === Step.registerFin &&
           zxcvbn(password).score >= MIN_PASSWORD_STRENGTH),
       passwordAgain: passwordAgain === password,
-      fullName: !!fullName
+      fullName: !!fullName,
     });
   }, [email, step, password, passwordAgain, fullName]);
 
   // Helper function to display error messages
   const getErrorMessage = (field: string) => {
     switch (field) {
-      case 'email':
-        return 'Email is required.';
-      case 'password':
+      case "email":
+        return "Email is required.";
+      case "password":
         return step !== Step.login
-          ? 'Password is too weak.'
-          : 'Password is required.';
-      case 'passwordAgain':
-        return 'Passwords do not match.';
-      case 'fullName':
-        return 'Full name is required.';
+          ? "Password is too weak."
+          : "Password is required.";
+      case "passwordAgain":
+        return "Passwords do not match.";
+      case "fullName":
+        return "Full name is required.";
       default:
-        return '';
+        return "";
     }
   };
 
@@ -155,91 +156,91 @@ export const AuthPage = ({ client }: AuthPageProps) => {
 
   // Determine the color of the progress bar based on password strength
   const progressBarColor =
-    passwordStrength < MIN_PASSWORD_STRENGTH ? 'error' : 'primary';
+    passwordStrength < MIN_PASSWORD_STRENGTH ? "error" : "primary";
 
   const mainClickHandler = (customStep: Step | undefined) => {
-    if (buttonLabel === 'IDLE')
+    if (buttonLabel === "IDLE")
       switch (customStep || step) {
         case Step.login:
           return () => {
-            setButtonLabel('DOING');
+            setButtonLabel("DOING");
             axiosInstance &&
-            axiosInstance
-              .post<undefined, undefined, LoginReq>('api/auth/log/in', {
-                email,
-                password,
-                client
-              })
-              .then(() => refreshUserData())
-              .catch((error) => axiosErrorToaster(error))
-              .finally(() => setButtonLabel('IDLE'));
+              axiosInstance
+                .post<undefined, undefined, LoginReq>("api/auth/log/in", {
+                  email,
+                  password,
+                  client,
+                })
+                .then(() => refreshUserData())
+                .catch((error) => axiosErrorToaster(error))
+                .finally(() => setButtonLabel("IDLE"));
           };
         case Step.registerReq:
           return () => {
-            setButtonLabel('DOING');
+            setButtonLabel("DOING");
             axiosInstance &&
-            axiosInstance
-              .post<undefined, undefined, RegisterReq>(
-                'api/auth/register/req',
-                {
-                  email,
-                  client
-                }
-              )
-              .then(() => setStep(Step.checkEmail))
-              .catch((error) => axiosErrorToaster(error))
-              .finally(() => setButtonLabel('IDLE'));
+              axiosInstance
+                .post<undefined, undefined, RegisterReq>(
+                  "api/auth/register/req",
+                  {
+                    email,
+                    client,
+                  },
+                )
+                .then(() => setStep(Step.checkEmail))
+                .catch((error) => axiosErrorToaster(error))
+                .finally(() => setButtonLabel("IDLE"));
           };
         case Step.registerFin:
           return () => {
-            if (buttonLabel === 'IDLE' && key) {
-              setButtonLabel('DOING');
+            if (buttonLabel === "IDLE" && key) {
+              setButtonLabel("DOING");
               axiosInstance &&
-              axiosInstance
-                .post<undefined, undefined, RegisterFin>(
-                  'api/auth/register/fin',
-                  {
-                    key,
-                    password,
-                    passwordAgain,
-                    fullName,
-                    type: client === 'guest' ? 'member' : 'host'
-                  }
-                )
-                .then(() => refreshUserData())
-                .catch((error) => axiosErrorToaster(error))
-                .finally(() => setButtonLabel('IDLE'));
+                axiosInstance
+                  .post<undefined, undefined, RegisterFin>(
+                    "api/auth/register/fin",
+                    {
+                      key,
+                      password,
+                      passwordAgain,
+                      fullName,
+                      type: client === "guest" ? "member" : "host",
+                    },
+                  )
+                  .then(() => refreshUserData())
+                  .catch((error) => axiosErrorToaster(error))
+                  .finally(() => setButtonLabel("IDLE"));
             }
           };
         case Step.passResetReq:
           return () => {
-            setButtonLabel('DOING');
+            setButtonLabel("DOING");
             axiosInstance &&
-            axiosInstance
-              .post('api/auth/manage/passresetreq', {
-                email,
-                client
-              })
-              .then(() => setStep(Step.checkEmail))
-              .catch((error) => axiosErrorToaster(error))
-              .finally(() => setButtonLabel('IDLE'));
+              axiosInstance
+                .post("api/auth/manage/passresetreq", {
+                  email,
+                  client,
+                })
+                .then(() => setStep(Step.checkEmail))
+                .catch((error) => axiosErrorToaster(error))
+                .finally(() => setButtonLabel("IDLE"));
           };
         case Step.passResetFin:
           return () => {
-            if (buttonLabel === 'IDLE' && key) {
-              setButtonLabel('DOING');
+            if (buttonLabel === "IDLE" && key) {
+              setButtonLabel("DOING");
               axiosInstance &&
-              axiosInstance
-                .post('api/auth/manage/passresetfin', {
-                  key,
-                  password,
-                  passwordAgain,
-                  fullName,
-                  type: client === 'guest' ? 'member' : 'host'
-                })
-                .then(() => refreshUserData())
-                .catch((error) => axiosErrorToaster(error))
-                .finally(() => setButtonLabel('IDLE'));
+                axiosInstance
+                  .post("api/auth/manage/passresetfin", {
+                    key,
+                    password,
+                    passwordAgain,
+                    fullName,
+                    type: client === "guest" ? "member" : "host",
+                  })
+                  .then(() => refreshUserData())
+                  .catch((error) => axiosErrorToaster(error))
+                  .finally(() => setButtonLabel("IDLE"));
             }
           };
       }
@@ -248,7 +249,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
   const renderButtons = () => {
     const mainButton: { label: string; clickHandler?: () => void } = {
       clickHandler: mainClickHandler(undefined),
-      label: LABELS[buttonLabel][step]
+      label: LABELS[buttonLabel][step],
     };
     const navigateButton: {
       exists?: boolean;
@@ -264,17 +265,17 @@ export const AuthPage = ({ client }: AuthPageProps) => {
       case Step.login:
         navigateButton.exists = true;
         navigateButton.clickHandler = () => setStep(Step.registerReq);
-        navigateButton.label = 'Register';
+        navigateButton.label = "Register";
         resetButton.exists = true;
         resetButton.clickHandler = () => setStep(Step.passResetReq);
-        resetButton.label = 'Forgot Password';
+        resetButton.label = "Forgot Password";
         break;
       case Step.registerReq:
         navigateButton.exists = true;
         navigateButton.clickHandler = () => setStep(Step.login);
-        navigateButton.label = 'Login';
+        navigateButton.label = "Login";
         resetButton.exists = true;
-        resetButton.label = 'Forgot Password';
+        resetButton.label = "Forgot Password";
         resetButton.clickHandler = () => setStep(Step.passResetReq);
         break;
       case Step.registerFin:
@@ -284,7 +285,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
       case Step.passResetReq:
         navigateButton.exists = true;
         navigateButton.clickHandler = () => setStep(Step.login);
-        navigateButton.label = 'Back to Login';
+        navigateButton.label = "Back to Login";
         resetButton.exists = false;
         break;
       case Step.passResetFin:
@@ -314,7 +315,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                   type="submit"
                   variant="outlined"
                   onClick={navigateButton.clickHandler}
-                  sx={{ fontSize: resetButton.exists ? '70%' : '90%' }}
+                  sx={{ fontSize: resetButton.exists ? "70%" : "90%" }}
                 >
                   {navigateButton.label}
                 </Button>
@@ -327,7 +328,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                   type="submit"
                   variant="outlined"
                   onClick={resetButton.clickHandler}
-                  sx={{ fontSize: navigateButton.exists ? '70%' : '90%' }}
+                  sx={{ fontSize: navigateButton.exists ? "70%" : "90%" }}
                 >
                   {resetButton.label}
                 </Button>
@@ -340,12 +341,10 @@ export const AuthPage = ({ client }: AuthPageProps) => {
   };
 
   const authJSX = (
-    <Paper sx={{ padding: '20px', width: '75%' }}>
+    <Paper sx={{ padding: "20px", width: "75%" }}>
       <Grid container direction="column" alignItems="center">
         <Grid item>
-          <Typography color="primary" variant="h6" textAlign="center">
-            Welcome to
-          </Typography>
+          <PrimaryText variant="h6">Welcome to</PrimaryText>
         </Grid>
         <Grid item>
           <Tooltip title={version} placement="right-start">
@@ -356,10 +355,10 @@ export const AuthPage = ({ client }: AuthPageProps) => {
         </Grid>
         <Grid item>
           {step === Step.checkEmail ? (
-            <Typography textAlign="center">
-              We sent {email} a link to{' '}
-              {emailReason ? 'activate your account' : 'reset your passwrod'}!
-            </Typography>
+            <PrimaryText textAlign="center">
+              Wew sent {email} a link to{" "}
+              {emailReason ? "activate your account" : "reset your passwrod"}!
+            </PrimaryText>
           ) : (
             <>
               {step !== Step.registerFin && step !== Step.passResetFin && (
@@ -375,9 +374,9 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                     onChange={(e) => setEmail(e.target.value)}
                   />
                   {!validations.email && (
-                    <Typography color="error" variant="caption">
-                      {getErrorMessage('email')}
-                    </Typography>
+                    <PrimaryText color="error" variant="caption">
+                      {getErrorMessage("email")}
+                    </PrimaryText>
                   )}
                 </>
               )}
@@ -396,9 +395,9 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                   {!validations.password && (
-                    <Typography color="error" variant="caption">
-                      {getErrorMessage('password')}
-                    </Typography>
+                    <PrimaryText color="error" variant="caption">
+                      {getErrorMessage("password")}
+                    </PrimaryText>
                   )}
                   {step === Step.registerFin ||
                     (step === Step.passResetFin && (
@@ -413,7 +412,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                           variant="determinate"
                           value={getStrengthBarValue(passwordStrength)}
                           color={progressBarColor}
-                          style={{ width: '100%' }}
+                          style={{ width: "100%" }}
                         />
                         <Box
                           position="absolute"
@@ -425,7 +424,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
                               <Flag />
                             </Grid>
                             <Grid item>
-                              <Typography color="primary">Min</Typography>
+                              <PrimaryText>Min</PrimaryText>
                             </Grid>
                           </Grid>
                         </Box>
@@ -439,33 +438,31 @@ export const AuthPage = ({ client }: AuthPageProps) => {
               {(step === Step.registerFin || step == Step.passResetFin) && (
                 <>
                   <TextField
-                    margin=" dense"
-                    label=" Password Confirmation"
-                    type=" password"
+                    margin="dense"
+                    label="Password Confirmation"
+                    type="password"
                     fullWidth
-                    variant=" outlined"
+                    variant="outlined"
                     value={passwordAgain}
                     error={!validations.passwordAgain}
                     onChange={(e) => setPasswordAgain(e.target.value)}
                   />
                   {!validations.passwordAgain && (
-                    <Typography color=" error" variant=" caption">
+                    <PrimaryText>
                       {getErrorMessage(" passwordAgain")}
-                    </Typography>
+                    </PrimaryText>
                   )}
                   <TextField
-                    margin=" dense"
-                    label=" Full Name"
+                    margin="dense"
+                    label="Full Name"
                     fullWidth
-                    variant=" outlined"
+                    variant="outlined"
                     value={fullName}
                     error={!validations.fullName}
                     onChange={(e) => setFullName(e.target.value)}
                   />
                   {!validations.fullName && (
-                    <Typography color=" error" variant=" caption">
-                      {getErrorMessage(" fullName")}
-                    </Typography>
+                    <PrimaryText>{getErrorMessage(" fullName")}</PrimaryText>
                   )}
                 </>
               )}
@@ -484,27 +481,27 @@ export const AuthPage = ({ client }: AuthPageProps) => {
   return (
     <Grid
       container
-      justifyContent=" center"
-      alignItems=" center"
+      justifyContent="center"
+      alignItems="center"
       width="100%"
-                              height="100%"
-                              wrap="nowrap"
-                              >
-                              <Grid
-                                item
-                                container
-                                width={isMobileOrTabl || client === 'guest' ? '100%' : '40%'}
-                                height="100%"
-                                justifyContent="center"
-                                alignItems="center"
-                              >
-                                {authJSX}
-                              </Grid>
-                              {client === 'host' && !isMobileOrTabl && (
-                                <Grid item width="60%" height="100%">
-                                  <Box component="img" src={image} maxHeight="100%" width="auto" />
-                                </Grid>
-                              )}
-                            </Grid>
-                            );
-                            };
+      height="100%"
+      wrap="nowrap"
+    >
+      <Grid
+        item
+        container
+        width={isMobileOrTabl || client === "guest" ? "100%" : "40%"}
+        height="100%"
+        justifyContent="center"
+        alignItems="center"
+      >
+        {authJSX}
+      </Grid>
+      {client === "host" && !isMobileOrTabl && (
+        <Grid item width="60%" height="100%">
+          <Box component="img" src={image} maxHeight="100%" width="auto" />
+        </Grid>
+      )}
+    </Grid>
+  );
+};

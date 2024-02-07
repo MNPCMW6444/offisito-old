@@ -30,6 +30,7 @@ const Router = () => {
             direction="column"
             bgcolor={(theme) => theme.palette.background.default}
             wrap="nowrap"
+            overflow="hidden"
           >
             <Grid
               item

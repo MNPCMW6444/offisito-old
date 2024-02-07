@@ -1,11 +1,12 @@
-import { Asset, Availability } from '@monorepo/types';
-import { useContext, useEffect, useState } from 'react';
-import { ServerContext } from '@monorepo/server-provider';
-import { Divider, Grid, Typography } from '@mui/material';
-import { ImageCarousel } from './ImageCarousel';
-import Box from '@mui/material/Box';
-import { LocationOn } from '@mui/icons-material';
-import { AmenitiesView } from '../../assets-views';
+import { Asset } from "@monorepo/types";
+import { useContext, useEffect, useState } from "react";
+import { ServerContext } from "@monorepo/server-provider";
+import { Divider, Grid } from "@mui/material";
+import { ImageCarousel } from "./ImageCarousel";
+import Box from "@mui/material/Box";
+import { LocationOn } from "@mui/icons-material";
+import { AmenitiesView } from "../../assets-views";
+import { PrimaryText } from "@monorepo/react-styles";
 
 interface ListingPageProps {
   _id?: string;
@@ -19,8 +20,8 @@ interface AvailabilityProps {
 
 const AvailabilityBox = ({ name, isFilled }: AvailabilityProps) => (
   <Box
-    color={isFilled ? '#ffffff' : '#0000000'}
-    bgcolor={isFilled ? '#0000000' : '#ffffff'}
+    color={isFilled ? "#ffffff" : "#0000000"}
+    bgcolor={isFilled ? "#0000000" : "#ffffff"}
   >
     {name}
   </Box>
@@ -31,7 +32,7 @@ export const ListingPage = ({ _id }: ListingPageProps) => {
   const server = useContext(ServerContext);
   const fetchListing = () =>
     server?.axiosInstance
-      .get<Asset[]>('api/assets/' + _id)
+      .get<Asset[]>("api/assets/" + _id)
       .then((res) => setListing(res.data[0]));
 
   useEffect(() => {
@@ -39,43 +40,44 @@ export const ListingPage = ({ _id }: ListingPageProps) => {
   }, []);
 
   return listing ? (
-      <Grid container direction="column">
-        <Grid item>
-          <ImageCarousel
-            imagesArray={listing.photoURLs?.map((url) => ({
-              imgPath: url,
-              alt: '',
-              label: ''
-            }))}
-          />
-        </Grid>
-        <Grid item container alignItems="center" justifyContent="center">
-          {/*  <Grid item width="65%">
-          <Typography color="primary">{listing.officeName}</Typography>
+    <Grid container direction="column">
+      <Grid item>
+        <ImageCarousel
+          imagesArray={listing.photoURLs?.map((url) => ({
+            imgPath: url,
+            alt: "",
+            label: "",
+          }))}
+        />
+      </Grid>
+      <Grid item container alignItems="center" justifyContent="center">
+        {/*  <Grid item width="65%">
+          <PrimaryText>{listing.officeName}</PrimaryText>
         </Grid>*/}
-          <Grid item container>
-            <Grid item>
-              <Typography color="primary">Day: </Typography>
+        <Grid item container>
+          <Grid item>
+            <PrimaryText>Day: </PrimaryText>
           </Grid>
           <Grid item>
             <Box>
               {/*TODO: itai@offisito.com*/}
-              <Typography color="primary">{'listing.price??'}</Typography>
+              <PrimaryText>{"listing.price??"}</PrimaryText>
             </Box>
           </Grid>
         </Grid>
       </Grid>
-    <Grid item container alignItems="center">
-      <Grid item>
-        <LocationOn />
+      <Grid item container alignItems="center">
+        <Grid item>
+          <LocationOn />
+        </Grid>
+        {/*TODO: itai@offisito.com*/}
+        <Grid item>{"listing.address??"}</Grid>
       </Grid>
-      {/*TODO: itai@offisito.com*/}
-      <Grid item>{'listing.address??'}</Grid>
-    </Grid>;
-  <AmenitiesView amenities={listing.amenities} />;
-  <Divider />;
-  <Grid item>
-    <Typography color="primary">Availability</Typography>
+      ;
+      <AmenitiesView amenities={listing.amenities} />;
+      <Divider />;
+      <Grid item>
+        <PrimaryText>Availability</PrimaryText>
       </Grid>
       {/*    {listing.availability && (
         <Grid item container columnSpacing={2}>
@@ -94,18 +96,18 @@ export const ListingPage = ({ _id }: ListingPageProps) => {
         </Grid>
       )}*/}
       <Grid item>
-        <Typography color="primary">Space includes:</Typography>
-  </Grid>;
-  <Grid item>????? {/*TODO: itai@offisito.com*/}</Grid>;
-  <Grid item>
-    <Typography color="primary">Owner:</Typography>
+        <PrimaryText>Space includes:</PrimaryText>
+      </Grid>
+      ;<Grid item>????? {/*TODO: itai@offisito.com*/}</Grid>;
+      <Grid item>
+        <PrimaryText>Owner:</PrimaryText>
       </Grid>
       <Grid item>
-        <Typography color="primary">Map:</Typography>
-  </Grid>;
-</Grid>
-) :
-  (
-    <Typography color="primary">Loading Listing...</Typography>
+        <PrimaryText>Map:</PrimaryText>
+      </Grid>
+      ;
+    </Grid>
+  ) : (
+    <PrimaryText>Loading Listing...</PrimaryText>
   );
 };

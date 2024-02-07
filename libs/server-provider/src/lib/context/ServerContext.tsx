@@ -1,19 +1,20 @@
-import { createContext, useEffect, useState, useRef, ReactNode } from 'react';
-import { Typography } from '@mui/material';
-import axios, { AxiosInstance } from 'axios';
+import { createContext, useEffect, useState, useRef, ReactNode } from "react";
+import { Typography } from "@mui/material";
+import axios, { AxiosInstance } from "axios";
+import { PrimaryText } from "@monorepo/react-styles";
 
 export const frontendSettings = () => {
   try {
-    const envConfig = document.getElementById('env-config')?.textContent;
-    return JSON.parse(envConfig || '{}');
+    const envConfig = document.getElementById("env-config")?.textContent;
+    return JSON.parse(envConfig || "{}");
   } catch (e) {
     return import.meta.env;
   }
 };
 
 const DEFAULT_TRY_INTERVAL = 3000;
-const GOOD_STATUS = 'good';
-const BAD_MESSAGE = 'Server is not available. Please try again later.';
+const GOOD_STATUS = "good";
+const BAD_MESSAGE = "Server is not available. Please try again later.";
 
 interface ServerProviderProps {
   children: ReactNode;
@@ -29,25 +30,25 @@ interface ServerContextProps {
 export const ServerContext = createContext<ServerContextProps | null>(null);
 
 export const ServerProvider = ({
-                                 tryInterval,
-                                 customErrorTSX,
-                                 children
-                               }: ServerProviderProps) => {
+  tryInterval,
+  customErrorTSX,
+  children,
+}: ServerProviderProps) => {
   const interval = tryInterval || DEFAULT_TRY_INTERVAL;
   const [status, setStatus] = useState<string>(BAD_MESSAGE);
-  const [version, setVersion] = useState<string>('');
+  const [version, setVersion] = useState<string>("");
   const statusRef = useRef(status);
 
   const { VITE_WHITE_ENV } = frontendSettings();
   const getBaseURL = () =>
-    VITE_WHITE_ENV === 'local'
-      ? 'http://localhost:5556/'
-      : `https://${VITE_WHITE_ENV === 'preprod' ? 'pre' : ''}server.offisito.com/`;
+    VITE_WHITE_ENV === "local"
+      ? "http://localhost:5556/"
+      : `https://${VITE_WHITE_ENV === "preprod" ? "pre" : ""}server.offisito.com/`;
 
   const axiosInstance = axios.create({
     baseURL: getBaseURL(),
     withCredentials: true,
-    headers: { 'Content-Type': 'application/json' }
+    headers: { "Content-Type": "application/json" },
   });
 
   const scheduleNextCheck = () => {
@@ -56,9 +57,9 @@ export const ServerProvider = ({
 
   const setStatusAsyncly = async () => {
     try {
-      const response = await axiosInstance.get('api');
+      const response = await axiosInstance.get("api");
       const newStatus =
-        response.data.status === 'Im alive' ? GOOD_STATUS : BAD_MESSAGE;
+        response.data.status === "Im alive" ? GOOD_STATUS : BAD_MESSAGE;
 
       setStatus(newStatus);
       if (newStatus === GOOD_STATUS) {
@@ -67,7 +68,7 @@ export const ServerProvider = ({
         scheduleNextCheck();
       }
     } catch (error) {
-      console.error('An error occurred while checking the server: ', error);
+      console.error("An error occurred while checking the server: ", error);
       scheduleNextCheck();
     }
   };
@@ -89,6 +90,6 @@ export const ServerProvider = ({
       </ServerContext.Provider>
     );
   } else {
-    return customErrorTSX || <Typography color="primary">{status}</Typography>;
+    return customErrorTSX || <PrimaryText>{status}</PrimaryText>;
   }
 };

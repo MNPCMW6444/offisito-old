@@ -15,7 +15,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Asset, CreateAssetReq } from "@monorepo/types";
+import { Asset, CreateEditAssetReq } from "@monorepo/types";
 import { Add } from "@mui/icons-material";
 import { ServerContext } from "@monorepo/server-provider";
 import debounce from "lodash.debounce";
@@ -25,18 +25,19 @@ import {
   renderSwitchesHOC,
 } from "@monorepo/react-components";
 import { useLocation } from "react-router-dom";
+import { ObjectId } from "mongoose";
 
 const SpaceForm = () => {
-  const [formState, setFormState] = useState<CreateAssetReq>();
+  const [formState, setFormState] = useState<Asset>();
   const server = useContext(ServerContext);
 
   const fetchAsset = useCallback(
     async (id: string) => {
       try {
         const res = await server?.axiosInstance.get(
-          "/api/assets/asset_detail/" + id,
+          "/api/host/asset/asset_detail/" + id,
         );
-        setFormState(res?.data.asset);
+        setFormState(res?.data.data);
       } catch (e) {
         axiosErrorToaster(e);
       }
@@ -60,14 +61,13 @@ const SpaceForm = () => {
 
   const fileInputRef = createRef<HTMLInputElement>();
 
-  const handleUpdate = async (updatedState: CreateAssetReq) => {
+  const handleUpdate = async (updatedState: Asset) => {
     formState &&
-      (formState as unknown as Asset)._id &&
       (await server?.axiosInstance.patch(
         "/api/assets/edit_asset" + formState._id,
         {
           newAsset: {
-            _id: (formState as unknown as Asset)._id,
+            _id: formState._id,
             ...updatedState,
           },
         },
@@ -82,22 +82,26 @@ const SpaceForm = () => {
     };
   }, [debouncedUpdate]);
 
-  const handleChange = (name: string, value: string | boolean) => {
-    setFormState((prevState) => {
-      const updatedState = { ...(prevState || {}), [name]: value };
-      return updatedState;
-    });
+  const handleChange = (name: keyof Asset, value: string | boolean) => {
+    formState &&
+      setFormState(
+        (prevState) =>
+          ({
+            ...prevState,
+            [name]: value,
+          }) as any,
+      );
   };
 
   const handleTextFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
-    handleChange(e.target.name, e.target.value);
+    handleChange(e.target.name as keyof Asset, e.target.value);
   };
 
   const handleSwitchChange = (key: string, checked: boolean) => {
-    handleChange(key, checked);
+    handleChange(key as keyof Asset, checked);
   };
 
-  const renderTextField = (name: keyof ListAssetReq, label: string) => (
+  const renderTextField = (name: keyof Asset, label: string) => (
     <TextField
       multiline
       variant="standard"
@@ -157,7 +161,7 @@ const SpaceForm = () => {
   }, [formState]);
 
   console.log(formState);
-  return (formState as unknown as Asset)?._id && formState?.amenities ? (
+  return (formState as unknown as Asset)?._id ? (
     <Grid
       container
       direction="column"
@@ -168,34 +172,22 @@ const SpaceForm = () => {
       sx={{ overflowX: "scroll" }}
     >
       <Grid item>
-        <Typography color="primary">List a Space</Typography>
+        <PrimaryText>List a Space</PrimaryText>
       </Grid>
-      <Grid item>{renderTextField(" officeName", " Office Name")}</Grid>
-      <Grid item>{renderTextField(" desc", " Desc")}</Grid>
+      <Grid item>{renderTextField("assetDescription", "Desc")}</Grid>
       <Grid item>
         {renderSwitches(
           formState?.amenities as unknown as { [key: string]: boolean },
-          " amenities",
+          "amenities",
         )}
       </Grid>
-      {
-        <Grid item>
-          {formState?.availability &&
-            renderSwitches(
-              formState?.availability as unknown as { [key: string]: boolean },
-              " availability",
-            )}
-        </Grid>
-      }
-      <Grid item container alignItems=" center" columnSpacing={4}>
-        <Grid item>
-          {renderTextField(" companyInHold", " Company in Hold")}
-        </Grid>
-        <Grid item>{renderTextField(" floor", " Floor")}</Grid>
+      <Grid item container alignItems="center" columnSpacing={4}>
+        <Grid item>{renderTextField("leasingCompany", "Company in Hold")}</Grid>
+        <Grid item>{renderTextField("roomNumber", "Floor")}</Grid>
       </Grid>
       <Grid item>
-        <FormLabel component=" legend">Property Pictures</FormLabel>
-        <IconButton variant="contained" onClick={addPicture}>
+        <FormLabel component="legend">Property Pictures</FormLabel>
+        <IconButton onClick={addPicture}>
           <Add sx={{ fontSize: "250%" }} />
         </IconButton>
         <input
@@ -214,7 +206,7 @@ const SpaceForm = () => {
       ;
     </Grid>
   ) : (
-    <Typography color="primary">Error</Typography>
+    <PrimaryText>Error</PrimaryText>
   );
 };
 
