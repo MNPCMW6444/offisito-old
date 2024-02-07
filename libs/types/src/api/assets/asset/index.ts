@@ -1,8 +1,8 @@
-import { Types } from "mongoose";
+import { ObjectId, Types } from "mongoose";
 import { AssetPubStatus, Availability, LeaseType } from "../../../mongo";
 
 
-export interface CreateAssetReq {
+export interface CreateEditAssetReq {
   assetDescription?: string;
   roomNumber: string;
   assetAvailability?: Availability[];
@@ -15,5 +15,5 @@ export interface CreateAssetReq {
     dailyPrice?: number;
     leaseType?: LeaseType;
   };
-  leasingCompany: string;
+  leasingCompany: ObjectId;
 }

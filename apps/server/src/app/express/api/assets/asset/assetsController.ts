@@ -1,20 +1,25 @@
-import { Response } from "express";
+import { Response, response } from "express";
 import { Request } from "../../../middleware";
-import assetModel from "../../../../mongo/assets/assetModel";
-import { Asset, CreateAssetReq } from "@monorepo/types";
+import AssetModel from "../../../../mongo/assets/assetModel";
+import { Asset, CreateEditAssetReq } from "@monorepo/types";
+import AssetCompanyContractModel from "../../../../mongo/assets/assetCompanyModel";
 
 import { isValidObjectId } from "mongoose";
+import { crudResponse } from "../crudResponse";
+import AssetBuildingModel from "../../../../mongo/assets/assetBuildingModel";
 
 // #TODO: Front end will add a coordinate Array with longitude, longitude in req.body
 // host ID to be sent in the URL
 // status is on draft when saving
 export const createAsset = async (req: Request, res: Response) => {
-  const AssetModel = assetModel();
-
+  const assetModel = AssetModel();
+  const buildingModel= AssetBuildingModel();
+  const contractModel = AssetCompanyContractModel()
   const host = req.user;
 
   try {
     const {
+      // host,
       assetDescription,
       roomNumber,
       assetAvailability,
@@ -25,13 +30,15 @@ export const createAsset = async (req: Request, res: Response) => {
       peopleCapacity,
       leaseCondition,
       leasingCompany,
-    } = req.body as CreateAssetReq;
+      
+    } = req.body as CreateEditAssetReq;
 
     if (!isValidObjectId(host._id)) {
-      return res.status(500).json({ msg: "Not Vlaid User" });
+      const response: crudResponse<null> = {success:false, error:"Not Valid ID" }
+      return res.status(500).json(response);
     }
 
-    const newAsset = new AssetModel({
+    const newAsset = new assetModel({
       host: host._id,
       assetDescription,
       roomNumber,
@@ -47,10 +54,30 @@ export const createAsset = async (req: Request, res: Response) => {
 
     const savedNewAsset = await newAsset.save();
 
-    res.status(201).json({
-      message: "Asset Created with Success!!",
-      asset: savedNewAsset,
+    const savedAsset = await assetModel.findById(savedNewAsset._id).populate({
+      path: 'leasingCompany',
+      model: contractModel,
     });
+    
+    // const savedAsset = await assetModel.findById(savedNewAsset._id).populate('assetCompanyContract');
+
+    console.log("aasset ID", savedAsset);
+    const buildingOfLeasingCompany = savedAsset.leasingCompany.building;
+    console.log("buildingOfLeasingCompany",buildingOfLeasingCompany);
+    
+    // add to building assets:
+   
+    const pushToBuildingAssetsList = await buildingModel.updateOne({_id:buildingOfLeasingCompany._id}, {$push: {assets: savedAsset}})
+    console.log();
+    
+    const response: crudResponse<typeof savedNewAsset>= {
+      success:true,
+      data:savedNewAsset,
+      msg:"New Asset Saved"
+    }
+    
+    
+    res.status(201).json(response);
   } catch (err) {
     console.error("error in creating New Asset", err);
     res.status(500).json({ error: "Internal Server Error" });
@@ -60,18 +87,25 @@ export const createAsset = async (req: Request, res: Response) => {
 // #TODO - sending Back end the asset_id in url.
 
 export const getAssetDetail = async (req: Request, res: Response) => {
-  const AssetModel = assetModel();
+  const assetModel = AssetModel();
 
   try {
     const asset_id = req.params.asset_id;
 
-    const findAsset = await AssetModel.findById(asset_id);
+    const findAsset = await assetModel.findById(asset_id);
 
     if (!findAsset) {
-      return res.status(500).json({ msg: "no Such Asset" });
-    }
+  
+      const response: crudResponse<null> = {success:false, error:"Not Valid ASSET ID" }
+      return res.status(500).json(response);
+      }
+    
+      const response: crudResponse<typeof AssetModel> = {
+        success: true,
+        data: findAsset,
 
-    res.status(200).json({ msg: "found Asset", asset: findAsset });
+      };
+    res.status(200).json(response);
   } catch (error) {
     console.error("no such asset", error);
     res.status(500).json({ msg: "Internal Error" });
@@ -81,28 +115,37 @@ export const getAssetDetail = async (req: Request, res: Response) => {
 // #TODO - sending Back end the asset_id in url.
 
 export const editAsset = async (req: Request, res: Response) => {
-  const AssetModel = assetModel();
+  const assetModel = AssetModel();
 
   try {
     const asset_id = req.params.asset_id;
 
     if (!isValidObjectId(asset_id)) {
-      return res.status(400).json({ error: "Invalid asset ID" });
+      const response: crudResponse<null> = {success:false, error:"Not Valid ID" }
+      return res.status(500).json(response);
     }
 
-    const updatedAssetData: Partial<Asset> = req.body;
+    // const updatedAssetData: Partial<CreateEditAssetReq> = req.body;
 
-    const updatedAsset = await AssetModel.findOneAndUpdate(
+    const updatedAsset = await assetModel.findByIdAndUpdate(
       { _id: asset_id },
-      updatedAssetData,
-      { new: true },
+      req.body as CreateEditAssetReq,
+      { new: true }
     );
 
     if (!updatedAsset) {
-      return res.status(404).json({ error: "Asset not found" });
+      const response: crudResponse<null> = { success: false, error: 'Asset not found' };
+      return res.status(404).json(response);
     }
 
-    res.status(200).json({ msg: "Asset updated with Succes" });
+    const response: crudResponse<typeof updatedAsset> = {
+      success: true,
+      data: updatedAsset,
+      msg:"Asset Update Success"
+    }
+
+
+    res.status(200).json(response);
   } catch (error) {
     console.error("Error in updating ", error);
     res.status(500).json({ error: " Internal Server Error" });
@@ -112,23 +155,42 @@ export const editAsset = async (req: Request, res: Response) => {
 // #TODO - sending Back end the asset_id in url.
 
 export const publishAsset = async (req: Request, res: Response) => {
-  const AssetModel = assetModel();
+  const assetModel = AssetModel();
 
   try {
     const asset_id = req.params.asset_id;
-    if (!isValidObjectId) {
-      return res.status(404).json({ msg: "Not a Valid ID" });
+    if (!isValidObjectId(asset_id)) {
+      const response : crudResponse<null> = {success: false, error:"Not Valid AssetID"}
+      return res.status(404).json(response);
     }
-    const publishedAsset = await AssetModel.findByIdAndUpdate(
+
+    const existingAsset = await assetModel.findById(asset_id);
+
+    if (!existingAsset) {
+      const response: crudResponse<null> = { success: false, error: 'Asset not found' };
+      return res.status(404).json(response);
+    }
+
+    const publishedAsset = await assetModel.findByIdAndUpdate(
       { _id: asset_id },
-      { status: "active" },
+      {
+        ...existingAsset.toObject(),
+        publishingStatus: 'active',
+      },
+      { new: true }
     );
 
     if (!publishedAsset) {
-      return res.status(404).json({ error: "Asset not found" });
+      const response: crudResponse<null> = { success: false, error: 'Unable to publish your Asset' };
+      return res.status(500).json(response);
     }
 
-    res.status(200).json({ msg: "Asset updated with Succes" });
+    const response: crudResponse<typeof publishedAsset> = {
+      success: true,
+      data: publishedAsset,
+    };
+
+    res.status(200).json(response);
   } catch (publishError) {
     console.error("Publishing didnt succed", publishError);
     res.status(500).json({ msg: "Unable to pulish - internal Error" });
@@ -138,18 +200,25 @@ export const publishAsset = async (req: Request, res: Response) => {
 // here Req Need to hold host_id in order to retrieve the host listing
 
 export const getAssetsList = async (req: Request, res: Response, next) => {
-  // const AssetModel = assetModel();
+  const assetModel = AssetModel();
   const authenticatedHost = req.user;
-  //const host_id = req.params.host_id;
 
   try {
     const assetList = await assetModel().find({ host: authenticatedHost._id });
 
     if (assetList.lenght < 0) {
-      console.log("there s no list for this host ");
-      res.status(401).json({ msg: "nothing in your listing yet" });
+      const response : crudResponse<typeof assetList> ={
+        success: false,
+        error: "There are no Assets Yet"
+      }
+     
+      res.status(401).json(response);
     } else {
-      res.status(200).json(assetList);
+      const response: crudResponse<typeof assetList>={
+        success: true,
+        data: assetList
+      }
+      res.status(200).json(response);
     }
   } catch (error) {
     next(error);
@@ -157,20 +226,32 @@ export const getAssetsList = async (req: Request, res: Response, next) => {
 };
 
 export const deleteAsset = async (req: Request, res: Response) => {
-  const AssetModel = assetModel();
+  const assetModel = AssetModel();
   try {
     const asset_id = req.params.asset_id;
 
     if (!isValidObjectId) {
-      return res.status(401).json({ msg: "not a valid ID" });
+      const response:crudResponse<null> = {
+        success:false,
+        error:"invlaid AssetID"
+      }
+      return res.status(401).json(response);
     }
-    const deleteAssetResults = await AssetModel.deleteOne({ _id: asset_id });
+    const deletedAsset = await assetModel.deleteOne({ _id: asset_id });
 
-    if (deleteAssetResults.deleteCount > 0) {
-      res.status(200).json({ msg: "Asset Deleted", asset_id: deleteAsset });
-    } else {
-      res.status(404).json({ msg: "Asset not ound for deletion" });
+    if (!deletedAsset) {
+    const response: crudResponse<null>={
+    success:false,
+    error:"unable to delete"
     }
+      res.status(200).json(response);
+    } 
+
+    const response: crudResponse<typeof deletedAsset> = {
+      success: true,
+      data: deletedAsset,
+    };
+    res.status(200).json(response)
   } catch (deleteError) {
     console.error("Erro in deleting Asset", deleteError);
     res

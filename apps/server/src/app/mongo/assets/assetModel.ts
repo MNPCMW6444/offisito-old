@@ -27,7 +27,7 @@ export default () => {
           enum: Object.values(LeaseType),
         },
       },
-      leasingCompany: { type: Types.ObjectId, ref: "AssetCompanyContract" , required:true},
+      leasingCompany: { type: Types.ObjectId, ref: "AssetCompanyContractModel", required:true},
     },
     {
       timestamps: true,

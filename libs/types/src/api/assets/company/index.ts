@@ -1,6 +1,6 @@
 import { ObjectId } from "mongoose";
 
-export interface CreateCompanyReq {
+export interface CreateEditCompanyReq {
   companyName: string;
   companyInHold?: string;
   floorNumber: string;

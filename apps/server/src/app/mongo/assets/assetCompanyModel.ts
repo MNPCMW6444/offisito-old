@@ -5,7 +5,7 @@ import { versioning } from "@mnpcmw6444/mongoose-auto-versioning";
 
 
 export default () => {
-    const name = "assetCompany";
+    const name = "assetCompanyContract";
 
     const  AssetCompanyContractSchema = new mongoose.Schema({
     host:{type: Types.ObjectId , ref: "User", required:true},
@@ -15,7 +15,7 @@ export default () => {
     fullFloor:{type: Boolean,  },
     contractEndDate:{type: Date,  },
     subleasePermission:{type:Boolean,  },
-    building: {type: Types.ObjectId, ref: "AssetBuilding", },    
+    building: {type: Types.ObjectId, ref: "AssetBuildingModel", },    
 })
 .plugin(versioning, { collection: name + "s.history", mongoose });
 
