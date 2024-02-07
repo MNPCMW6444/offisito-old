@@ -12,37 +12,37 @@ const Router = () => {
   const { user } = useContext(AuthContext);
 
   return (
-    <Grid
-      width="100%"
-      height="100%"
-      container
-      justifyContent="center"
-      bgcolor={(theme) => theme.palette.background.paper}
-      wrap="nowrap"
-    >
-      <Grid
-        item
-        height="100%"
-        width="1000px"
-        container
-        direction="column"
-        bgcolor={(theme) => theme.palette.background.default}
-        wrap="nowrap"
-      >
+    <BrowserRouter>
+      {user ? (
         <Grid
-          item
-          height="100px"
+          width="100%"
+          height="100%"
           container
-          justifyContent="space-between"
-          alignItems="center"
+          justifyContent="center"
+          bgcolor={(theme) => theme.palette.background.paper}
           wrap="nowrap"
         >
-          <Grid item>Logo</Grid>
-          <Grid item>Menu</Grid>
-        </Grid>
-        <Grid item>
-          <BrowserRouter>
-            {user ? (
+          <Grid
+            item
+            height="100%"
+            width="1000px"
+            container
+            direction="column"
+            bgcolor={(theme) => theme.palette.background.default}
+            wrap="nowrap"
+          >
+            <Grid
+              item
+              height="100px"
+              container
+              justifyContent="space-between"
+              alignItems="center"
+              wrap="nowrap"
+            >
+              <Grid item>Logo</Grid>
+              <Grid item>Menu</Grid>
+            </Grid>
+            <Grid item>
               <Routes>
                 <Route path="/*" element={<DashboardPage />} />
                 <Route path="/profiles" element={<ProfilesPage />} />
@@ -50,14 +50,13 @@ const Router = () => {
                 <Route path="/spaces" element={<SpacesPage />} />
                 <Route path="/space" element={<SpaceForm />} />
               </Routes>
-            ) : (
-              <AuthPage client="host" />
-            )}
-          </BrowserRouter>
+            </Grid>
+          </Grid>
         </Grid>
-      </Grid>
-    </Grid>
+      ) : (
+        <AuthPage client="host" />
+      )}
+    </BrowserRouter>
   );
 };
-
 export default Router;
