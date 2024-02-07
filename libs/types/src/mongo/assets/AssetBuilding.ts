@@ -19,6 +19,6 @@ export interface AssetBuilding extends Document{
     doorman?: boolean,
     security?: boolean,
     vip_service?: boolean,
-    assetsList? : Types.ObjectId | Asset
+    assetsList? : Types.ObjectId[] | Asset
   }
   
