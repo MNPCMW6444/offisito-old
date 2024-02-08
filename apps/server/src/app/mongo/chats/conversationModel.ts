@@ -15,9 +15,6 @@ export default () => {
         type: String,
         required: true,
       },
-      name: {
-        type: String,
-      },
       hiddenFor: [{ type: String }],
     },
     {
