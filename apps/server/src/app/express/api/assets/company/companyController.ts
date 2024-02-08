@@ -3,19 +3,17 @@ import { Request } from "../../../middleware";
 import { Types } from "mongoose";
 
 import { Company, CreateEditCompanyReq } from "@monorepo/types";
-import { isValidObjectId} from "mongoose";
+import { isValidObjectId } from "mongoose";
 import BuildingModel from "../../../../mongo/assets/buildingModel";
 import CompanyContractModel from "../../../../mongo/assets/companyContractModel";
 import { crudResponse } from "../crudResponse";
 
-
 export const addCompanyLease = async (req: Request, res: Response) => {
   const assetCompanyModel = CompanyContractModel();
-  // const host = req.user;
+  const host = req.user;
 
   try {
     const {
-      host,
       companyName,
       companyInHold,
       floorNumber,
@@ -23,18 +21,21 @@ export const addCompanyLease = async (req: Request, res: Response) => {
       contractEndDate,
       subleasePermission,
       building,
-    } = req.body 
-    //  as CreateEditCompanyReq
+    } = req.body as CreateEditCompanyReq;
 
-    
-    if (!isValidObjectId(host)) {
-      // if (!isValidObjectId(host._id)) {
-      const response: crudResponse<null> = { success: false, error: "Not A valid Host Id" };
+    if (!isValidObjectId(host._id)) {
+      const response: crudResponse<null> = {
+        success: false,
+        error: "Not A valid Host Id",
+      };
       return res.status(400).json(response);
     }
 
     if (!building) {
-      const response: crudResponse<null> = { success: false, error: "Please add building first" };
+      const response: crudResponse<null> = {
+        success: false,
+        error: "Please add building first",
+      };
       return res.status(400).json(response);
     }
     const newCompnay = new assetCompanyModel({
@@ -51,7 +52,6 @@ export const addCompanyLease = async (req: Request, res: Response) => {
 
     const savedCompany = await newCompnay.save();
 
-    
     const response: crudResponse<typeof savedCompany> = {
       success: true,
       data: savedCompany,
@@ -61,32 +61,37 @@ export const addCompanyLease = async (req: Request, res: Response) => {
     res.status(201).json(response);
   } catch (err) {
     console.error("Error in creating New AssetCompany", err);
-    const response: crudResponse<null> = { success: false, error: "Internal Server Error, Company Not added", msg: err.message };
+    const response: crudResponse<null> = {
+      success: false,
+      error: "Internal Server Error, Company Not added",
+      msg: err.message,
+    };
     res.status(500).json(response);
   }
 };
 
-
-
-
-export const getCompanyDetail =async (req:Request, res:Response) => {
+export const getCompanyDetail = async (req: Request, res: Response) => {
   const companyContract = CompanyContractModel();
   const companyBuilding = BuildingModel();
 
+  const { company_id } = req.params;
 
-  const {company_id}= req.params;
-  
   try {
-  
     if (!isValidObjectId(company_id)) {
-      const response: crudResponse<null> = { success: false, error: "Not valid company ID" };
+      const response: crudResponse<null> = {
+        success: false,
+        error: "Not valid company ID",
+      };
       return res.status(400).json(response);
     }
 
     const findCompany = await companyContract.findById(company_id);
 
     if (!findCompany) {
-      const response: crudResponse<null> = { success: false, error: "Company Not found" };
+      const response: crudResponse<null> = {
+        success: false,
+        error: "Company Not found",
+      };
       return res.status(404).json(response);
     }
 
@@ -94,29 +99,35 @@ export const getCompanyDetail =async (req:Request, res:Response) => {
     const findBuilding = await companyBuilding.findById(building_id);
 
     if (!findBuilding) {
-      const response: crudResponse<typeof findBuilding> = { 
-        success: true, error: "Unable to ge the Building ID" };
+      const response: crudResponse<typeof findBuilding> = {
+        success: true,
+        error: "Unable to ge the Building ID",
+      };
       return res.status(200).json(response);
     }
 
-    const response: crudResponse<{ findCompany: typeof findCompany, building: typeof findBuilding }> = {
+    const response: crudResponse<{
+      findCompany: typeof findCompany;
+      building: typeof findBuilding;
+    }> = {
       success: true,
       data: { findCompany: findCompany, building: findBuilding },
       msg: "Success fetching",
     };
 
     res.status(200).json(response);
-
   } catch (error) {
     console.error("Internal request Error, Company Detail", error);
-    const response: crudResponse<null> = { success: false, error: "Internal Server error", msg: error.message };
+    const response: crudResponse<null> = {
+      success: false,
+      error: "Internal Server error",
+      msg: error.message,
+    };
     res.status(500).json(response);
   }
 };
 
-
-
-export const editCompanyDetail =async (req:Request, res:Response) => {
+export const editCompanyDetail = async (req: Request, res: Response) => {
   const companyModel = CompanyContractModel();
 
   try {
@@ -124,14 +135,20 @@ export const editCompanyDetail =async (req:Request, res:Response) => {
     const company_id = req.params.company_id;
 
     if (user.type !== "host") {
-      const response: crudResponse<null> = { success: false, error: "edit not allowed" };
+      const response: crudResponse<null> = {
+        success: false,
+        error: "edit not allowed",
+      };
       return res.status(401).json(response);
     } else if (!isValidObjectId(company_id)) {
-      const response: crudResponse<null> = { success: false, error: "not Valid Company ID" };
+      const response: crudResponse<null> = {
+        success: false,
+        error: "not Valid Company ID",
+      };
       return res.status(401).json(response);
     }
 
-    const uppdatedCompanyData: Partial<Company> = req.body
+    const uppdatedCompanyData: Partial<Company> = req.body;
 
     const updateCompanyContract = await companyModel.findByIdAndUpdate(
       { _id: company_id },
@@ -140,7 +157,10 @@ export const editCompanyDetail =async (req:Request, res:Response) => {
     );
 
     if (!updateCompanyContract) {
-      const response: crudResponse<null> = { success: false, error: "Company not found" };
+      const response: crudResponse<null> = {
+        success: false,
+        error: "Company not found",
+      };
       return res.status(404).json(response);
     }
 
@@ -151,50 +171,37 @@ export const editCompanyDetail =async (req:Request, res:Response) => {
     };
 
     res.status(200).json(response);
-
   } catch (error) {
     console.error("Error in updating ", error);
-    const response:crudResponse<null> ={
-      success:false,
-      error: "Internal Error Edit Company"
-    }
+    const response: crudResponse<null> = {
+      success: false,
+      error: "Internal Error Edit Company",
+    };
     res.status(500).json(response);
   }
-
 };
 
-
-export const companiesList =async (req:Request, res:Response) => {
+export const companiesList = async (req: Request, res: Response) => {
   const companyModel = CompanyContractModel();
 
   try {
-    const host = req.params.host_id;
-    console.log("host YY", host)
+    const host = req.user._id;
+    console.log("host YY", host);
 
-    const getCompanyList = await companyModel.find({host:host}).exec();
+    const getCompanyList = await companyModel.find({ host: host }).exec();
     console.log("host", host);
     console.log("getCompanyList", getCompanyList);
-    
-    const response :crudResponse<typeof getCompanyList>={
+
+    const response: crudResponse<typeof getCompanyList> = {
       success: true,
       data: getCompanyList,
-    }
+    };
     res.status(201).json(response);
-
   } catch (error) {
-    
-    const response:crudResponse<null>={
-      success:false,
-      error:"internal Error Issue Company List"
-    }
-    res.status(500).json(response)
+    const response: crudResponse<null> = {
+      success: false,
+      error: "internal Error Issue Company List",
+    };
+    res.status(500).json(response);
   }
-
-  
-}
-
-
-
-
-
-
+};

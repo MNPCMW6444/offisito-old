@@ -8,14 +8,14 @@ import {
   useState,
 } from "react";
 import { ServerContext } from "@monorepo/server-provider";
-import { AssetCompanyContract, CreateEditCompanyReq } from "@monorepo/types";
+import { Company, CreateEditCompanyReq } from "@monorepo/types";
 import { axiosErrorToaster } from "@monorepo/react-components";
 import { useLocation } from "react-router-dom";
 import debounce from "lodash.debounce";
 import { PrimaryText } from "@monorepo/react-styles";
 
 const ProfileForm = () => {
-  const [formState, setFormState] = useState<AssetCompanyContract>();
+  const [formState, setFormState] = useState<Company>();
   const server = useContext(ServerContext);
 
   const fetchProfile = useCallback(
@@ -24,7 +24,7 @@ const ProfileForm = () => {
         const res = await server?.axiosInstance.get(
           "/api/host/company/get_company_lease/" + id,
         );
-        setFormState(res?.data.data);
+        setFormState(res?.data.data.findCompany);
       } catch (e) {
         axiosErrorToaster(e);
       }

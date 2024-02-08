@@ -20,6 +20,7 @@ export const OFAB = (props: FabProps) => (
       bottom: "10%",
       right: "calc(5% + (100vw - 1000px) / 2)",
     }}
+    onClick={props.onClick}
   >
     {props.children}
   </Fab>
