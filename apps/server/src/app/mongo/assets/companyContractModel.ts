@@ -1,13 +1,14 @@
-import { AssetCompanyContract } from "@monorepo/types";
+import { Company } from "@monorepo/types";
 import mongoose, { Types  } from "mongoose";
 import { connection } from "../connection";
 import { versioning } from "@mnpcmw6444/mongoose-auto-versioning";
+import createModel from "../createModel";
 
 
 export default () => {
-    const name = "assetCompanyContract";
+    const name = "CompanyContract";
 
-    const  AssetCompanyContractSchema = new mongoose.Schema({
+    const  CompanyContractSchema = new mongoose.Schema({
     host:{type: Types.ObjectId , ref: "User", required:true},
     companyName:{type: String,  required:true},
     companyInHold:{type: String,  },
@@ -15,7 +16,7 @@ export default () => {
     fullFloor:{type: Boolean,  },
     contractEndDate:{type: Date,  },
     subleasePermission:{type:Boolean,  },
-    building: {type: Types.ObjectId, ref: "AssetBuildingModel", },    
+    building: {type: Types.ObjectId, ref: "building"},    
 })
 .plugin(versioning, { collection: name + "s.history", mongoose });
 
@@ -24,17 +25,10 @@ export default () => {
 if (!connection) throw new Error("Database not initialized");
 
 
+const CompanyContractModel = createModel<Company>(name, CompanyContractSchema);
 
-let AssetCompanyContractModel;
-if (mongoose.models[name]) {
-    AssetCompanyContractModel = connection.model<AssetCompanyContract>(name);
-} else {
-    AssetCompanyContractModel = connection.model<AssetCompanyContract>(name, AssetCompanyContractSchema);
-
-}
-return AssetCompanyContractModel
-
-}
+return CompanyContractModel;
+};
 
 
 

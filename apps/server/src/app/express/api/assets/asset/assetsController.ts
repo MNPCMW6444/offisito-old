@@ -1,25 +1,27 @@
-import { Response, response } from "express";
+import { Response } from "express";
 import { Request } from "../../../middleware";
 import AssetModel from "../../../../mongo/assets/assetModel";
-import { Asset, CreateEditAssetReq } from "@monorepo/types";
-import AssetCompanyContractModel from "../../../../mongo/assets/assetCompanyModel";
-
+import { Company, CreateEditAssetReq } from "@monorepo/types";
 import { isValidObjectId } from "mongoose";
 import { crudResponse } from "../crudResponse";
-import AssetBuildingModel from "../../../../mongo/assets/assetBuildingModel";
+import BuildingModel from "../../../../mongo/assets/buildingModel";
+import CompanyContractModel from "../../../../mongo/assets/companyContractModel";
+
 
 // #TODO: Front end will add a coordinate Array with longitude, longitude in req.body
 // host ID to be sent in the URL
 // status is on draft when saving
 export const createAsset = async (req: Request, res: Response) => {
   const assetModel = AssetModel();
-  const buildingModel= AssetBuildingModel();
-  const contractModel = AssetCompanyContractModel()
-  const host = req.user;
+  const buildingModel= BuildingModel();
+  const contractModel = CompanyContractModel();
+
+ 
+  // const host = req.user;
 
   try {
     const {
-      // host,
+      host,
       assetDescription,
       roomNumber,
       assetAvailability,
@@ -31,15 +33,18 @@ export const createAsset = async (req: Request, res: Response) => {
       leaseCondition,
       leasingCompany,
       
-    } = req.body as CreateEditAssetReq;
+    } = req.body 
+    // as CreateEditAssetReq;
 
-    if (!isValidObjectId(host._id)) {
+    if (!isValidObjectId(host)) {
+      // if (!isValidObjectId(host._id)) {
       const response: crudResponse<null> = {success:false, error:"Not Valid ID" }
       return res.status(500).json(response);
     }
 
     const newAsset = new assetModel({
-      host: host._id,
+      host: host,
+      // host: host._id,
       assetDescription,
       roomNumber,
       assetAvailability,
@@ -56,18 +61,15 @@ export const createAsset = async (req: Request, res: Response) => {
 
     const savedAsset = await assetModel.findById(savedNewAsset._id).populate({
       path: 'leasingCompany',
-      model: 'AssetCompanyContractModel',
-    });
+      model: 'CompanyContract',
+    }).exec();
     
-    // const savedAsset = await assetModel.findById(savedNewAsset._id).populate('assetCompanyContract');
-
-    console.log("aasset ID", savedAsset);
-    const buildingOfLeasingCompany = savedAsset.leasingCompany.building;
-    console.log("buildingOfLeasingCompany",buildingOfLeasingCompany);
+    const companyLeasing  = savedAsset.leasingCompany as Company; 
+  
+    const buildingCompany = companyLeasing.building;
     
-    // add to building assets:
    
-    const pushToBuildingAssetsList = await buildingModel.updateOne({_id:buildingOfLeasingCompany._id}, {$push: {assets: savedAsset}})
+    const pushToBuildingAssetsList = await buildingModel.updateOne({_id:buildingCompany}, {$push: {assets: savedAsset}})
     
     const response: crudResponse<typeof savedNewAsset>= {
       success:true,
@@ -86,24 +88,35 @@ export const createAsset = async (req: Request, res: Response) => {
 // #TODO - sending Back end the asset_id in url.
 
 export const getAssetDetail = async (req: Request, res: Response) => {
-  const assetModel = AssetModel();
+    const assetModel =AssetModel();
+    const contractModel = CompanyContractModel();
+    const buildingModel= BuildingModel();
+
 
   try {
     const asset_id = req.params.asset_id;
 
-    const findAsset = await assetModel.findById(asset_id);
+    const findAsset = await assetModel.findById(asset_id).populate({
+      path: 'leasingCompany',
+      model:'CompanyContract',
+      select:'building',
+      populate:{
+        path:'building',
+        model: 'Building', 
+        select: 'address'
+      }
+    });
 
     if (!findAsset) {
-  
       const response: crudResponse<null> = {success:false, error:"Not Valid ASSET ID" }
       return res.status(500).json(response);
       }
     
-      const response: crudResponse<typeof AssetModel> = {
-        success: true,
-        data: findAsset,
+    const response: crudResponse<typeof findAsset > = {
+      success: true,
+      data: findAsset,
 
-      };
+    };
     res.status(200).json(response);
   } catch (error) {
     console.error("no such asset", error);
@@ -203,9 +216,9 @@ export const getAssetsList = async (req: Request, res: Response, next) => {
   const authenticatedHost = req.user;
 
   try {
-    const assetList = await assetModel().find({ host: authenticatedHost._id });
+    const assetList = await assetModel.find({ host: authenticatedHost._id });
 
-    if (assetList.lenght < 0) {
+    if (!assetList) {
       const response : crudResponse<typeof assetList> ={
         success: false,
         error: "There are no Assets Yet"

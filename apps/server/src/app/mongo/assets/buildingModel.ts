@@ -1,13 +1,14 @@
 import mongoose, {Types} from "mongoose";
 import { connection } from "../connection";
-import { AssetBuilding } from "@monorepo/types";
+import { Building } from "@monorepo/types";
 import { AvailabilitySchema } from "./availabilitySchema";
+import createModel from "../createModel";
 
 
 export default () => {
-    const name = "assetBuilding";
+    const name = "Building";
 
-    // const assetBuilding = AssetBuilding()
+   
 const AssetBuildingSchema = new mongoose.Schema({
   buildingName: {type: String, required: true},
   address: {
@@ -26,32 +27,24 @@ const AssetBuildingSchema = new mongoose.Schema({
         }
     }
   },
-  buildingAmenities:{type: Types.ObjectId, ref: 'BuildingAmenities'},
+  buildingAmenities:{type: Types.ObjectId, ref: 'buildingAmenities'},
   buildingAccess:[AvailabilitySchema],
   buildingDescription:{type:String},
   doorman:{type:Boolean},
   security:{type:Boolean},
   vip_service:{type:Boolean},
-  assets:[{type: Types.ObjectId, ref: 'Asset'}],
+  assets:[{type: Types.ObjectId, ref: 'asset'}],
 })
 
 if (!connection)
     throw new Error("Database not initialized");
 
 
+ const AssetBuildingModel = createModel<Building>(name, AssetBuildingSchema);
 
-
-let AssetBuildingModel;
-if (mongoose.models[name]) {
-    AssetBuildingModel = connection.model<AssetBuilding>(name);
-} else {
-    AssetBuildingModel = connection.model<AssetBuilding>(name, AssetBuildingSchema);
-    // AssetBuildingModel.schema.index({ "address.geoLocalisation": "2dsphere" });
-
-}
-return AssetBuildingModel
-
-
+ return AssetBuildingModel;
+//  export default AssetBuildingModel;
+// 
 }
 
 

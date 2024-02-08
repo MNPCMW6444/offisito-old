@@ -8,20 +8,20 @@ ADD asset
   "publishingStatus": "draft",
   "peopleCapacity":[6,8],
   "leaseCondition": "monthly",
-  "leasingCompany": "65c3a27a03f4a55dd5e9da6d"
+  "leasingCompany": "65c4f0745dfa9f9b0e5c5da3"
 }
 
 Cmopany  
 
 {
-    "host":"65c2104235d18f63e62827d0"
+  "host":"65c2104235d18f63e62827d0",
   "companyName": "Sample Company",
   "companyInHold": "Holding Company Inc.",
   "floorNumber": "5",
   "fullFloor": true,
   "contractEndDate": "2023-12-31",
   "subleasePermission": false,
-  "building": "65c3a24603f4a55dd5e9da69"
+  "building": "65c4effce94c48740a510f5a"
 }
 
 building

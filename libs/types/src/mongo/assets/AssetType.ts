@@ -1,5 +1,7 @@
 import { Types, Document, ObjectId } from "mongoose";
-import { Availability } from "./Availability";
+import { Availability } from "./AvailabilityType";
+import { Company } from "./companyType";
+
 
 export enum AssetPubStatus {
   Draft = "draft",
@@ -36,5 +38,5 @@ export interface Asset extends Document {
     dailyPrice?: number;
     leaseType?: LeaseType[];
   };
-  leasingCompany: ObjectId;
+  leasingCompany: ObjectId | Company;
 }

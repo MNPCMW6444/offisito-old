@@ -1,9 +1,9 @@
-import { Types, Document } from "mongoose";
+import { Types, Document, ObjectId } from "mongoose";
 import { User } from "../auth";
-import { AssetBuilding } from "./AssetBuilding";
+import { Building } from "./buildingType";
 
 
-export interface AssetCompanyContract extends Document{
+export interface Company extends Document{
     host : User,
     companyName: string,
     companyInHold?: string,
@@ -11,6 +11,6 @@ export interface AssetCompanyContract extends Document{
     fullFloor?: boolean,
     contractEndDate?:Date,
     subleasePermission?: boolean,
-    building?: Types.ObjectId |AssetBuilding,
+    building: ObjectId | Building,
   }
   
