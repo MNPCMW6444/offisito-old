@@ -9,11 +9,7 @@ import {
 } from "react";
 import { ServerContext } from "@monorepo/server-provider";
 import { AssetCompanyContract, CreateEditCompanyReq } from "@monorepo/types";
-import {
-  axiosErrorToaster,
-  formatLabel,
-  renderSwitchesHOC,
-} from "@monorepo/react-components";
+import { axiosErrorToaster } from "@monorepo/react-components";
 import { useLocation } from "react-router-dom";
 import debounce from "lodash.debounce";
 import { PrimaryText } from "@monorepo/react-styles";
@@ -78,10 +74,6 @@ const ProfileForm = () => {
     handleChange(e.target.name, e.target.value);
   };
 
-  const handleSwitchChange = (key: string, checked: boolean) => {
-    handleChange(key, checked);
-  };
-
   const renderTextField = (name: keyof CreateEditCompanyReq, label: string) => (
     <TextField
       multiline
@@ -93,26 +85,14 @@ const ProfileForm = () => {
     />
   );
 
-  const renderSwitches = renderSwitchesHOC(handleSwitchChange, formatLabel);
-
-  const uploadPicture = async (file: File) => {
-    const formData = new FormData();
-    formData.append("photo", file);
-    formState &&
-      (await server?.axiosInstance.post(
-        "/api/assets/uploadPicture/" + formState._id,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        },
-      ));
-  };
-
   const publish = async () => {
     await server?.axiosInstance.post("/api/assets/publish", {});
   };
 
-  console.log(formState);
+  useEffect(() => {
+    console.log(formState);
+  }, [formState]);
+
   return formState?._id ? (
     <Grid
       container
