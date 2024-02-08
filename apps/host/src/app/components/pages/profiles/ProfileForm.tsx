@@ -1,21 +1,12 @@
-import {
-  Button,
-  FormLabel,
-  Grid,
-  IconButton,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Grid, TextField } from "@mui/material";
 import {
   ChangeEvent,
-  createRef,
   useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
-import { Add } from "@mui/icons-material";
 import { ServerContext } from "@monorepo/server-provider";
 import { AssetCompanyContract, CreateEditCompanyReq } from "@monorepo/types";
 import {
@@ -59,19 +50,12 @@ const ProfileForm = () => {
     }
   }, [query, fetchProfile]);
 
-  const fileInputRef = createRef<HTMLInputElement>();
-
   const handleUpdate = async (updatedState: CreateEditCompanyReq) => {
     formState &&
       formState._id &&
-      (await server?.axiosInstance.patch(
-        "/api/assets/edit_asset" + formState._id,
-        {
-          newProfile: {
-            _id: formState._id,
-            ...updatedState,
-          },
-        },
+      (await server?.axiosInstance.put<any, any, CreateEditCompanyReq>(
+        "/api/host/company/edit_company_lease/" + formState._id,
+        JSON.parse(JSON.stringify(updatedState)),
       ));
   };
 
@@ -131,10 +115,6 @@ const ProfileForm = () => {
     }
   };
 
-  const addPicture = () => {
-    fileInputRef.current?.click();
-  };
-
   const publish = async () => {
     await server?.axiosInstance.post("/api/assets/publish", {});
   };
@@ -155,19 +135,6 @@ const ProfileForm = () => {
       </Grid>
       <Grid item container alignItems="center" columnSpacing={4}>
         <Grid item>{renderTextField("companyInHold", "Company in Hold")}</Grid>
-      </Grid>
-      <Grid item>
-        <FormLabel component="legend">Property Pictures</FormLabel>
-        <IconButton onClick={addPicture}>
-          <Add sx={{ fontSize: "250%" }} />
-        </IconButton>
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleFileSelect}
-          multiple
-          style={{ display: "none" }}
-        />
       </Grid>
       <Grid item container justifyContent="center">
         <Button variant="contained" onClick={publish}>

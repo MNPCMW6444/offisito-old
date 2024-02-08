@@ -26,6 +26,7 @@ import {
 } from "@monorepo/react-components";
 import { useLocation } from "react-router-dom";
 import { ObjectId } from "mongoose";
+import { PrimaryText } from "@monorepo/react-styles";
 
 const SpaceForm = () => {
   const [formState, setFormState] = useState<Asset>();
@@ -63,7 +64,7 @@ const SpaceForm = () => {
 
   const handleUpdate = async (updatedState: Asset) => {
     formState &&
-      (await server?.axiosInstance.patch(
+      (await server?.axiosInstance.put(
         "/api/assets/edit_asset" + formState._id,
         {
           newAsset: {
