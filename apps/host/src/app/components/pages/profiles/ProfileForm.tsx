@@ -35,9 +35,9 @@ const ProfileForm = () => {
     async (id: string) => {
       try {
         const res = await server?.axiosInstance.get(
-          "/api/assets/asset_detail/" + id,
+          "/api/host/company/get_company_lease/" + id,
         );
-        setFormState(res?.data.asset);
+        setFormState(res?.data.data);
       } catch (e) {
         axiosErrorToaster(e);
       }
