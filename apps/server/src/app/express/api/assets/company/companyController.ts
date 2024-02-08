@@ -1,19 +1,21 @@
 import { Response } from "express";
 import { Request } from "../../../middleware";
-import { AssetCompanyContract, CreateEditCompanyReq } from "@monorepo/types";
-import AssetCompanyContractModel from "../../../../mongo/assets/assetCompanyModel";
-import { isValidObjectId } from "mongoose";
-import AssetBuildingModel from "../../../../mongo/assets/assetBuildingModel";
+import { Types } from "mongoose";
+
+import { Company, CreateEditCompanyReq } from "@monorepo/types";
+import { isValidObjectId} from "mongoose";
+import BuildingModel from "../../../../mongo/assets/buildingModel";
+import CompanyContractModel from "../../../../mongo/assets/companyContractModel";
 import { crudResponse } from "../crudResponse";
 
 
 export const addCompanyLease = async (req: Request, res: Response) => {
-  const assetCompanyModel = AssetCompanyContractModel();
-  const host = req.user;
+  const assetCompanyModel = CompanyContractModel();
+  // const host = req.user;
 
   try {
     const {
-      // host,
+      host,
       companyName,
       companyInHold,
       floorNumber,
@@ -21,11 +23,12 @@ export const addCompanyLease = async (req: Request, res: Response) => {
       contractEndDate,
       subleasePermission,
       building,
-    } = req.body  as CreateEditCompanyReq
+    } = req.body 
+    //  as CreateEditCompanyReq
 
     
-    // if (!isValidObjectId(host)) {
-      if (!isValidObjectId(host._id)) {
+    if (!isValidObjectId(host)) {
+      // if (!isValidObjectId(host._id)) {
       const response: crudResponse<null> = { success: false, error: "Not A valid Host Id" };
       return res.status(400).json(response);
     }
@@ -67,8 +70,10 @@ export const addCompanyLease = async (req: Request, res: Response) => {
 
 
 export const getCompanyDetail =async (req:Request, res:Response) => {
-  const companyContract = AssetCompanyContractModel();
-  const companyBuilding = AssetBuildingModel();
+  const companyContract = CompanyContractModel();
+  const companyBuilding = BuildingModel();
+
+
   const {company_id}= req.params;
   
   try {
@@ -90,7 +95,7 @@ export const getCompanyDetail =async (req:Request, res:Response) => {
 
     if (!findBuilding) {
       const response: crudResponse<typeof findBuilding> = { 
-        success: true, data: findCompany, msg: "Unable to ge the Building ID" };
+        success: true, error: "Unable to ge the Building ID" };
       return res.status(200).json(response);
     }
 
@@ -112,7 +117,7 @@ export const getCompanyDetail =async (req:Request, res:Response) => {
 
 
 export const editCompanyDetail =async (req:Request, res:Response) => {
-  const companyModel = AssetCompanyContractModel();
+  const companyModel = CompanyContractModel();
 
   try {
     const user = req.user;
@@ -126,7 +131,7 @@ export const editCompanyDetail =async (req:Request, res:Response) => {
       return res.status(401).json(response);
     }
 
-    const uppdatedCompanyData: Partial<AssetCompanyContract> = req.body
+    const uppdatedCompanyData: Partial<Company> = req.body
 
     const updateCompanyContract = await companyModel.findByIdAndUpdate(
       { _id: company_id },
@@ -156,4 +161,40 @@ export const editCompanyDetail =async (req:Request, res:Response) => {
     res.status(500).json(response);
   }
 
+};
+
+
+export const companiesList =async (req:Request, res:Response) => {
+  const companyModel = CompanyContractModel();
+
+  try {
+    const host = req.params.host_id;
+    console.log("host YY", host)
+
+    const getCompanyList = await companyModel.find({host:host}).exec();
+    console.log("host", host);
+    console.log("getCompanyList", getCompanyList);
+    
+    const response :crudResponse<typeof getCompanyList>={
+      success: true,
+      data: getCompanyList,
+    }
+    res.status(201).json(response);
+
+  } catch (error) {
+    
+    const response:crudResponse<null>={
+      success:false,
+      error:"internal Error Issue Company List"
+    }
+    res.status(500).json(response)
+  }
+
+  
 }
+
+
+
+
+
+

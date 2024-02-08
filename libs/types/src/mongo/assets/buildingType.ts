@@ -1,11 +1,11 @@
 import { Types, Document } from "mongoose";
 import { GeoPoint } from "../geo";
-import { Availability } from "./Availability";
-import { Asset } from "./Asset";
+import { Availability } from "./AvailabilityType";
+import { Asset } from "./AssetType";
 
 
 
-export interface AssetBuilding extends Document{
+export interface Building extends Document{
     buildingName: string,
     address:{
       street:string,

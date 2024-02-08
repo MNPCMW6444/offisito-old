@@ -1,12 +1,12 @@
 import { Response } from "express";
-import AssetBuildingModel from "../../../../mongo/assets/assetBuildingModel";
+import BuildingModel from "../../../../mongo/assets/buildingModel";
 import { Request } from "../../../middleware";
 import { crudResponse } from "../crudResponse";
 import { createBuildingReq } from "@monorepo/types";
 
 export const CheckBuildingAddress =async (req:Request, res: Response) => {
     
-        const buildingModel = AssetBuildingModel()
+        const buildingModel = BuildingModel();
     try{
         const {coordinates} = req.body;
 
@@ -40,7 +40,7 @@ export const CheckBuildingAddress =async (req:Request, res: Response) => {
 
 
 export const AddBuildingAssets =async (req:Request, res:Response) => {
-    const assetBuildingModel = AssetBuildingModel();
+    const assetBuildingModel = BuildingModel();
     try {
         
         const {
