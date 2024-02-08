@@ -40,11 +40,11 @@ const loadingMessage = (
 export const AuthContext = createContext<{
   user?: User;
   refreshUserData: () => Promise<void>;
-  signout: () => Promise<void>;
+  logout: () => Promise<void>;
 }>({
   user: undefined,
   refreshUserData: async () => {},
-  signout: async () => {},
+  logout: async () => {},
 });
 
 export const AuthContextProvider = ({ children }: AuthContextProps) => {
@@ -62,7 +62,7 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
     }
   }, [server?.axiosInstance]);
 
-  const signout = async () => {
+  const logout = async () => {
     try {
       await server?.axiosInstance.get<undefined>("api/auth/log/out");
       setUser(undefined);
@@ -85,7 +85,7 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
       value={{
         user,
         refreshUserData,
-        signout,
+        logout,
       }}
     >
       {loading ? loadingMessage : children}

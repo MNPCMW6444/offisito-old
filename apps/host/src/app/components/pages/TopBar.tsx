@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "@monorepo/react-components";
 
 const TopBar = () => {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -22,6 +22,7 @@ const TopBar = () => {
 
   const handleCloseUserMenu = (route: string) => {
     setAnchorElUser(null);
+    route === "logout" && logout();
     route && navigate(route);
   };
 
@@ -39,6 +40,7 @@ const TopBar = () => {
       justifyContent="space-between"
       alignItems="center"
       wrap="nowrap"
+      padding="20px 25px 0 25px"
     >
       <Grid item>Logo</Grid>
       <Grid item>

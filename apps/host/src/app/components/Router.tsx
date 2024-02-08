@@ -10,7 +10,7 @@ import { Grid } from "@mui/material";
 import TopBar from "./pages/TopBar";
 
 const Router = () => {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
 
   return (
     <BrowserRouter>
