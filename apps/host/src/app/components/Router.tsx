@@ -7,6 +7,7 @@ import SpaceForm from "./pages/spaces/SpaceForm";
 import ProfilesPage from "./pages/profiles/ProfilesPage";
 import ProfileForm from "./pages/profiles/ProfileForm";
 import { Grid } from "@mui/material";
+import TopBar from "./pages/TopBar";
 
 const Router = () => {
   const { user } = useContext(AuthContext);
@@ -32,16 +33,8 @@ const Router = () => {
             wrap="nowrap"
             overflow="hidden"
           >
-            <Grid
-              item
-              height="100px"
-              container
-              justifyContent="space-between"
-              alignItems="center"
-              wrap="nowrap"
-            >
-              <Grid item>Logo</Grid>
-              <Grid item>Menu</Grid>
+            <Grid item height="100px">
+              <TopBar />
             </Grid>
             <Grid item>
               <Routes>
