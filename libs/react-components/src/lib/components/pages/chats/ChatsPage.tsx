@@ -10,8 +10,8 @@ import ConversationView from "./components/ConversationView";
 export const ChatsPage = () => {
   const server = useContext(ServerContext);
 
-  const [conversations, setConversations] = useState<Conversation[]>();
-  const [selectedConversation, serSelectedConversation] =
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [selectedConversation, setSelectedConversation] =
     useState<Conversation>();
 
   const fetchConversations = useCallback(async () => {
@@ -30,9 +30,12 @@ export const ChatsPage = () => {
   return (
     <Grid height="100%" container>
       <Grid width="25%" item container direction="column">
-        {conversations && conversations.length > 0 ? (
+        {conversations.length > 0 ? (
           conversations.map((conversation) => (
-            <ConversationButton conversation={conversation} />
+            <ConversationButton
+              conversation={conversation}
+              setSelectedConversation={setSelectedConversation}
+            />
           ))
         ) : (
           <PrimaryText fontSize="80%">

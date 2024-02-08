@@ -1,9 +1,10 @@
 import { Button, TextField, Box } from "@mui/material";
-import ChatTriplet from "./chat/ChatTriplet";
-import { useContext, useState } from "react";
+import MessageRow from "./MessageRow";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Send } from "@mui/icons-material";
-import { Conversation } from "@monorepo/types";
+import { Conversation, Message, SendMessageReq } from "@monorepo/types";
 import { ServerContext } from "@monorepo/server-provider";
+import { axiosErrorToaster } from "../../../utils";
 
 interface ConversationViewProps {
   conversation: Conversation;
@@ -13,13 +14,31 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
   const server = useContext(ServerContext);
 
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState();
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  const fetchConversationMessages = useCallback(async () => {
+    try {
+      const res = await server?.axiosInstance.get(
+        "api/chat/messages/conversationMessages/" + conversation._id,
+      );
+      res?.data && setMessages(res.data);
+    } catch (e) {
+      axiosErrorToaster(e);
+    }
+  }, [server?.axiosInstance, conversation._id]);
+
+  useEffect(() => {
+    fetchConversationMessages().then();
+  }, [fetchConversationMessages]);
 
   const sendMessage = async () => {
-    const x = await server?.axiosInstance.post("api/chat/sendMessage", {
-      conversationId: conversation._id,
-      message,
-    });
+    const x = await server?.axiosInstance.post<any, any, SendMessageReq>(
+      "api/chat/messages",
+      {
+        conversationId: conversation._id.toString(),
+        message,
+      },
+    );
   };
 
   return (
@@ -37,8 +56,8 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
           px: 2,
         }}
       >
-        {messages?.map((single) => (
-          <ChatTriplet key={single._id} triplet={single} />
+        {messages?.map((message) => (
+          <MessageRow key={message._id} message={message} />
         ))}
       </Box>
       <Box sx={{ display: "flex", alignItems: "center", p: 1 }}>

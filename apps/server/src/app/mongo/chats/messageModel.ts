@@ -8,7 +8,7 @@ export default () => {
   const messageModel = new mongoose.Schema(
     {
       ownerId: {
-        type: String, // stringified id || ai
+        type: String,
         required: true,
       },
       conversationId: { type: String, required: true },
