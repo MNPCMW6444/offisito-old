@@ -1,5 +1,5 @@
-import messageModel from "../mongo/messages/messageModel";
-import sessionModel from "../mongo/messages/sessionModel";
+import messageModel from "../mongo/chats/messageModel";
+import sessionModel from "../mongo/chats/conversationModel";
 import { sendPushNotification } from "../push";
 import userModel from "../mongo/auth/userModel";
 

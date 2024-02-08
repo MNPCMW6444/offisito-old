@@ -7,14 +7,18 @@ export default () => {
 
   const conversationModel = new mongoose.Schema(
     {
-      pairId: {
+      hostId: {
+        type: String,
+        required: true,
+      },
+      guestId: {
         type: String,
         required: true,
       },
       name: {
         type: String,
       },
-      hiddenFor: { type: String },
+      hiddenFor: [{ type: String }],
     },
     {
       timestamps: true,

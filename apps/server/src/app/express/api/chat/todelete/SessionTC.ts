@@ -23,11 +23,7 @@ export default () => {
             name: 'getsessions',
             type: [SessionTC],
             args: {pairId: 'String!'},
-            resolve: async ({context, args}) => {
-                if (!context.user) throw new Error("Please sign in first");
-                const pair = await Pair.findById(args.pairId);
-                return (await Session.find({pairId: pair._id})).filter(session => (!(session.hiddenFor === context.user._id.toString() || session.hiddenFor === "all")))
-            }
+            resolve: 
         });
 
         SessionTC.addResolver({

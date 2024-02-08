@@ -6,8 +6,9 @@ import SpacesPage from "./pages/spaces/SpacesPage";
 import SpaceForm from "./pages/spaces/SpaceForm";
 import ProfilesPage from "./pages/profiles/ProfilesPage";
 import ProfileForm from "./pages/profiles/ProfileForm";
-import { Divider, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import TopBar from "./pages/TopBar";
+import { ChatsPage } from "@monorepo/react-components";
 
 const Router = () => {
   const { user, logout } = useContext(AuthContext);
@@ -43,13 +44,14 @@ const Router = () => {
             >
               <TopBar />
             </Grid>
-            <Grid item padding="20px 25px 0 25px">
+            <Grid item padding="20px 25px 0 25px" height="100%">
               <Routes>
                 <Route path="/*" element={<DashboardPage />} />
                 <Route path="/profiles" element={<ProfilesPage />} />
                 <Route path="/profile" element={<ProfileForm />} />
                 <Route path="/spaces" element={<SpacesPage />} />
                 <Route path="/space" element={<SpaceForm />} />
+                <Route path="/chats" element={<ChatsPage />} />
               </Routes>
             </Grid>
           </Grid>

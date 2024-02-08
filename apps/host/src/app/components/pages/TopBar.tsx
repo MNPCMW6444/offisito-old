@@ -30,7 +30,7 @@ const TopBar = () => {
     { name: "Dashboard", route: "dashboard" },
     { name: "Profiles", route: "profiles" },
     { name: "Spaces", route: "spaces" },
-    { name: "Chats", route: "chat" },
+    { name: "Chats", route: "chats" },
     { name: "Logout", route: "logout" },
   ];
 
