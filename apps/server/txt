@@ -8,10 +8,10 @@ ADD asset
   "publishingStatus": "draft",
   "peopleCapacity":[6,8],
   "leaseCondition": "monthly",
-  "leasingCompany": "65c39c0199e582e39fbbb620"
+  "leasingCompany": "65c3a27a03f4a55dd5e9da6d"
 }
 
-compoamy 
+Cmopany  
 
 {
     "host":"65c2104235d18f63e62827d0"
@@ -21,7 +21,7 @@ compoamy
   "fullFloor": true,
   "contractEndDate": "2023-12-31",
   "subleasePermission": false,
-  "building": "65c38e9f26353d8db97fe171"
+  "building": "65c3a24603f4a55dd5e9da69"
 }
 
 building

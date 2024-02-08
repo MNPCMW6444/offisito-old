@@ -65,6 +65,7 @@ export const addCompanyLease = async (req: Request, res: Response) => {
 
 
 
+
 export const getCompanyDetail =async (req:Request, res:Response) => {
   const companyContract = AssetCompanyContractModel();
   const companyBuilding = AssetBuildingModel();
@@ -88,14 +89,14 @@ export const getCompanyDetail =async (req:Request, res:Response) => {
     const findBuilding = await companyBuilding.findById(building_id);
 
     if (!findBuilding) {
-      const response: crudResponse<typeof findCompany> = { 
+      const response: crudResponse<typeof findBuilding> = { 
         success: true, data: findCompany, msg: "Unable to ge the Building ID" };
       return res.status(200).json(response);
     }
 
-    const response: crudResponse<{ companyData: typeof findCompany, building: typeof findBuilding }> = {
+    const response: crudResponse<{ findCompany: typeof findCompany, building: typeof findBuilding }> = {
       success: true,
-      data: { companyData: findCompany, building: findBuilding },
+      data: { findCompany: findCompany, building: findBuilding },
       msg: "Success fetching",
     };
 

@@ -56,7 +56,7 @@ export const createAsset = async (req: Request, res: Response) => {
 
     const savedAsset = await assetModel.findById(savedNewAsset._id).populate({
       path: 'leasingCompany',
-      model: contractModel,
+      model: 'AssetCompanyContractModel',
     });
     
     // const savedAsset = await assetModel.findById(savedNewAsset._id).populate('assetCompanyContract');
@@ -68,7 +68,6 @@ export const createAsset = async (req: Request, res: Response) => {
     // add to building assets:
    
     const pushToBuildingAssetsList = await buildingModel.updateOne({_id:buildingOfLeasingCompany._id}, {$push: {assets: savedAsset}})
-    console.log();
     
     const response: crudResponse<typeof savedNewAsset>= {
       success:true,
@@ -132,7 +131,7 @@ export const editAsset = async (req: Request, res: Response) => {
       req.body as CreateEditAssetReq,
       { new: true }
     );
-
+    
     if (!updatedAsset) {
       const response: crudResponse<null> = { success: false, error: 'Asset not found' };
       return res.status(404).json(response);

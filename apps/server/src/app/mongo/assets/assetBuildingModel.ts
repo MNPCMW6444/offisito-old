@@ -42,7 +42,7 @@ if (!connection)
 
 
 let AssetBuildingModel;
-if (mongoose.models.assetBuilding) {
+if (mongoose.models[name]) {
     AssetBuildingModel = connection.model<AssetBuilding>(name);
 } else {
     AssetBuildingModel = connection.model<AssetBuilding>(name, AssetBuildingSchema);

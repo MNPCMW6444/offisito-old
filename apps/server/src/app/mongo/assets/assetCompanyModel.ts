@@ -26,7 +26,7 @@ if (!connection) throw new Error("Database not initialized");
 
 
 let AssetCompanyContractModel;
-if (mongoose.models.asset) {
+if (mongoose.models[name]) {
     AssetCompanyContractModel = connection.model<AssetCompanyContract>(name);
 } else {
     AssetCompanyContractModel = connection.model<AssetCompanyContract>(name, AssetCompanyContractSchema);
