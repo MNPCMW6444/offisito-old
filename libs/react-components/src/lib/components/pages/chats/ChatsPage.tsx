@@ -3,12 +3,16 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { ServerContext } from "@monorepo/server-provider";
 import { axiosErrorToaster } from "../../utils";
 import { Conversation } from "@monorepo/types";
-import Box from "@mui/material/Box";
+import { PrimaryText } from "@monorepo/react-styles";
+import { ConversationButton } from "./components/ConversationButton";
+import ConversationView from "./components/ConversationView";
 
 export const ChatsPage = () => {
   const server = useContext(ServerContext);
 
   const [conversations, setConversations] = useState<Conversation[]>();
+  const [selectedConversation, serSelectedConversation] =
+    useState<Conversation>();
 
   const fetchConversations = useCallback(async () => {
     try {
@@ -26,12 +30,21 @@ export const ChatsPage = () => {
   return (
     <Grid height="100%" container>
       <Grid width="25%" item container direction="column">
-        {conversations &&
+        {conversations && conversations.length > 0 ? (
           conversations.map((conversation) => (
-            <Box>{conversation.name || conversation._id}</Box>
-          ))}
+            <ConversationButton conversation={conversation} />
+          ))
+        ) : (
+          <PrimaryText fontSize="80%">
+            You dont have conversations yet
+          </PrimaryText>
+        )}
       </Grid>
-      <Grid width="75%" item container direction="column"></Grid>
+      <Grid width="75%" item container direction="column">
+        {selectedConversation && (
+          <ConversationView conversation={selectedConversation} />
+        )}
+      </Grid>
     </Grid>
   );
 };
