@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Fab, Grid, Typography } from "@mui/material";
 import { Asset, CreateEditAssetReq } from "@monorepo/types";
 import { Add } from "@mui/icons-material";
 import { ServerContext } from "@monorepo/server-provider";
 import { axiosErrorToaster } from "@monorepo/react-components";
 import { AssetCard } from "@monorepo/react-components";
 import { useNavigate } from "react-router-dom";
-import mongoose, { ObjectId } from "mongoose";
-import { PrimaryText } from "@monorepo/react-styles";
+import { OFAB, PrimaryText } from "@monorepo/react-styles";
+import { Grid } from "@mui/material";
+import { ObjectId } from "mongoose";
 
 const SpacesPage = () => {
   const [myAssets, setMyAssets] = useState<Asset[]>([]);
@@ -56,17 +56,9 @@ const SpacesPage = () => {
 
   return (
     <>
-      <Fab
-        color="primary"
-        sx={{
-          position: "fixed",
-          bottom: "10%",
-          right: "5%",
-        }}
-        onClick={createNew}
-      >
+      <OFAB onClick={createNew}>
         <Add />
-      </Fab>
+      </OFAB>
       {myAssets.length > 0 ? (
         <Grid container direction="column" rowSpacing={4}>
           {myAssets.map((asset) => (

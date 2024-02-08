@@ -1,4 +1,4 @@
-import { Typography, TypographyProps } from "@mui/material";
+import { Fab, FabProps, Typography, TypographyProps } from "@mui/material";
 
 export const PrimaryText = (props: TypographyProps) => (
   <Typography
@@ -10,4 +10,17 @@ export const PrimaryText = (props: TypographyProps) => (
   >
     {props.children}
   </Typography>
+);
+
+export const OFAB = (props: FabProps) => (
+  <Fab
+    color="primary"
+    sx={{
+      position: "fixed",
+      bottom: "10%",
+      right: "calc(5% + (100vw - 1000px) / 2)",
+    }}
+  >
+    {props.children}
+  </Fab>
 );

@@ -108,13 +108,6 @@ const ProfileForm = () => {
       ));
   };
 
-  const handleFileSelect = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0];
-      uploadPicture(file).then();
-    }
-  };
-
   const publish = async () => {
     await server?.axiosInstance.post("/api/assets/publish", {});
   };
