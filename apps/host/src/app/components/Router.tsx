@@ -6,7 +6,7 @@ import SpacesPage from "./pages/spaces/SpacesPage";
 import SpaceForm from "./pages/spaces/SpaceForm";
 import ProfilesPage from "./pages/profiles/ProfilesPage";
 import ProfileForm from "./pages/profiles/ProfileForm";
-import { Grid } from "@mui/material";
+import { Divider, Grid } from "@mui/material";
 import TopBar from "./pages/TopBar";
 
 const Router = () => {
@@ -20,7 +20,7 @@ const Router = () => {
           height="100%"
           container
           justifyContent="center"
-          bgcolor={(theme) => theme.palette.background.paper}
+          bgcolor={(theme) => theme.palette.background.default}
           wrap="nowrap"
         >
           <Grid
@@ -29,14 +29,21 @@ const Router = () => {
             width="1000px"
             container
             direction="column"
-            bgcolor={(theme) => theme.palette.background.default}
+            bgcolor={(theme) => theme.palette.background.paper}
             wrap="nowrap"
             overflow="hidden"
           >
-            <Grid item height="100px">
+            <Grid
+              item
+              height="90px"
+              bgcolor={(theme) => theme.palette.secondary.contrastText}
+              border={(theme) => "0.1vw solid " + theme.palette.text.secondary}
+              borderRadius="5px"
+              padding="20px 25px 0 25px"
+            >
               <TopBar />
             </Grid>
-            <Grid item>
+            <Grid item padding="20px 25px 0 25px">
               <Routes>
                 <Route path="/*" element={<DashboardPage />} />
                 <Route path="/profiles" element={<ProfilesPage />} />

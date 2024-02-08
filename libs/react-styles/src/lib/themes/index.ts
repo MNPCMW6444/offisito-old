@@ -13,8 +13,8 @@ export const themeForMVP: ThemeOptions = {
       contrastText: isNight() ? "#101714" : "#ffffff",
     },
     secondary: {
-      main: "#575a50",
-      contrastText: "#ffffff",
+      main: isNight() ? "#abdec5" : "#00652c",
+      contrastText: isNight() ? "#101714" : "#ffffff",
     },
     error: {
       main: "#f44336",

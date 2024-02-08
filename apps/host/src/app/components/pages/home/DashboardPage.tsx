@@ -35,21 +35,6 @@ const DashboardPage = () => {
           <PrimaryText>Stats</PrimaryText>
         </Grid>
       </Grid>
-      <Grid item>
-        <PrimaryText>Nav:</PrimaryText>
-      </Grid>
-      <Grid item container justifyContent="space-around" alignItems="center">
-        <Grid item>
-          <Button variant="contained" onClick={() => navigate("/spaces")}>
-            My Spaces
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button variant="contained" onClick={() => navigate("/profiles")}>
-            Complete my first company profile
-          </Button>
-        </Grid>
-      </Grid>
       <Grid
         item
         container

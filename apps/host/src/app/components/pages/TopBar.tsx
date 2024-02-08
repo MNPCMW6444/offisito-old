@@ -40,7 +40,6 @@ const TopBar = () => {
       justifyContent="space-between"
       alignItems="center"
       wrap="nowrap"
-      padding="20px 25px 0 25px"
     >
       <Grid item>Logo</Grid>
       <Grid item>
