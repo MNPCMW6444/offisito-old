@@ -1,5 +1,4 @@
 
-
 export type crudResponse<T> ={
 
     success: boolean;
