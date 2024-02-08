@@ -7,12 +7,13 @@ import {
   Tooltip,
 } from "@mui/material";
 import { PrimaryText } from "@monorepo/react-styles";
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "@monorepo/react-components";
 
 const TopBar = () => {
+  const { user } = useContext(AuthContext);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-
   const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -43,7 +44,9 @@ const TopBar = () => {
       <Grid item>
         <Tooltip title="Open settings">
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+            <Avatar alt={user?.name || "username"} src={"imagepath"}>
+              {user?.name ? user?.name[0] : "?"}
+            </Avatar>
           </IconButton>
         </Tooltip>
         <Menu
