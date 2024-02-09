@@ -1,9 +1,9 @@
-import { Asset, Company, WeekDays } from "@monorepo/types";
+import { Asset, Company } from "@monorepo/types";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ServerContext } from "@monorepo/server-provider";
 import {
   axiosErrorToaster,
-  renderSwitch,
+  renderSwitchGroup,
   renderTextField,
 } from "@monorepo/react-components";
 import { useLocation } from "react-router-dom";
@@ -97,6 +97,13 @@ const SpaceForm = () => {
       <Grid item>
         {renderTextField(formState, handleChange, "roomNumber", "Room Number")}
       </Grid>
+      {renderSwitchGroup(
+        formState,
+        "Availability",
+        "assetAvailability",
+        setFormState,
+        debouncedUpdate,
+      )}
     </Grid>
   ) : (
     <PrimaryText>{hasFetched.current ? "Error" : "Loading..."}</PrimaryText>

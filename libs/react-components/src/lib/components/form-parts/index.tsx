@@ -4,29 +4,29 @@ import {
   MenuItem,
   Select,
   Switch,
-  TextField
-} from '@mui/material';
-import { ChangeEvent, Dispatch, SetStateAction } from 'react';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
-import { PrimaryText } from '@monorepo/react-styles';
-import { Asset, Company, WeekDays } from '@monorepo/types';
+  TextField,
+} from "@mui/material";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import { PrimaryText } from "@monorepo/react-styles";
+import { Asset, Company, WeekDays } from "@monorepo/types";
 
-export * from './switches';
-export * from './labels';
+export * from "./switches";
+export * from "./labels";
 
-export const renderTextField = <T, >(
+export const renderTextField = <T,>(
   formState: T,
   handleChange: (name: keyof T, value: string | Date | boolean) => void,
   name: keyof T,
-  label: string
+  label: string,
 ) => (
   <TextField
     multiline
     variant="outlined"
     label={label}
-    value={formState ? formState[name] : ''}
+    value={formState ? formState[name] : ""}
     onChange={(e: ChangeEvent<HTMLInputElement>) => {
       handleChange(name, e.target.value);
     }}
@@ -34,12 +34,12 @@ export const renderTextField = <T, >(
   />
 );
 
-export const renderSwitch = <T, >(
+export const renderSwitch = <T,>(
   formState: T,
   handleChange: (name: keyof T, value: string | Date | boolean) => void,
   name: keyof T,
   label: string,
-  isDayAvailable = false
+  isDayAvailable = false,
 ) => (
   <FormControlLabel
     sx={(theme) => ({ color: theme.palette.primary.main })}
@@ -56,11 +56,12 @@ export const renderSwitch = <T, >(
   />
 );
 
-export const renderSwitchGroup = <T, >(
+export const renderSwitchGroup = <T,>(
   formState: T,
   name: string | keyof T,
   keyOfArrayProperty: keyof T,
-  setFormState: Dispatch<SetStateAction<T>>
+  setFormState: Dispatch<SetStateAction<T | undefined>>,
+  debouncedUpdate: any,
 ) => (
   <Grid
     item
@@ -84,9 +85,10 @@ export const renderSwitchGroup = <T, >(
         const isDayAvailable =
           formState?.[keyOfArrayProperty] &&
           ((formState?.[keyOfArrayProperty] as any).some
-            ? ((formState?.[keyOfArrayProperty] as any)?.some)((av: any) =>
-              av.days_of_week.includes(day)
-            )
+            ? // eslint-disable-next-line no-unsafe-optional-chaining
+              ((formState?.[keyOfArrayProperty] as any)?.some)((av: any) =>
+                av.days_of_week.includes(day),
+              )
             : false);
 
         return (
@@ -98,34 +100,38 @@ export const renderSwitchGroup = <T, >(
                 setFormState((prevState) => {
                   if (!prevState) return prevState;
                   let updatedAvailability =
-                    prevState.[keyOfArrayProperty]?.slice() || [];
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
+                    prevState[keyOfArrayProperty]?.slice() || [];
                   if (available) {
                     if (
-                      !updatedAvailability.some((av) =>
-                        av.days_of_week.includes(day)
+                      !updatedAvailability.some(
+                        (av: { days_of_week: string | WeekDays[] }) =>
+                          av.days_of_week.includes(day),
                       )
                     ) {
                       updatedAvailability.push({
                         days_of_week: [day],
-                        time_range: []
+                        time_range: [],
                       });
                     }
                   } else {
                     updatedAvailability = updatedAvailability.filter(
-                      (av) => !av.days_of_week.includes(day)
+                      (av: { days_of_week: string | WeekDays[] }) =>
+                        !av.days_of_week.includes(day),
                     );
                   }
                   const updatedState = {
                     ...prevState,
-                    assetAvailability: updatedAvailability
+                    assetAvailability: updatedAvailability,
                   };
-                  debouncedUpdate(updatedState as unknown as Company);
+                  debouncedUpdate(updatedState);
                   return updatedState;
                 });
               }) as any,
-              day as unknown as keyof Asset,
+              day as any,
               day[0].toUpperCase() + day.substring(1),
-              isDayAvailable
+              isDayAvailable,
             )}
           </Grid>
         );
@@ -134,11 +140,11 @@ export const renderSwitchGroup = <T, >(
   </Grid>
 );
 
-export const renderDatePicker = <T, >(
+export const renderDatePicker = <T,>(
   formState: T,
   handleChange: (name: keyof T, value: string | Date | boolean) => void,
   name: keyof T,
-  label: string
+  label: string,
 ) => (
   <LocalizationProvider dateAdapter={AdapterDayjs}>
     <DatePicker
@@ -146,7 +152,7 @@ export const renderDatePicker = <T, >(
       value={dayjs(
         formState && formState[name]
           ? new Date(formState ? (formState[name] as Date) : Date.now())
-          : new Date()
+          : new Date(),
       )}
       onChange={(newDate) =>
         handleChange(name, newDate ? new Date(newDate.valueOf()) : new Date())
@@ -156,17 +162,17 @@ export const renderDatePicker = <T, >(
   </LocalizationProvider>
 );
 
-export const renderDropdown = <T, >(
+export const renderDropdown = <T,>(
   formState: T,
   handleChange: (name: keyof T, value: string | Date | boolean) => void,
   name: keyof T,
   label: string,
-  options: { value: string | Date | boolean; label?: string }[]
+  options: { value: string | Date | boolean; label?: string }[],
 ) => (
   <Select
     name={name as string}
     label={label}
-    value={formState ? formState[name] : ''}
+    value={formState ? formState[name] : ""}
     onChange={(e) => handleChange(name, e.target.value as string)}
   >
     {options.map(({ label, value }) => (
