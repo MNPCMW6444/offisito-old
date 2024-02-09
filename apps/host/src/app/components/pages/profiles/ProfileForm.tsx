@@ -1,4 +1,11 @@
-import { Button, Grid, TextField } from "@mui/material";
+import {
+  FormControlLabel,
+  Grid,
+  MenuItem,
+  Select,
+  Switch,
+  TextField,
+} from "@mui/material";
 import {
   ChangeEvent,
   useCallback,
@@ -13,10 +20,36 @@ import { axiosErrorToaster } from "@monorepo/react-components";
 import { useLocation } from "react-router-dom";
 import debounce from "lodash.debounce";
 import { PrimaryText } from "@monorepo/react-styles";
+import toast from "react-hot-toast";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const ProfileForm = () => {
   const [formState, setFormState] = useState<Company>();
   const server = useContext(ServerContext);
+  const [buildings, setBuildings] = useState<
+    { value: string; label: string }[]
+  >([]);
+
+  const fetchBuildings = useCallback(async () => {
+    try {
+      const res = await server?.axiosInstance.get(
+        "/api/host/building/autocomplete_building_add",
+      );
+      setBuildings([
+        {
+          label: res?.data?.data?.address?.street,
+          value: res?.data?.data?._id,
+        },
+      ]);
+    } catch (e) {
+      axiosErrorToaster(e);
+    }
+  }, [server?.axiosInstance]);
+
+  useEffect(() => {
+    fetchBuildings().then();
+  }, [fetchBuildings]);
 
   const fetchProfile = useCallback(
     async (id: string) => {
@@ -46,48 +79,94 @@ const ProfileForm = () => {
     }
   }, [query, fetchProfile]);
 
-  const handleUpdate = async (updatedState: CreateEditCompanyReq) => {
+  const handleUpdate = useCallback(
+    async (updatedState: Company) => {
+      try {
+        const res = await server?.axiosInstance.put(
+          "/api/host/company/edit_company_lease/" + updatedState._id.toString(),
+          updatedState,
+        );
+        toast.success(res?.data.msg);
+      } catch (error) {
+        axiosErrorToaster(error);
+      }
+    },
+    [server?.axiosInstance],
+  );
+
+  const debouncedUpdate = useCallback(debounce(handleUpdate, 500), [
+    handleUpdate,
+  ]);
+
+  const handleChange = (name: string, value: string | Date) => {
     formState &&
-      formState._id &&
-      (await server?.axiosInstance.put<any, any, CreateEditCompanyReq>(
-        "/api/host/company/edit_company_lease/" + formState._id,
-        JSON.parse(JSON.stringify(updatedState)),
-      ));
-  };
-
-  const debouncedUpdate = debounce(handleUpdate, 500);
-
-  useEffect(() => {
-    return () => {
-      debouncedUpdate.cancel();
-    };
-  }, [debouncedUpdate]);
-
-  const handleChange = (name: string, value: string | boolean) => {
-    formState &&
-      setFormState(
-        (prevState) => ({ ...(prevState || {}), [name]: value }) as any,
-      );
-  };
-
-  const handleTextFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
-    handleChange(e.target.name, e.target.value);
+      setFormState(((prevState: Company) => {
+        const updatedState: Partial<Company> = { ...prevState, [name]: value };
+        debouncedUpdate(updatedState as Company);
+        return updatedState;
+      }) as any);
   };
 
   const renderTextField = (name: keyof CreateEditCompanyReq, label: string) => (
     <TextField
       multiline
-      variant="standard"
+      variant="outlined"
       label={label}
       value={formState ? formState[name] : ""}
-      onChange={handleTextFieldChange}
+      onChange={(e: ChangeEvent<HTMLInputElement>) => {
+        handleChange(name, e.target.value);
+      }}
       name={name}
     />
   );
 
-  const publish = async () => {
-    await server?.axiosInstance.post("/api/assets/publish", {});
-  };
+  const renderSwitch = (name: keyof CreateEditCompanyReq, label: string) => (
+    <FormControlLabel
+      control={
+        <Switch
+          checked={!!formState?.[name]}
+          onChange={(e: any) => {
+            handleChange(name, e.target.checked);
+          }}
+          name={name}
+        />
+      }
+      label={label}
+    />
+  );
+
+  const renderDatePicker = (
+    name: keyof CreateEditCompanyReq,
+    label: string,
+  ) => (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <DatePicker
+        label={label}
+        value={formState ? formState[name] : ""}
+        onChange={(date) => {
+          typeof date === "object" && handleChange(name, date as Date);
+        }}
+        name={name}
+      />
+    </LocalizationProvider>
+  );
+
+  const renderDropdown = (
+    name: keyof CreateEditCompanyReq,
+    label: string,
+    options: { value: string; label?: string }[],
+  ) => (
+    <Select
+      name={name}
+      label={label}
+      value={formState ? formState[name] : ""}
+      onChange={(e) => handleChange(name, e.target.value as string)}
+    >
+      {options.map(({ label, value }) => (
+        <MenuItem value={value}>{label || value}</MenuItem>
+      ))}
+    </Select>
+  );
 
   return formState?._id ? (
     <Grid
@@ -95,25 +174,31 @@ const ProfileForm = () => {
       direction="column"
       rowSpacing={4}
       width="92%"
-      height="80%"
-      padding="10% 4%"
+      padding="2% 4%"
       sx={{ overflowX: "scroll" }}
+      wrap="nowrap"
+      alignItems="center"
     >
       <Grid item>
-        <PrimaryText>List a Space</PrimaryText>
+        <PrimaryText variant="h4">Company Profile</PrimaryText>
       </Grid>
-      <Grid item container alignItems="center" columnSpacing={4}>
-        <Grid item>{renderTextField("companyInHold", "Company in Hold")}</Grid>
+      <Grid item>{renderTextField("companyName", "Company Name")}</Grid>
+      <Grid item>{renderTextField("companyInHold", "Company in Hold")}</Grid>
+      <Grid item>{renderTextField("floorNumber", "Floor Number")}</Grid>
+      <Grid item>{renderSwitch("fullFloor", "Full Floor?")}</Grid>
+      <Grid item>
+        {renderDatePicker("contractEndDate", "Contract End Date")}
       </Grid>
-      <Grid item container justifyContent="center">
-        <Button variant="contained" onClick={publish}>
-          Publish
-        </Button>
+      <Grid item>
+        {renderSwitch(
+          "subleasePermission",
+          "I have a legal sublease permission",
+        )}
       </Grid>
-      ;
+      <Grid item>{renderDropdown("building", "Building", buildings)}</Grid>
     </Grid>
   ) : (
-    <PrimaryText>Error</PrimaryText>
+    <PrimaryText>{hasFetched.current ? "Error" : "Loading..."}</PrimaryText>
   );
 };
 
