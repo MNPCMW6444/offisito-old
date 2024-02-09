@@ -7,21 +7,18 @@ import { crudResponse } from "../crudResponse";
 import BuildingModel from "../../../../mongo/assets/buildingModel";
 import CompanyContractModel from "../../../../mongo/assets/companyContractModel";
 
-
 // #TODO: Front end will add a coordinate Array with longitude, longitude in req.body
 // host ID to be sent in the URL
 // status is on draft when saving
 export const createAsset = async (req: Request, res: Response) => {
   const assetModel = AssetModel();
-  const buildingModel= BuildingModel();
+  const buildingModel = BuildingModel();
   const contractModel = CompanyContractModel();
 
- 
-  // const host = req.user;
+  const host = req.user;
 
   try {
     const {
-      host,
       assetDescription,
       roomNumber,
       assetAvailability,
@@ -32,13 +29,14 @@ export const createAsset = async (req: Request, res: Response) => {
       peopleCapacity,
       leaseCondition,
       leasingCompany,
-      
-    } = req.body 
+    } = req.body;
     // as CreateEditAssetReq;
 
-    if (!isValidObjectId(host)) {
-      // if (!isValidObjectId(host._id)) {
-      const response: crudResponse<null> = {success:false, error:"Not Valid ID" }
+    if (!isValidObjectId(host._id)) {
+      const response: crudResponse<null> = {
+        success: false,
+        error: "Not Valid ID",
+      };
       return res.status(500).json(response);
     }
 
@@ -59,25 +57,29 @@ export const createAsset = async (req: Request, res: Response) => {
 
     const savedNewAsset = await newAsset.save();
 
-    const savedAsset = await assetModel.findById(savedNewAsset._id).populate({
-      path: 'leasingCompany',
-      model: 'CompanyContract',
-    }).exec();
-    
-    const companyLeasing  = savedAsset.leasingCompany as Company; 
-  
+    const savedAsset = await assetModel
+      .findById(savedNewAsset._id)
+      .populate({
+        path: "leasingCompany",
+        model: "CompanyContract",
+      })
+      .exec();
+
+    const companyLeasing = savedAsset.leasingCompany as Company;
+
     const buildingCompany = companyLeasing.building;
-    
-   
-    const pushToBuildingAssetsList = await buildingModel.updateOne({_id:buildingCompany}, {$push: {assets: savedAsset}})
-    
-    const response: crudResponse<typeof savedNewAsset>= {
-      success:true,
-      data:savedNewAsset,
-      msg:"New Asset Saved"
-    }
-    
-    
+
+    const pushToBuildingAssetsList = await buildingModel.updateOne(
+      { _id: buildingCompany },
+      { $push: { assets: savedAsset } },
+    );
+
+    const response: crudResponse<typeof savedNewAsset> = {
+      success: true,
+      data: savedNewAsset,
+      msg: "New Asset Saved",
+    };
+
     res.status(201).json(response);
   } catch (err) {
     console.error("error in creating New Asset", err);
@@ -88,34 +90,35 @@ export const createAsset = async (req: Request, res: Response) => {
 // #TODO - sending Back end the asset_id in url.
 
 export const getAssetDetail = async (req: Request, res: Response) => {
-    const assetModel =AssetModel();
-    const contractModel = CompanyContractModel();
-    const buildingModel= BuildingModel();
-
+  const assetModel = AssetModel();
+  const contractModel = CompanyContractModel();
+  const buildingModel = BuildingModel();
 
   try {
     const asset_id = req.params.asset_id;
 
     const findAsset = await assetModel.findById(asset_id).populate({
-      path: 'leasingCompany',
-      model:'CompanyContract',
-      select:'building',
-      populate:{
-        path:'building',
-        model: 'Building', 
-        select: 'address'
-      }
+      path: "leasingCompany",
+      model: "CompanyContract",
+      select: "building",
+      populate: {
+        path: "building",
+        model: "Building",
+        select: "address",
+      },
     });
 
     if (!findAsset) {
-      const response: crudResponse<null> = {success:false, error:"Not Valid ASSET ID" }
+      const response: crudResponse<null> = {
+        success: false,
+        error: "Not Valid ASSET ID",
+      };
       return res.status(500).json(response);
-      }
-    
-    const response: crudResponse<typeof findAsset > = {
+    }
+
+    const response: crudResponse<typeof findAsset> = {
       success: true,
       data: findAsset,
-
     };
     res.status(200).json(response);
   } catch (error) {
@@ -133,7 +136,10 @@ export const editAsset = async (req: Request, res: Response) => {
     const asset_id = req.params.asset_id;
 
     if (!isValidObjectId(asset_id)) {
-      const response: crudResponse<null> = {success:false, error:"Not Valid ID" }
+      const response: crudResponse<null> = {
+        success: false,
+        error: "Not Valid ID",
+      };
       return res.status(500).json(response);
     }
 
@@ -142,20 +148,22 @@ export const editAsset = async (req: Request, res: Response) => {
     const updatedAsset = await assetModel.findByIdAndUpdate(
       { _id: asset_id },
       req.body as CreateEditAssetReq,
-      { new: true }
+      { new: true },
     );
-    
+
     if (!updatedAsset) {
-      const response: crudResponse<null> = { success: false, error: 'Asset not found' };
+      const response: crudResponse<null> = {
+        success: false,
+        error: "Asset not found",
+      };
       return res.status(404).json(response);
     }
 
     const response: crudResponse<typeof updatedAsset> = {
       success: true,
       data: updatedAsset,
-      msg:"Asset Update Success"
-    }
-
+      msg: "Asset Update Success",
+    };
 
     res.status(200).json(response);
   } catch (error) {
@@ -172,14 +180,20 @@ export const publishAsset = async (req: Request, res: Response) => {
   try {
     const asset_id = req.params.asset_id;
     if (!isValidObjectId(asset_id)) {
-      const response : crudResponse<null> = {success: false, error:"Not Valid AssetID"}
+      const response: crudResponse<null> = {
+        success: false,
+        error: "Not Valid AssetID",
+      };
       return res.status(404).json(response);
     }
 
     const existingAsset = await assetModel.findById(asset_id);
 
     if (!existingAsset) {
-      const response: crudResponse<null> = { success: false, error: 'Asset not found' };
+      const response: crudResponse<null> = {
+        success: false,
+        error: "Asset not found",
+      };
       return res.status(404).json(response);
     }
 
@@ -187,13 +201,16 @@ export const publishAsset = async (req: Request, res: Response) => {
       { _id: asset_id },
       {
         ...existingAsset.toObject(),
-        publishingStatus: 'active',
+        publishingStatus: "active",
       },
-      { new: true }
+      { new: true },
     );
 
     if (!publishedAsset) {
-      const response: crudResponse<null> = { success: false, error: 'Unable to publish your Asset' };
+      const response: crudResponse<null> = {
+        success: false,
+        error: "Unable to publish your Asset",
+      };
       return res.status(500).json(response);
     }
 
@@ -219,17 +236,17 @@ export const getAssetsList = async (req: Request, res: Response, next) => {
     const assetList = await assetModel.find({ host: authenticatedHost._id });
 
     if (!assetList) {
-      const response : crudResponse<typeof assetList> ={
+      const response: crudResponse<typeof assetList> = {
         success: false,
-        error: "There are no Assets Yet"
-      }
-     
+        error: "There are no Assets Yet",
+      };
+
       res.status(401).json(response);
     } else {
-      const response: crudResponse<typeof assetList>={
+      const response: crudResponse<typeof assetList> = {
         success: true,
-        data: assetList
-      }
+        data: assetList,
+      };
       res.status(200).json(response);
     }
   } catch (error) {
@@ -243,27 +260,27 @@ export const deleteAsset = async (req: Request, res: Response) => {
     const asset_id = req.params.asset_id;
 
     if (!isValidObjectId) {
-      const response:crudResponse<null> = {
-        success:false,
-        error:"invlaid AssetID"
-      }
+      const response: crudResponse<null> = {
+        success: false,
+        error: "invlaid AssetID",
+      };
       return res.status(401).json(response);
     }
     const deletedAsset = await assetModel.deleteOne({ _id: asset_id });
 
     if (!deletedAsset) {
-    const response: crudResponse<null>={
-    success:false,
-    error:"unable to delete"
-    }
+      const response: crudResponse<null> = {
+        success: false,
+        error: "unable to delete",
+      };
       res.status(200).json(response);
-    } 
+    }
 
     const response: crudResponse<typeof deletedAsset> = {
       success: true,
       data: deletedAsset,
     };
-    res.status(200).json(response)
+    res.status(200).json(response);
   } catch (deleteError) {
     console.error("Erro in deleting Asset", deleteError);
     res
