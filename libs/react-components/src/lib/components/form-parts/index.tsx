@@ -15,7 +15,7 @@ export * from "./labels";
 
 export const renderTextField = <T,>(
   formState: T,
-  handleChange: (name: keyof T, value: string | Date) => void,
+  handleChange: (name: keyof T, value: string | Date | boolean) => void,
   name: keyof T,
   label: string,
 ) => (
@@ -33,15 +33,16 @@ export const renderTextField = <T,>(
 
 export const renderSwitch = <T,>(
   formState: T,
-  handleChange: (name: keyof T, value: string | Date) => void,
+  handleChange: (name: keyof T, value: string | Date | boolean) => void,
   name: keyof T,
   label: string,
+  isDayAvailable = false,
 ) => (
   <FormControlLabel
     sx={(theme) => ({ color: theme.palette.primary.main })}
     control={
       <Switch
-        checked={!!formState?.[name]}
+        checked={!!isDayAvailable || !!formState?.[name]}
         onChange={(e: any) => {
           handleChange(name, e.target.checked);
         }}
@@ -54,7 +55,7 @@ export const renderSwitch = <T,>(
 
 export const renderDatePicker = <T,>(
   formState: T,
-  handleChange: (name: keyof T, value: string | Date) => void,
+  handleChange: (name: keyof T, value: string | Date | boolean) => void,
   name: keyof T,
   label: string,
 ) => (
@@ -76,10 +77,10 @@ export const renderDatePicker = <T,>(
 
 export const renderDropdown = <T,>(
   formState: T,
-  handleChange: (name: keyof T, value: string | Date) => void,
+  handleChange: (name: keyof T, value: string | Date | boolean) => void,
   name: keyof T,
   label: string,
-  options: { value: string | Date; label?: string }[],
+  options: { value: string | Date | boolean; label?: string }[],
 ) => (
   <Select
     name={name as string}

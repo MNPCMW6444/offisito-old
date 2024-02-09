@@ -88,7 +88,7 @@ const ProfileForm = () => {
     handleUpdate,
   ]);
 
-  const handleChange = (name: string, value: string | Date) => {
+  const handleChange = (name: string, value: string | Date | boolean) => {
     formState &&
       setFormState(((prevState: Company) => {
         const updatedState: Partial<Company> = { ...prevState, [name]: value };

@@ -1,38 +1,22 @@
-import React, {
-  ChangeEvent,
-  createRef,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import {
-  Button,
-  FormLabel,
-  Grid,
-  IconButton,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { Asset, CreateEditAssetReq } from "@monorepo/types";
-import { Add } from "@mui/icons-material";
+import { Asset, Company, WeekDays } from "@monorepo/types";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ServerContext } from "@monorepo/server-provider";
-import debounce from "lodash.debounce";
 import {
   axiosErrorToaster,
-  formatLabel,
-  renderSwitchesHOC,
+  renderSwitch,
+  renderTextField,
 } from "@monorepo/react-components";
 import { useLocation } from "react-router-dom";
-import { ObjectId } from "mongoose";
+import toast from "react-hot-toast";
+import debounce from "lodash.debounce";
+import { Grid } from "@mui/material";
 import { PrimaryText } from "@monorepo/react-styles";
 
 const SpaceForm = () => {
   const [formState, setFormState] = useState<Asset>();
   const server = useContext(ServerContext);
 
-  const fetchAsset = useCallback(
+  const fetchSpace = useCallback(
     async (id: string) => {
       try {
         const res = await server?.axiosInstance.get(
@@ -54,160 +38,135 @@ const SpaceForm = () => {
   useEffect(() => {
     const id = query.get("id");
     if (id && !hasFetched.current) {
-      fetchAsset(id).then(() => {
+      fetchSpace(id).then(() => {
         hasFetched.current = true;
       });
     }
-  }, [query, fetchAsset]);
+  }, [query, fetchSpace]);
 
-  const fileInputRef = createRef<HTMLInputElement>();
-
-  const handleUpdate = async (updatedState: Asset) => {
-    formState &&
-      (await server?.axiosInstance.put(
-        "/api/assets/edit_asset" + formState._id,
-        {
-          newAsset: {
-            _id: formState._id,
-            ...updatedState,
-          },
-        },
-      ));
-  };
-
-  const debouncedUpdate = debounce(handleUpdate, 500);
-
-  useEffect(() => {
-    return () => {
-      debouncedUpdate.cancel();
-    };
-  }, [debouncedUpdate]);
-
-  const handleChange = (name: keyof Asset, value: string | boolean) => {
-    formState &&
-      setFormState(
-        (prevState) =>
-          ({
-            ...prevState,
-            [name]: value,
-          }) as any,
-      );
-  };
-
-  const handleTextFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
-    handleChange(e.target.name as keyof Asset, e.target.value);
-  };
-
-  const handleSwitchChange = (key: string, checked: boolean) => {
-    handleChange(key as keyof Asset, checked);
-  };
-
-  const renderTextField = (name: keyof Asset, label: string) => (
-    <TextField
-      multiline
-      variant="standard"
-      label={label}
-      value={formState ? formState[name] : ""}
-      onChange={handleTextFieldChange}
-      name={name}
-    />
+  const handleUpdate = useCallback(
+    async (updatedState: Company) => {
+      try {
+        const res = await server?.axiosInstance.put(
+          "/api/host/asset/edit_asset/" + updatedState._id.toString(),
+          updatedState,
+        );
+        toast.success(res?.data.msg);
+      } catch (error) {
+        axiosErrorToaster(error);
+      }
+    },
+    [server?.axiosInstance],
   );
 
-  const renderSwitches = renderSwitchesHOC(handleSwitchChange, formatLabel);
+  const debouncedUpdate = useCallback(debounce(handleUpdate, 500), [
+    handleUpdate,
+  ]);
 
-  const uploadPicture = async (file: File) => {
-    const formData = new FormData();
-    formData.append("photo", file);
+  const handleChange = (name: string, value: string | Date | boolean) => {
     formState &&
-      (await server?.axiosInstance.post(
-        "/api/assets/uploadPicture/" + (formState as unknown as Asset)._id,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        },
-      ));
+      setFormState(((prevState: Company) => {
+        const updatedState: Partial<Company> = { ...prevState, [name]: value };
+        debouncedUpdate(updatedState as Company);
+        return updatedState;
+      }) as any);
   };
 
-  const handleFileSelect = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0];
-      uploadPicture(file).then();
-    }
-  };
-
-  const addPicture = () => {
-    fileInputRef.current?.click();
-  };
-
-  const publish = async () => {
-    await server?.axiosInstance.post("/api/assets/publish", {});
-  };
-
-  useEffect(() => {
-    if (!formState?.amenities)
-      setFormState((p) => {
-        const n = p ? JSON.parse(JSON.stringify(p)) : {};
-        n.amenities = {};
-        n.availability = {
-          sun: false,
-          mon: false,
-          tues: false,
-          wed: false,
-          thu: false,
-          fri: false,
-          sat: false,
-        };
-        return n;
-      });
-  }, [formState]);
-
-  console.log(formState);
-  return (formState as unknown as Asset)?._id ? (
+  return formState?._id ? (
     <Grid
       container
       direction="column"
       rowSpacing={4}
       width="92%"
-      height="80%"
-      padding="10% 4%"
+      padding="2% 4%"
       sx={{ overflowX: "scroll" }}
+      wrap="nowrap"
+      alignItems="center"
     >
       <Grid item>
-        <PrimaryText>List a Space</PrimaryText>
+        <PrimaryText variant="h4">List your Space</PrimaryText>
       </Grid>
-      <Grid item>{renderTextField("assetDescription", "Desc")}</Grid>
       <Grid item>
-        {renderSwitches(
-          formState?.amenities as unknown as { [key: string]: boolean },
-          "amenities",
+        {renderTextField(
+          formState,
+          handleChange,
+          "assetDescription",
+          "Description",
         )}
       </Grid>
-      <Grid item container alignItems="center" columnSpacing={4}>
-        <Grid item>{renderTextField("leasingCompany", "Company in Hold")}</Grid>
-        <Grid item>{renderTextField("roomNumber", "Floor")}</Grid>
-      </Grid>
       <Grid item>
-        <FormLabel component="legend">Property Pictures</FormLabel>
-        <IconButton onClick={addPicture}>
-          <Add sx={{ fontSize: "250%" }} />
-        </IconButton>
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleFileSelect}
-          multiple
-          style={{ display: "none" }}
-        />
+        {renderTextField(formState, handleChange, "roomNumber", "Room Number")}
       </Grid>
-      <Grid item container justifyContent="center">
-        <Button variant="contained" onClick={publish}>
-          Publish
-        </Button>
+
+      <Grid
+        item
+        container
+        justifyContent="center"
+        alignItems="center"
+        rowSpacing={2}
+        direction="column"
+      >
+        <Grid item>
+          <PrimaryText>Avaliabilty:</PrimaryText>
+        </Grid>
+        <Grid
+          item
+          container
+          justifyContent="center"
+          alignItems="center"
+          columnSpacing={2}
+        >
+          {Object.values(WeekDays).map((day) => {
+            const isDayAvailable = formState?.assetAvailability?.some((av) =>
+              av.days_of_week.includes(day),
+            );
+
+            return (
+              <Grid item key={day}>
+                {renderSwitch(
+                  formState,
+                  ((name: keyof Asset, value: boolean) => {
+                    const available = value;
+                    setFormState((prevState) => {
+                      if (!prevState) return prevState;
+                      let updatedAvailability =
+                        prevState.assetAvailability?.slice() || [];
+                      if (available) {
+                        if (
+                          !updatedAvailability.some((av) =>
+                            av.days_of_week.includes(day),
+                          )
+                        ) {
+                          updatedAvailability.push({
+                            days_of_week: [day],
+                            time_range: [],
+                          });
+                        }
+                      } else {
+                        updatedAvailability = updatedAvailability.filter(
+                          (av) => !av.days_of_week.includes(day),
+                        );
+                      }
+                      const updatedState = {
+                        ...prevState,
+                        assetAvailability: updatedAvailability,
+                      };
+                      debouncedUpdate(updatedState as unknown as Company);
+                      return updatedState;
+                    });
+                  }) as any,
+                  day as unknown as keyof Asset,
+                  day[0].toUpperCase() + day.substring(1),
+                  isDayAvailable,
+                )}
+              </Grid>
+            );
+          })}
+        </Grid>
       </Grid>
-      ;
     </Grid>
   ) : (
-    <PrimaryText>Error</PrimaryText>
+    <PrimaryText>{hasFetched.current ? "Error" : "Loading..."}</PrimaryText>
   );
 };
 

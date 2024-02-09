@@ -10,32 +10,12 @@ import { Typography, Grid } from "@mui/material";
 import { styled } from "@mui/system";
 import { ServerContext } from "@monorepo/server-provider";
 import { User } from "@monorepo/types";
+import { PrimaryText } from "@monorepo/react-styles";
+import { MainMessage } from "../components";
 
 interface AuthContextProps {
   children: ReactNode;
 }
-
-export const WhiteTypography = styled(Typography)(({ theme }) => ({
-  fontWeight: "bold",
-  fontSize: 22,
-  letterSpacing: 2,
-  color: theme.palette.primary,
-  marginBottom: theme.spacing(1),
-}));
-
-const loadingMessage = (
-  <Grid
-    height="100%"
-    width="100%"
-    container
-    justifyContent="center"
-    alignItems="center"
-  >
-    <Grid item>
-      <WhiteTypography>Checking if you are signed in...</WhiteTypography>
-    </Grid>
-  </Grid>
-);
 
 export const AuthContext = createContext<{
   user?: User;
@@ -43,8 +23,12 @@ export const AuthContext = createContext<{
   logout: () => Promise<void>;
 }>({
   user: undefined,
-  refreshUserData: async () => {},
-  logout: async () => {},
+  refreshUserData: async () => {
+    return;
+  },
+  logout: async () => {
+    return;
+  },
 });
 
 export const AuthContextProvider = ({ children }: AuthContextProps) => {
@@ -88,7 +72,11 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
         logout,
       }}
     >
-      {loading ? loadingMessage : children}
+      {loading ? (
+        <MainMessage text="Checking if you are signed in..." />
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
 };

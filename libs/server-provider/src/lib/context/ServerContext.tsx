@@ -1,7 +1,8 @@
 import { createContext, useEffect, useState, useRef, ReactNode } from "react";
-import { Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import axios, { AxiosInstance } from "axios";
 import { PrimaryText } from "@monorepo/react-styles";
+import { MainMessage } from "@monorepo/react-components";
 
 export const frontendSettings = () => {
   try {
@@ -15,11 +16,11 @@ export const frontendSettings = () => {
 const DEFAULT_TRY_INTERVAL = 3000;
 const GOOD_STATUS = "good";
 const BAD_MESSAGE = "Server is not available. Please try again later.";
+const FIRST_MESSAGE = "Connecting to server...";
 
 interface ServerProviderProps {
   children: ReactNode;
   tryInterval?: number;
-  customErrorTSX?: ReactNode;
 }
 
 interface ServerContextProps {
@@ -31,11 +32,10 @@ export const ServerContext = createContext<ServerContextProps | null>(null);
 
 export const ServerProvider = ({
   tryInterval,
-  customErrorTSX,
   children,
 }: ServerProviderProps) => {
   const interval = tryInterval || DEFAULT_TRY_INTERVAL;
-  const [status, setStatus] = useState<string>(BAD_MESSAGE);
+  const [status, setStatus] = useState<string>(BAD_MESSAGE || FIRST_MESSAGE);
   const [version, setVersion] = useState<string>("");
   const statusRef = useRef(status);
 
@@ -59,7 +59,9 @@ export const ServerProvider = ({
     try {
       const response = await axiosInstance.get("api");
       const newStatus =
-        response.data.status === "Im alive" ? GOOD_STATUS : BAD_MESSAGE;
+        response.data.status === "Im alive"
+          ? GOOD_STATUS
+          : BAD_MESSAGE || FIRST_MESSAGE;
 
       setStatus(newStatus);
       if (newStatus === GOOD_STATUS) {
@@ -78,8 +80,11 @@ export const ServerProvider = ({
   }, [status]);
 
   useEffect(() => {
-    if (statusRef.current === BAD_MESSAGE) {
-      setStatusAsyncly();
+    if (
+      statusRef.current === BAD_MESSAGE ||
+      statusRef.current === FIRST_MESSAGE
+    ) {
+      setStatusAsyncly().then();
     }
   }, [axiosInstance, interval]);
 
@@ -90,6 +95,6 @@ export const ServerProvider = ({
       </ServerContext.Provider>
     );
   } else {
-    return customErrorTSX || <PrimaryText>{status}</PrimaryText>;
+    return <MainMessage text={status} />;
   }
 };

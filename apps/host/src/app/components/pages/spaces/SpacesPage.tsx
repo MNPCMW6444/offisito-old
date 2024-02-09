@@ -41,7 +41,7 @@ const SpacesPage = () => {
           roomNumber: "1213",
           assetType: "office",
           leaseCondition: {},
-          leasingCompany: "65c527ef7c116ba110f11cdc" as unknown as ObjectId,
+          leasingCompany: "65c61aca2442a903ee92a23a" as unknown as ObjectId,
         });
         const newAssetId = res?.data?.data?._id.toString();
         newAssetId && navigate("/space/?id=" + newAssetId);
