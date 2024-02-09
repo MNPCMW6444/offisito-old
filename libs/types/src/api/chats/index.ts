@@ -1,4 +1,4 @@
 export interface SendMessageReq {
-  conversationId: string;
+  conversationIdOrAddressee: string;
   message: string;
 }

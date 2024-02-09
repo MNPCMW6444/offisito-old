@@ -5,10 +5,26 @@ import { Send } from "@mui/icons-material";
 import { Conversation, Message, SendMessageReq } from "@monorepo/types";
 import { ServerContext } from "@monorepo/server-provider";
 import { axiosErrorToaster } from "../../../utils";
+import { AxiosInstance } from "axios";
 
 interface ConversationViewProps {
   conversation: Conversation;
 }
+
+export const sendMessage = (
+  axiosInstance: AxiosInstance | undefined,
+  conversationIdOrAddressee: string,
+  message: string,
+  cb: () => void,
+) => {
+  axiosInstance &&
+    axiosInstance
+      .post<any, any, SendMessageReq>("api/chat/messages", {
+        conversationIdOrAddressee,
+        message,
+      })
+      .finally(() => cb());
+};
 
 const ConversationView = ({ conversation }: ConversationViewProps) => {
   const server = useContext(ServerContext);
@@ -30,16 +46,6 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
   useEffect(() => {
     fetchConversationMessages().then();
   }, [fetchConversationMessages]);
-
-  const sendMessage = async () => {
-    const x = await server?.axiosInstance.post<any, any, SendMessageReq>(
-      "api/chat/messages",
-      {
-        conversationId: conversation._id.toString(),
-        message,
-      },
-    );
-  };
 
   return (
     <Box
@@ -72,8 +78,13 @@ const ConversationView = ({ conversation }: ConversationViewProps) => {
         <Button
           variant="contained"
           color="primary"
-          onClick={async () => {
-            await sendMessage();
+          onClick={() => {
+            sendMessage(
+              server?.axiosInstance,
+              conversation._id.toString(),
+              message,
+              () => fetchConversationMessages(),
+            );
             setMessage("");
           }}
         >

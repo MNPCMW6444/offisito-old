@@ -2,7 +2,7 @@ import { Document } from "mongoose";
 
 export interface Conversation extends Document {
   hostId: string;
-  guestId: string;
+  memberId: string;
   hiddenFor?: string[];
 }
 

@@ -11,7 +11,7 @@ export default () => {
         type: String,
         required: true,
       },
-      guestId: {
+      memberId: {
         type: String,
         required: true,
       },
