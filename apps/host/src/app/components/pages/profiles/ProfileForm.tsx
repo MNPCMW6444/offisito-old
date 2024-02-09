@@ -89,10 +89,6 @@ const ProfileForm = () => {
     await server?.axiosInstance.post("/api/assets/publish", {});
   };
 
-  useEffect(() => {
-    console.log(formState);
-  }, [formState]);
-
   return formState?._id ? (
     <Grid
       container

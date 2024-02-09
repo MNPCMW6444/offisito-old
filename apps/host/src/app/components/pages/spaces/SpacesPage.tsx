@@ -1,12 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Asset, CreateEditAssetReq } from "@monorepo/types";
-import { Add } from "@mui/icons-material";
+import { Add, Delete, Edit } from "@mui/icons-material";
 import { ServerContext } from "@monorepo/server-provider";
 import { axiosErrorToaster } from "@monorepo/react-components";
-import { AssetCard } from "@monorepo/react-components";
 import { useNavigate } from "react-router-dom";
 import { OFAB, PrimaryText } from "@monorepo/react-styles";
-import { Grid } from "@mui/material";
+import { Grid, IconButton } from "@mui/material";
 import { ObjectId } from "mongoose";
 
 const SpacesPage = () => {
@@ -62,8 +61,33 @@ const SpacesPage = () => {
       {myAssets.length > 0 ? (
         <Grid container direction="column" rowSpacing={4}>
           {myAssets.map((asset) => (
-            <Grid id={asset._id} item>
-              <AssetCard asset={asset} />
+            <Grid
+              id={asset._id}
+              item
+              width="100%"
+              container
+              alignItems="center"
+              wrap="nowrap"
+            >
+              <Grid item>
+                <PrimaryText>{JSON.stringify(asset)}</PrimaryText>
+              </Grid>
+              <Grid item>
+                <IconButton onClick={() => navigate("/space/?id=" + asset._id)}>
+                  <Edit />
+                </IconButton>
+              </Grid>
+              <Grid item>
+                <IconButton
+                  onClick={() =>
+                    server?.axiosInstance?.delete(
+                      "/api/host/asset/delete_asset/" + asset._id.toString(),
+                    )
+                  }
+                >
+                  <Delete />
+                </IconButton>
+              </Grid>
             </Grid>
           ))}
         </Grid>

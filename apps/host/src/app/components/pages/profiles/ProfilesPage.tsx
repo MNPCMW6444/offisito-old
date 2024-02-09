@@ -3,8 +3,8 @@ import { AuthContext, axiosErrorToaster } from "@monorepo/react-components";
 import { useContext, useEffect, useState } from "react";
 import { ServerContext } from "@monorepo/server-provider";
 import { useNavigate } from "react-router-dom";
-import { Grid } from "@mui/material";
-import { Add } from "@mui/icons-material";
+import { Grid, IconButton } from "@mui/material";
+import { Add, Delete, Edit } from "@mui/icons-material";
 import { OFAB, PrimaryText } from "@monorepo/react-styles";
 import { ObjectId } from "mongoose";
 
@@ -17,7 +17,7 @@ const ProfilesPage = () => {
       const res = await server?.axiosInstance.get(
         "/api/host/company/get_companies_list/",
       );
-      res && setMyProfiles([res.data.data]);
+      res && setMyProfiles(res.data.data);
     } catch (e) {
       axiosErrorToaster(e);
     }
@@ -61,8 +61,36 @@ const ProfilesPage = () => {
       {myProfiles.length > 0 ? (
         <Grid container direction="column" rowSpacing={4}>
           {myProfiles.map((profile) => (
-            <Grid id={profile._id} item>
-              <PrimaryText>{JSON.stringify(profile)}</PrimaryText>
+            <Grid
+              id={profile._id}
+              item
+              width="100%"
+              container
+              alignItems="center"
+              wrap="nowrap"
+            >
+              <Grid item>
+                <PrimaryText>{JSON.stringify(profile)}</PrimaryText>
+              </Grid>
+              <Grid item>
+                <IconButton
+                  onClick={() => navigate("/profile/?id=" + profile._id)}
+                >
+                  <Edit />
+                </IconButton>
+              </Grid>
+              <Grid item>
+                <IconButton
+                  onClick={() =>
+                    server?.axiosInstance?.delete(
+                      "/api/host/company/delete_company_lease" +
+                        profile._id.toString(),
+                    )
+                  }
+                >
+                  <Delete />
+                </IconButton>
+              </Grid>
             </Grid>
           ))}
         </Grid>
