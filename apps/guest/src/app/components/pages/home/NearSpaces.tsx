@@ -1,10 +1,10 @@
-import { Button, Grid, Typography } from '@mui/material';
-import { AssetCard } from '@monorepo/react-components';
-import { useContext, useEffect, useState } from 'react';
-import { Asset } from '@monorepo/types';
-import { findMe } from '@monorepo/utils';
-import { ServerContext } from '@monorepo/server-provider';
-import { axiosErrorToaster } from '@monorepo/react-components';
+import { Button, Grid, Typography } from "@mui/material";
+import { AssetCard } from "@monorepo/shared";
+import { useContext, useEffect, useState } from "react";
+import { Asset } from "@monorepo/types";
+import { findMe } from "@monorepo/utils";
+import { ServerContext } from "@monorepo/server-provider";
+import { axiosErrorToaster } from "@monorepo/shared";
 
 const NearSpaces = () => {
   const [assetsNear, setassetsNear] = useState<Asset[]>([]);
@@ -16,13 +16,13 @@ const NearSpaces = () => {
       (location) =>
         server &&
         (location
-            ? server.axiosInstance.get(
-              `/api/assets/near?lat=${location.lat}&long=${location.long}`
+          ? server.axiosInstance.get(
+              `/api/assets/near?lat=${location.lat}&long=${location.long}`,
             )
-            : server.axiosInstance.get(`/api/assets/nearandom`)
+          : server.axiosInstance.get(`/api/assets/nearandom`)
         )
           .then((response) => setassetsNear(response.data))
-          .catch((error) => axiosErrorToaster(error))
+          .catch((error) => axiosErrorToaster(error)),
     );
 
   useEffect(() => {
@@ -36,7 +36,7 @@ const NearSpaces = () => {
           <PrimaryText>Spaces near you</PrimaryText>
         </Grid>
         <Grid item>
-          <Button variant="contained" sx={{ fontSize: '75%' }}>
+          <Button variant="contained" sx={{ fontSize: "75%" }}>
             See all
           </Button>
         </Grid>

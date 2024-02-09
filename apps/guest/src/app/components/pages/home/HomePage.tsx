@@ -1,4 +1,4 @@
-import { ImageCarousel } from "@monorepo/react-components";
+import { ImageCarousel } from "@monorepo/shared";
 import { Grid } from "@mui/material";
 import NearSpaces from "./NearSpaces";
 import HomeTop from "./HomeTop";

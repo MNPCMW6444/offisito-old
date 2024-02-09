@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { AuthContext, AuthPage } from "@monorepo/react-components";
+import { AuthContext, AuthPage } from "@monorepo/shared";
 import HomePage from "./pages/home/HomePage";
 import SearchPage from "./pages/search/SearchPage";
 

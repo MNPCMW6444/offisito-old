@@ -10,17 +10,33 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@monorepo/react-components": ["libs/react-components/src/index.ts"],
-      "@monorepo/react-styles": ["libs/react-styles/src/index.ts"],
-      "@monorepo/server-provider": ["libs/server-provider/src/index.ts"],
-      "@monorepo/types": ["libs/types/src/index.ts"],
-      "@monorepo/utils": ["libs/utils/src/index.ts"]
+      "@monorepo/shared": [
+        "libs/shared/src/index.ts"
+      ],
+      "@monorepo/react-styles": [
+        "libs/react-styles/src/index.ts"
+      ],
+      "@monorepo/server-provider": [
+        "libs/server-provider/src/index.ts"
+      ],
+      "@monorepo/types": [
+        "libs/types/src/index.ts"
+      ],
+      "@monorepo/utils": [
+        "libs/utils/src/index.ts"
+      ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }

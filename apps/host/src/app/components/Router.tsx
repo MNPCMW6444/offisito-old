@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { AuthContext, AuthPage } from "@monorepo/react-components";
+import { AuthContext, AuthPage } from "@monorepo/shared";
 import DashboardPage from "./pages/home/DashboardPage";
 import SpacesPage from "./pages/spaces/SpacesPage";
 import SpaceForm from "./pages/spaces/SpaceForm";
@@ -8,7 +8,7 @@ import ProfilesPage from "./pages/profiles/ProfilesPage";
 import ProfileForm from "./pages/profiles/ProfileForm";
 import { Grid } from "@mui/material";
 import TopBar from "./pages/TopBar";
-import { ChatsPage } from "@monorepo/react-components";
+import { ChatsPage } from "@monorepo/shared";
 
 const Router = () => {
   const { user, logout } = useContext(AuthContext);

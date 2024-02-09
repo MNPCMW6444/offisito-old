@@ -5,7 +5,7 @@ import {
   axiosErrorToaster,
   renderSwitchGroup,
   renderTextField,
-} from "@monorepo/react-components";
+} from "@monorepo/shared";
 import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import debounce from "lodash.debounce";

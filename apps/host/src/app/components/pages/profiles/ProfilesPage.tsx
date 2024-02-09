@@ -1,5 +1,5 @@
 import { Company, CreateEditCompanyReq } from "@monorepo/types";
-import { AuthContext, axiosErrorToaster } from "@monorepo/react-components";
+import { AuthContext, axiosErrorToaster } from "@monorepo/shared";
 import { useContext, useEffect, useState } from "react";
 import { ServerContext } from "@monorepo/server-provider";
 import { useNavigate } from "react-router-dom";

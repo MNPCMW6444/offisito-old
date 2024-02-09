@@ -1,10 +1,9 @@
-import { ServerProvider } from '@monorepo/server-provider';
 import Router from './components/Router';
 import {
   AuthContextProvider,
   EnvBorder,
   useResponsiveness
-} from '@monorepo/react-components';
+} from '@monorepo/shared';
 import styled from '@emotion/styled';
 import { Box, Grid, Typography } from '@mui/material';
 import { Toaster } from 'react-hot-toast';

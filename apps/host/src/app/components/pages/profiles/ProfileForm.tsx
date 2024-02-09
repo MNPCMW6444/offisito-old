@@ -8,7 +8,7 @@ import {
   renderDropdown,
   renderSwitch,
   renderTextField,
-} from "@monorepo/react-components";
+} from "@monorepo/shared";
 import { useLocation } from "react-router-dom";
 import debounce from "lodash.debounce";
 import { PrimaryText } from "@monorepo/react-styles";

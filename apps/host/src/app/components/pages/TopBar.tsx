@@ -9,7 +9,7 @@ import {
 import { PrimaryText } from "@monorepo/react-styles";
 import { MouseEvent, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "@monorepo/react-components";
+import { AuthContext } from "@monorepo/shared";
 
 const TopBar = () => {
   const { user, logout } = useContext(AuthContext);
