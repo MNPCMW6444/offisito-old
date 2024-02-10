@@ -1,24 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { Box } from '@mui/material';
-import p1 from '../../../../assets/mock/colorfull-x-s/mock1.png';
-import p2 from '../../../../assets/mock/colorfull-x-s/mock2.png';
+import React, { useEffect, useState } from "react";
+import { Box } from "@mui/material";
+import p1 from "../../../../assets/mock/colorfull-x-s/mock1.png";
+import p2 from "../../../../assets/mock/colorfull-x-s/mock2.png";
 
-declare module '*.css';
-declare module 'swiper/css/*';
-declare module 'swiper/css/pagination';
-
+declare module "*.css";
 
 const defaultImages = [
   {
-    label: 'Photo1',
-    alt: 'Photo1',
-    imgPath: p1
+    label: "Photo1",
+    alt: "Photo1",
+    imgPath: p1,
   },
   {
-    label: 'Photo2',
-    alt: 'Photo2',
-    imgPath: p2
-  }
+    label: "Photo2",
+    alt: "Photo2",
+    imgPath: p2,
+  },
 ];
 
 interface ImageCarouselProps {
@@ -33,20 +30,16 @@ export const ImageCarousel = ({ imagesArray }: ImageCarouselProps) => {
 
   useEffect(() => {
     async function loadSwiperComponents() {
-      await import('swiper/swiper-bundle.css');
-      await import('swiper/css/pagination');
-
-      const swiperModule = await import('swiper/react');
-      const swiperModules = await import('swiper/modules');
+      await import("swiper/swiper-bundle.css");
+      const swiperModule = await import("swiper/react");
       setSwiper(swiperModule.Swiper);
       setSwiperSlide(swiperModule.SwiperSlide);
-      setPagination(swiperModules.Pagination);
     }
 
     loadSwiperComponents();
   }, []);
 
-  if (!Swiper || !SwiperSlide || !Pagination) {
+  if (!Swiper || !SwiperSlide) {
     return <div>Loading...</div>; // Or any other loading state representation
   }
 
@@ -55,9 +48,8 @@ export const ImageCarousel = ({ imagesArray }: ImageCarouselProps) => {
       <Swiper
         pagination={{
           clickable: true,
-          type: 'bullets'
+          type: "bullets",
         }}
-        modules={[Pagination]}
         spaceBetween={50}
         slidesPerView={1}
       >
@@ -67,10 +59,10 @@ export const ImageCarousel = ({ imagesArray }: ImageCarouselProps) => {
               component="img"
               sx={{
                 height: 255,
-                display: 'block',
+                display: "block",
                 maxWidth: 400,
-                overflow: 'hidden',
-                width: '100%'
+                overflow: "hidden",
+                width: "100%",
               }}
               src={image.imgPath}
               alt={image.label}
