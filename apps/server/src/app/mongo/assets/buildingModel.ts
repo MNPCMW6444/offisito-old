@@ -1,8 +1,8 @@
-import mongoose, { Types } from 'mongoose';
-import { connection } from '../connection';
-import { Building } from '@monorepo/shared';
-import { AvailabilitySchema } from './availabilitySchema';
-import createModel from '../createModel';
+import mongoose, { Types } from "mongoose";
+import { connection } from "../connection";
+import { Building } from "@monorepo/shared";
+import { AvailabilitySchema } from "./availabilitySchema";
+import createModel from "../createModel";
 
 export default () => {
   const name = "Building";
@@ -21,20 +21,20 @@ export default () => {
         },
         coordinates: {
           type: [Number],
-          required: tru,
-        ,
+          required: true,
+        },
       },
     },
-    buildingAmenities: { type: Types.ObjectId, ref:'buildingAmenities'" },
+    buildingAmenities: { type: Types.ObjectId, ref: "buildingAmenities" },
     buildingAccess: [AvailabilitySchema],
     buildingDescription: { type: String },
     doorman: { type: Boolean },
     security: { type: Boolean },
     vip_service: { type: Boolean },
-    assets: [{ type: Types.ObjectId, ref:'asset'" },
+    assets: [{ type: Types.ObjectId, ref: "asset" }],
   });
 
-  if (!connection) throw new Error('Database not initialized');
+  if (!connection) throw new Error("Database not initialized");
 
   const AssetBuildingModel = createModel<Building>(name, AssetBuildingSchema);
 

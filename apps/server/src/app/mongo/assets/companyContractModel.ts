@@ -1,8 +1,8 @@
-import { Company } from '@monorepo/shared';
-import mongoose, { Types } from 'mongoose';
-import { connection } from '../connection';
-import { versioning } from '@mnpcmw6444/mongoose-auto-versioning';
-import createModel from '../createModel';
+import { Company } from "@monorepo/shared";
+import mongoose, { Types } from "mongoose";
+import { connection } from "../connection";
+import { versioning } from "@mnpcmw6444/mongoose-auto-versioning";
+import createModel from "../createModel";
 
 export default () => {
   const name = "CompanyContract";
@@ -18,11 +18,11 @@ export default () => {
     building: { type: Types.ObjectId, ref: "building" },
   }).plugin(versioning, { collection: name + "s.history", mongoose });
 
-  if (!connection) throw new Error'Database not initialized'");
+  if (!connection) throw new Error("Database not initialized");
 
   const CompanyContractModel = createModel<Company>(
     name,
-    CompanyContractSchema
+    CompanyContractSchema,
   );
 
   return CompanyContractModel;

@@ -1,8 +1,8 @@
-import { Response } from 'express';
-import BuildingModel from '../../../../mongo/assets/buildingModel';
-import { Request } from '../../../middleware';
-import { crudResponse } from '../crudResponse';
-import { createBuildingReq } from '@monorepo/shared';
+import { Response } from "express";
+import BuildingModel from "../../../../mongo/assets/buildingModel";
+import { Request } from "../../../middleware";
+import { crudResponse } from "../crudResponse";
+import { createBuildingReq } from "@monorepo/shared";
 
 export const CheckBuildingAddress = async (req: Request, res: Response) => {
   const buildingModel = BuildingModel();
@@ -24,7 +24,7 @@ export const CheckBuildingAddress = async (req: Request, res: Response) => {
 
     const response: crudResponse<typeof buildingAddressCheck> = {
       success: true,
-      data: buildingAddressChec,
+      data: buildingAddressCheck,
     };
     res.status(200).json(response);
   } catch (error) {
@@ -47,7 +47,7 @@ export const AddBuildingAssets = async (req: Request, res: Response) => {
       buildingDescription,
       doorman,
       security,
-      vip_servic,
+      vip_service,
     } = req.body as createBuildingReq;
 
     const buildingAddressData = new assetBuildingModel({
@@ -79,6 +79,6 @@ export const AddBuildingAssets = async (req: Request, res: Response) => {
 
     res.status(201).json(response);
   } catch (error) {
-    res.status(500).json({ msg:'Internal Error Adding Building'", error });
+    res.status(500).json({ msg: "Internal Error Adding Building", error });
   }
 };

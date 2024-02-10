@@ -8,7 +8,7 @@ export default () => {
 
   const errorSchema = new mongoose.Schema(
     {
-      error: {
+      stringifiedError: {
         type: String,
         required: true,
       },

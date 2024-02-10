@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import { WeekDays } from '@monorepo/shared';
+import mongoose from "mongoose";
+import { WeekDays } from "@monorepo/shared";
 
 const TimeRangeSchema = new mongoose.Schema({
   start: { type: String, required: true },
@@ -8,5 +8,5 @@ const TimeRangeSchema = new mongoose.Schema({
 
 export const AvailabilitySchema = new mongoose.Schema({
   days_of_week: [{ type: String, enum: Object.values(WeekDays) }],
-  time_range: [TimeRangeSchema,
+  time_range: [TimeRangeSchema],
 });
