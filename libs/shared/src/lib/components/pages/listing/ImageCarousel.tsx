@@ -1,7 +1,4 @@
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/pagination";
+import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import p1 from "../../../../assets/mock/colorfull-x-s/mock1.png";
 import p2 from "../../../../assets/mock/colorfull-x-s/mock2.png";
@@ -19,12 +16,35 @@ const defaultImages = [
   },
 ];
 
-interface ImageCarouelProps {
+interface ImageCarouselProps {
   imagesArray?: { label: string; alt: string; imgPath: string }[];
 }
 
-export const ImageCarousel = ({ imagesArray }: ImageCarouelProps) => {
+export const ImageCarousel = ({ imagesArray }: ImageCarouselProps) => {
+  const [Swiper, setSwiper] = useState<any>(null);
+  const [SwiperSlide, setSwiperSlide] = useState<any>(null);
+  const [Pagination, setPagination] = useState<any>(null);
   const images = imagesArray || defaultImages;
+
+  useEffect(() => {
+    async function loadSwiperComponents() {
+      await import("swiper/swiper-bundle.css");
+      await import("swiper/css/pagination");
+
+      const swiperModule = await import("swiper/react");
+      const swiperModules = await import("swiper/modules");
+      setSwiper(swiperModule.Swiper);
+      setSwiperSlide(swiperModule.SwiperSlide);
+      setPagination(swiperModules.Pagination);
+    }
+
+    loadSwiperComponents();
+  }, []);
+
+  if (!Swiper || !SwiperSlide || !Pagination) {
+    return <div>Loading...</div>; // Or any other loading state representation
+  }
+
   return (
     <Box sx={{ maxWidth: 400, flexGrow: 1 }}>
       <Swiper

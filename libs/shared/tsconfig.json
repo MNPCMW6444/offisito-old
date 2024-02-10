@@ -12,7 +12,9 @@
     "resolveJsonModule": true
   },
   "files": [],
-  "include": [],
+  "include": [
+    "src/lib/components/pages/listing/d.d.ts"
+  ],
   "references": [
     {
       "path": "./tsconfig.lib.json"

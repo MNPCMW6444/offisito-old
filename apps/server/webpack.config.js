@@ -1,4 +1,5 @@
 const { composePlugins, withNx } = require("@nx/webpack");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // Import the plugin
 
 // Nx plugins for webpack.
 module.exports = composePlugins(
@@ -6,14 +7,13 @@ module.exports = composePlugins(
     target: "node",
   }),
   (config) => {
-    // Assuming `module.rules` exists, if not, initialize it as an empty array.
     if (!config.module) {
       config.module = { rules: [] };
     } else if (!config.module.rules) {
       config.module.rules = [];
     }
 
-    // Add rule for handling image files
+    // Rule for handling image files
     config.module.rules.push({
       test: /\.(png|jpe?g|gif|svg)$/i,
       use: [
@@ -21,11 +21,36 @@ module.exports = composePlugins(
           loader: "file-loader",
           options: {
             name: "[path][name].[ext]",
-            emitFile: false, // Set to true if you're targeting 'web' and want to emit files
+            emitFile: false, // Adjust based on your need
           },
         },
       ],
     });
+
+    // Adjusted rule for CSS handling
+    // Using MiniCssExtractPlugin.loader for SSR or server environments where you don't inject styles into the DOM
+    config.module.rules.push({
+      test: /\.css$/,
+      use: [MiniCssExtractPlugin.loader, "css-loader"],
+    });
+
+    config.module.rules.push({
+      test: /\.tsx?$/,
+      exclude: /components/, // Adjust the regex to match your client-side files' location
+      use: "ts-loader", // Assuming you're using ts-loader for TypeScript files
+    });
+
+    // Add MiniCssExtractPlugin to the plugins array
+    // Ensure to check if config.plugins exists, if not, initialize it
+    if (!config.plugins) {
+      config.plugins = [];
+    }
+    config.plugins.push(
+      new MiniCssExtractPlugin({
+        filename: "[name].css",
+        chunkFilename: "[id].css",
+      }),
+    );
 
     return config;
   },
