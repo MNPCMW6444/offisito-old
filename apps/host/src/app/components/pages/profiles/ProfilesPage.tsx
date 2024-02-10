@@ -12,9 +12,10 @@ import { Grid, IconButton } from "@mui/material";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { ObjectId } from "mongoose";
 import { ServerContext } from "@monorepo/shared";
+import toast from "react-hot-toast";
 
 const ProfilesPage = () => {
-  const [myProfiles, setMyProfiles] = useState<Company[]>([]);
+  const [myProfiles, setMyProfiles] = useState<Company[]>();
   const server = useContext(ServerContext);
   const [creating, setCreating] = useState(false);
   const fetchedProfiles = async () => {
@@ -63,44 +64,51 @@ const ProfilesPage = () => {
       <OFAB onClick={createNew}>
         <Add />
       </OFAB>
-      {myProfiles.length > 0 ? (
-        <Grid container direction="column" rowSpacing={4}>
-          {myProfiles.map((profile) => (
-            <Grid
-              id={profile._id}
-              item
-              width="100%"
-              container
-              alignItems="center"
-              wrap="nowrap"
-            >
-              <Grid item>
-                <PrimaryText>{JSON.stringify(profile)}</PrimaryText>
+      {myProfiles ? (
+        myProfiles.length > 0 ? (
+          <Grid container direction="column" rowSpacing={4}>
+            {myProfiles.map((profile) => (
+              <Grid
+                id={profile._id}
+                item
+                width="100%"
+                container
+                alignItems="center"
+                wrap="nowrap"
+              >
+                <Grid item>
+                  <PrimaryText>{JSON.stringify(profile)}</PrimaryText>
+                </Grid>
+                <Grid item>
+                  <IconButton
+                    onClick={() => navigate("/profile/?id=" + profile._id)}
+                  >
+                    <Edit />
+                  </IconButton>
+                </Grid>
+                <Grid item>
+                  <IconButton
+                    onClick={() =>
+                      server?.axiosInstance
+                        ?.delete(
+                          "/api/host/company/delete_company_lease/" +
+                            profile._id.toString(),
+                        )
+                        .then(() => toast.success("Successfuly Deleted"))
+                        .catch((e) => axiosErrorToaster(e))
+                    }
+                  >
+                    <Delete />
+                  </IconButton>
+                </Grid>
               </Grid>
-              <Grid item>
-                <IconButton
-                  onClick={() => navigate("/profile/?id=" + profile._id)}
-                >
-                  <Edit />
-                </IconButton>
-              </Grid>
-              <Grid item>
-                <IconButton
-                  onClick={() =>
-                    server?.axiosInstance?.delete(
-                      "/api/host/company/delete_company_lease" +
-                        profile._id.toString(),
-                    )
-                  }
-                >
-                  <Delete />
-                </IconButton>
-              </Grid>
-            </Grid>
-          ))}
-        </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <PrimaryText>No Profiles yet</PrimaryText>
+        )
       ) : (
-        <PrimaryText>No Profiles yet</PrimaryText>
+        <PrimaryText>Loading you Profiles...</PrimaryText>
       )}
     </>
   );

@@ -56,12 +56,97 @@ export const renderSwitch = <T,>(
   />
 );
 
-export const renderSwitchGroup = <T,>(
+export const renderSwitchGroupComplex = <T,>(
   formState: T,
   name: string | keyof T,
   keyOfArrayProperty: keyof T,
   setFormState: Dispatch<SetStateAction<T | undefined>>,
   debouncedUpdate: any,
+) => (
+  <Grid
+    item
+    container
+    justifyContent="center"
+    alignItems="center"
+    rowSpacing={2}
+    direction="column"
+  >
+    <Grid item>
+      <PrimaryText>{name as string}:</PrimaryText>
+    </Grid>
+    <Grid
+      item
+      container
+      justifyContent="center"
+      alignItems="center"
+      columnSpacing={2}
+    >
+      {Object.values(WeekDays).map((day) => {
+        const isDayAvailable =
+          formState?.[keyOfArrayProperty] &&
+          ((formState?.[keyOfArrayProperty] as any).some
+            ? // eslint-disable-next-line no-unsafe-optional-chaining
+              ((formState?.[keyOfArrayProperty] as any)?.some)((av: any) =>
+                av.days_of_week.includes(day),
+              )
+            : false);
+
+        return (
+          <Grid item key={day}>
+            {renderSwitch(
+              formState,
+              ((name: keyof Asset, value: boolean) => {
+                const available = value;
+                setFormState((prevState) => {
+                  if (!prevState) return prevState;
+                  let updatedAvailability =
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
+                    prevState[keyOfArrayProperty]?.slice() || [];
+                  if (available) {
+                    if (
+                      !updatedAvailability.some(
+                        (av: { days_of_week: string | WeekDays[] }) =>
+                          av.days_of_week.includes(day),
+                      )
+                    ) {
+                      updatedAvailability.push({
+                        days_of_week: [day],
+                        time_range: [],
+                      });
+                    }
+                  } else {
+                    updatedAvailability = updatedAvailability.filter(
+                      (av: { days_of_week: string | WeekDays[] }) =>
+                        !av.days_of_week.includes(day),
+                    );
+                  }
+                  const updatedState = {
+                    ...prevState,
+                    assetAvailability: updatedAvailability,
+                  };
+                  debouncedUpdate(updatedState);
+                  return updatedState;
+                });
+              }) as any,
+              day as any,
+              day[0].toUpperCase() + day.substring(1),
+              isDayAvailable,
+            )}
+          </Grid>
+        );
+      })}
+    </Grid>
+  </Grid>
+);
+
+export const renderSwitchGroupArray = <T,>(
+  formState: T,
+  name: string | keyof T,
+  keyOfArrayProperty: keyof T,
+  setFormState: Dispatch<SetStateAction<T | undefined>>,
+  debouncedUpdate: any,
+  options: { name: string; id: string }[],
 ) => (
   <Grid
     item

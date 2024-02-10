@@ -62,41 +62,47 @@ const SpacesPage = () => {
       <OFAB onClick={createNew}>
         <Add />
       </OFAB>
-      {myAssets.length > 0 ? (
-        <Grid container direction="column" rowSpacing={4}>
-          {myAssets.map((asset) => (
-            <Grid
-              id={asset._id}
-              item
-              width="100%"
-              container
-              alignItems="center"
-              wrap="nowrap"
-            >
-              <Grid item>
-                <PrimaryText>{JSON.stringify(asset)}</PrimaryText>
+      {myAssets ? (
+        myAssets.length > 0 ? (
+          <Grid container direction="column" rowSpacing={4}>
+            {myAssets.map((asset) => (
+              <Grid
+                id={asset._id}
+                item
+                width="100%"
+                container
+                alignItems="center"
+                wrap="nowrap"
+              >
+                <Grid item>
+                  <PrimaryText>{JSON.stringify(asset)}</PrimaryText>
+                </Grid>
+                <Grid item>
+                  <IconButton
+                    onClick={() => navigate("/space/?id=" + asset._id)}
+                  >
+                    <Edit />
+                  </IconButton>
+                </Grid>
+                <Grid item>
+                  <IconButton
+                    onClick={() =>
+                      server?.axiosInstance?.delete(
+                        "/api/host/asset/delete_asset/" + asset._id.toString(),
+                      )
+                    }
+                  >
+                    <Delete />
+                  </IconButton>
+                </Grid>
               </Grid>
-              <Grid item>
-                <IconButton onClick={() => navigate("/space/?id=" + asset._id)}>
-                  <Edit />
-                </IconButton>
-              </Grid>
-              <Grid item>
-                <IconButton
-                  onClick={() =>
-                    server?.axiosInstance?.delete(
-                      "/api/host/asset/delete_asset/" + asset._id.toString(),
-                    )
-                  }
-                >
-                  <Delete />
-                </IconButton>
-              </Grid>
-            </Grid>
-          ))}
-        </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <PrimaryText>No Spaces yet</PrimaryText>
+        )
       ) : (
-        <PrimaryText>No Assets yet</PrimaryText>
+        <PrimaryText>Loading you Spaces...</PrimaryText>
       )}
     </>
   );

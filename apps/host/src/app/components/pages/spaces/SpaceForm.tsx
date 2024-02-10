@@ -1,9 +1,11 @@
 import {
   Asset,
+  AssetsAmenities,
   axiosErrorToaster,
   Company,
   PrimaryText,
-  renderSwitchGroup,
+  renderSwitchGroupArray,
+  renderSwitchGroupComplex,
   renderTextField,
   ServerContext,
 } from "@monorepo/shared";
@@ -16,6 +18,8 @@ import { Grid } from "@mui/material";
 const SpaceForm = () => {
   const [formState, setFormState] = useState<Asset>();
   const server = useContext(ServerContext);
+  const [existingAmenities, setExistingAmenities] =
+    useState<AssetsAmenities[]>();
 
   const fetchSpace = useCallback(
     async (id: string) => {
@@ -31,6 +35,17 @@ const SpaceForm = () => {
     [server?.axiosInstance],
   );
 
+  const fetchExistingAmenities = useCallback(async () => {
+    try {
+      const res = await server?.axiosInstance.get(
+        "/api/host/asset/amenities", // TODO" + id,
+      );
+      setExistingAmenities(res?.data.data);
+    } catch (e) {
+      axiosErrorToaster(e);
+    }
+  }, [server?.axiosInstance]);
+
   const useQuery = () => new URLSearchParams(useLocation().search);
   const query = useQuery();
 
@@ -43,7 +58,8 @@ const SpaceForm = () => {
         hasFetched.current = true;
       });
     }
-  }, [query, fetchSpace]);
+    fetchExistingAmenities().then();
+  }, [query, fetchSpace, fetchExistingAmenities]);
 
   const handleUpdate = useCallback(
     async (updatedState: Company) => {
@@ -98,13 +114,25 @@ const SpaceForm = () => {
       <Grid item>
         {renderTextField(formState, handleChange, "roomNumber", "Room Number")}
       </Grid>
-      {renderSwitchGroup(
+      {renderSwitchGroupComplex(
         formState,
         "Availability",
         "assetAvailability",
         setFormState,
         debouncedUpdate,
       )}
+      {existingAmenities &&
+        renderSwitchGroupArray(
+          formState,
+          "Amenities",
+          "amenities",
+          setFormState,
+          debouncedUpdate,
+          existingAmenities.map(({ _id, name }) => ({
+            id: _id,
+            name,
+          })),
+        )}
     </Grid>
   ) : (
     <PrimaryText>{hasFetched.current ? "Error" : "Loading..."}</PrimaryText>
