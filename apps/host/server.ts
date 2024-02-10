@@ -1,33 +1,73 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+import { Request, Response } from "express";
+
+const { manifest } = require("./pws");
 const express = require("express");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require("path");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const fs = require("fs");
+require("dotenv").config();
 
 const app = express();
-const indexPath = path.join(__dirname, "index.html");
+const indexPath = path.join(__dirname, "../../../host/", "index.html");
 
-// Serve static files but exclude index.html
-app.use(express.static(path.join(__dirname), { index: false }));
+app.use(
+  express.static(path.join(__dirname, "../../../host/"), { index: false }),
+);
 
-app.get("*", (req, res) => {
-  fs.readFile(indexPath, "utf8", (err, htmlData) => {
+const envVars = {
+  VITE_NODE_ENV: process.env.VITE_NODE_ENV || "production",
+  VITE_WHITE_ENV: process.env.VITE_WHITE_ENV || "prod",
+};
+
+app.get("/manifest.json", (req: Request, res: Response) => {
+  res.setHeader("Content-Type", "application/json");
+  res.send(
+    JSON.stringify(
+      manifest(envVars.VITE_WHITE_ENV === "preprod" ? "PreProd" : undefined),
+    ),
+  );
+});
+
+app.get("/icons/l144.png", (req: Request, res: Response) => {
+  const imagePath = path.join(
+    __dirname,
+    "icons",
+    envVars.VITE_WHITE_ENV === "prod" ? "" : envVars.VITE_WHITE_ENV,
+    "l144.png",
+  );
+  res.sendFile(imagePath, (err) => {
+    if (err) {
+      console.log(err);
+      res.status(404).send("Image not found");
+    }
+  });
+});
+
+app.get("/icons/l512.png", (req: Request, res: Response) => {
+  const imagePath = path.join(
+    __dirname,
+    "icons",
+    envVars.VITE_WHITE_ENV === "prod" ? "" : envVars.VITE_WHITE_ENV,
+    "l512.png",
+  );
+  res.sendFile(imagePath, (err) => {
+    if (err) {
+      console.log(err);
+      res.status(404).send("Image not found");
+    }
+  });
+});
+
+app.get("*", (req: Request, res: Response) => {
+  fs.readFile(indexPath, "utf8", (err: any, htmlData: any) => {
     if (err) {
       console.error("Error during file reading", err);
       return res.status(500).end();
     }
 
-    // Define your environment variables here
-    const envVariables = JSON.stringify({
-      VITE_NODE_ENV: process.env.VITE_NODE_ENV || "production",
-      VITE_WHITE_ENV: process.env.VITE_WHITE_ENV || "prod",
-    });
+    const envVariables = JSON.stringify(envVars);
 
-    // Ensure the replacement string matches the placeholder in your HTML
     const finalHtml = htmlData.replace("%ENV_VARIABLES%", envVariables);
 
-    // Serve the modified HTML
     res.send(finalHtml);
   });
 });

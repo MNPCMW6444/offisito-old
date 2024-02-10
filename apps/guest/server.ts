@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-const { manifest } = require("./pws");
+const { manifest } = require("./pwa");
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
