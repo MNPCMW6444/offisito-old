@@ -1,7 +1,7 @@
 import { LocationOn, Search } from "@mui/icons-material";
 import { useContext, useEffect, useState } from "react";
-import { findMe, ServerContext } from "@monorepo/shared";
-import { Grid } from "@mui/material";
+import { findMe, PrimaryText, ServerContext } from "@monorepo/shared";
+import { Grid, IconButton } from "@mui/material";
 
 const HomeTop = () => {
   const [address, setAddress] = useState("Current Address");

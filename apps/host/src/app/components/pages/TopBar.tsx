@@ -1,7 +1,14 @@
-import { Avatar, Grid, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
-import { AuthContext, PrimaryText } from '@monorepo/shared';
-import { MouseEvent, useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {
+  Avatar,
+  Grid,
+  IconButton,
+  Menu,
+  MenuItem,
+  Tooltip,
+} from "@mui/material";
+import { AuthContext, PrimaryText } from "@monorepo/shared";
+import { MouseEvent, useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const TopBar = () => {
   const { user, logout } = useContext(AuthContext);
@@ -52,11 +59,11 @@ const TopBar = () => {
           }}
           keepMounted
           transformOrigin={{
-            vertical:'top'",
-            horizontal:'right',
+            vertical: "top",
+            horizontal: "right",
           }}
           open={Boolean(anchorElUser)}
-          onClose={() => handleCloseUserMenu('')}
+          onClose={() => handleCloseUserMenu("")}
         >
           {routes.map(({ name, route }) => (
             <MenuItem key={route} onClick={() => handleCloseUserMenu(route)}>

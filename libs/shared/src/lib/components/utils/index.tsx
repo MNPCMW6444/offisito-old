@@ -36,7 +36,7 @@ export const MainMessage = ({ text }: { text: string }) => (
     alignItems="center"
   >
     <Grid item>
-      <PrimaryText fontWeight="bold" fontSize="3vw">
+      <PrimaryText fontWeight="bold" fontSize="200%">
         {text}
       </PrimaryText>
     </Grid>
