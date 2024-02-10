@@ -1,13 +1,13 @@
 import {
   createContext,
-  useState,
-  useEffect,
-  useContext,
   ReactNode,
   useCallback,
+  useContext,
+  useEffect,
+  useState,
 } from "react";
 import { ServerContext } from "./";
-import { User } from "@monorepo/types";
+import { User } from "../../types";
 import { MainMessage } from "../components";
 
 interface AuthContextProps {

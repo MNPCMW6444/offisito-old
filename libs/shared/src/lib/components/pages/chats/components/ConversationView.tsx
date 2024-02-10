@@ -1,11 +1,11 @@
-import { Button, TextField, Box } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import MessageRow from "./MessageRow";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { Send } from "@mui/icons-material";
-import { Conversation, Message, SendMessageReq } from "@monorepo/types";
 import { axiosErrorToaster } from "../../../utils";
 import { AxiosInstance } from "axios";
-import { ServerContext } from "@monorepo/shared";
+import { ServerContext } from "../../../../context";
+import { Conversation, Message, SendMessageReq } from "@monorepo/shared";
 
 interface ConversationViewProps {
   conversation: Conversation;

@@ -1,7 +1,6 @@
-import { Button, Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import styled from "@emotion/styled";
-import { PrimaryText } from "@monorepo/react-styles";
+import { PrimaryText } from "@monorepo/shared";
 
 const DashboardPage = () => {
   const navigate = useNavigate();

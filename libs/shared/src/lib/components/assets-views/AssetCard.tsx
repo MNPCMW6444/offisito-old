@@ -1,4 +1,4 @@
-import { Asset } from "@monorepo/types";
+import { Asset } from "../../../types";
 import { Badge, Box, Divider, Grid } from "@mui/material";
 import { AmenitiesView } from "./";
 

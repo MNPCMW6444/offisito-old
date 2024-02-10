@@ -3,16 +3,19 @@ import userModel from "../../../mongo/auth/userModel";
 import registrationRequestModel from "../../../mongo/auth/registrationRequestModel";
 import { sendEmail } from "../../../email/sendEmail";
 import {
-  memberRegisterReq,
   hostRegisterReq,
+  memberRegisterReq,
 } from "../../../../assets/email-templates/authEmails";
 import settings from "../../../../config";
 import { v4 } from "uuid";
 import bcrypt from "bcrypt";
 import zxcvbn from "zxcvbn";
 import jsonwebtoken from "jsonwebtoken";
-import { RegisterFin, RegisterReq } from "@monorepo/types";
-import { MIN_PASSWORD_STRENGTH } from "@monorepo/utils";
+import {
+  MIN_PASSWORD_STRENGTH,
+  RegisterFin,
+  RegisterReq,
+} from "@monorepo/shared";
 
 const router = Router();
 

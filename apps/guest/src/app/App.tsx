@@ -1,12 +1,14 @@
-import Router from './components/Router';
+import Router from "./components/Router";
 import {
   AuthContextProvider,
   EnvBorder,
-  useResponsiveness
-} from '@monorepo/shared';
-import styled from '@emotion/styled';
-import { Box, Grid, Typography } from '@mui/material';
-import { Toaster } from 'react-hot-toast';
+  PrimaryText,
+  ServerProvider,
+  useResponsiveness,
+} from "@monorepo/shared";
+import styled from "@emotion/styled";
+import { Box, Grid } from "@mui/material";
+import { Toaster } from "react-hot-toast";
 
 const MobileContainer = styled(Box)`
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -50,7 +52,7 @@ const App = () => {
           </Grid>
           <Grid item>
             <DesktopMessage>
-              <Typography color="primary" variant="h5">
+              <PrimaryText variant="h5">
                 For the best experience please use offisito app on a mobile
                 device
               </PrimaryText>

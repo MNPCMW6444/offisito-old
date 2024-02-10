@@ -1,9 +1,8 @@
 import { useContext } from "react";
-import { styled } from "@mui/material";
-import { Typography } from "@mui/material";
+import { styled, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
-import { Message } from "@monorepo/types";
 import { AuthContext } from "../../../../context/AuthContext";
+import { Message } from "../../../../../types";
 
 const Container = styled(Box)({
   width: "100%",

@@ -2,8 +2,8 @@ import { Router } from "express";
 import userModel from "../../../mongo/auth/userModel";
 import settings from "../../../../config";
 import bcrypt from "bcrypt";
-import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
-import { LoginReq, User, User as UserType } from "@monorepo/types";
+import jsonwebtoken from "jsonwebtoken";
+import { LoginReq } from "@monorepo/shared";
 import { Request } from "../../middleware";
 
 const router = Router();

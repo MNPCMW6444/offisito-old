@@ -1,17 +1,17 @@
 import { Grid } from "@mui/material";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { ServerContext } from "@monorepo/server-provider";
-import { Company } from "@monorepo/types";
 import {
   axiosErrorToaster,
+  Company,
+  PrimaryText,
   renderDatePicker,
   renderDropdown,
   renderSwitch,
   renderTextField,
+  ServerContext,
 } from "@monorepo/shared";
 import { useLocation } from "react-router-dom";
 import debounce from "lodash.debounce";
-import { PrimaryText } from "@monorepo/react-styles";
 import toast from "react-hot-toast";
 
 const ProfileForm = () => {

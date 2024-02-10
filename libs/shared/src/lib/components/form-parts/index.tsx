@@ -11,7 +11,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { PrimaryText } from "../../styled-components";
-import { Asset, WeekDays } from "@monorepo/types";
+import { Asset, WeekDays } from "../../../types";
 
 export * from "./switches";
 export * from "./labels";

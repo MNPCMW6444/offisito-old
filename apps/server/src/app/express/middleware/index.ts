@@ -3,7 +3,7 @@ import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import settings from "../../../config";
 import userModel from "../../mongo/auth/userModel";
 import { Request as ExpressRequest } from "express";
-import { User } from "@monorepo/types";
+import { User } from "@monorepo/shared";
 
 export interface Request extends ExpressRequest {
   user: User | null;

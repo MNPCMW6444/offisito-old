@@ -2,7 +2,7 @@ import { Router } from "express";
 import { Request } from "../../middleware";
 import conversationModel from "../../../mongo/chats/conversationModel";
 import messageModel from "../../../mongo/chats/messageModel";
-import { SendMessageReq } from "@monorepo/types";
+import { SendMessageReq } from "@monorepo/shared";
 
 const router = Router();
 

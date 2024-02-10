@@ -1,11 +1,11 @@
 import { Response } from "express";
 import { Request } from "../../../middleware";
 import AssetModel from "../../../../mongo/assets/assetModel";
-import { Company, CreateEditAssetReq } from "@monorepo/types";
 import { isValidObjectId } from "mongoose";
 import { crudResponse } from "../crudResponse";
 import BuildingModel from "../../../../mongo/assets/buildingModel";
 import CompanyContractModel from "../../../../mongo/assets/companyContractModel";
+import { Company, CreateEditAssetReq } from "@monorepo/shared";
 
 // #TODO: Front end will add a coordinate Array with longitude, longitude in req.body
 // host ID to be sent in the URL

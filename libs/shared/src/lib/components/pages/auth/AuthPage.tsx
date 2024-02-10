@@ -14,9 +14,9 @@ import {
   useResponsiveness,
 } from "../../../";
 import { useLocation } from "react-router-dom";
-import { LoginReq, RegisterFin, RegisterReq } from "@monorepo/types";
 import zxcvbn from "zxcvbn";
 import { Flag } from "@mui/icons-material";
+import { LoginReq, RegisterFin, RegisterReq } from "../../../../types";
 
 enum Step {
   login,

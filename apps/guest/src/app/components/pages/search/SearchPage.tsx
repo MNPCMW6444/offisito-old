@@ -1,7 +1,7 @@
 import { Button, Grid } from "@mui/material";
 import SearchBar from "./SearchBar";
 import React, { useState } from "react";
-import { PrimaryText } from "@monorepo/react-styles";
+import { PrimaryText } from "@monorepo/shared";
 
 const SearchPage = () => {
   const [query, setQuery] = useState<string>("");

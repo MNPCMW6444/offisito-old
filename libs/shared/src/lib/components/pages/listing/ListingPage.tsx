@@ -1,5 +1,3 @@
-import { Asset } from "@monorepo/types";
-import { useContext, useEffect, useState } from "react";
 import { Divider, Grid } from "@mui/material";
 import { ImageCarousel } from "./ImageCarousel";
 import Box from "@mui/material/Box";
@@ -7,6 +5,8 @@ import { LocationOn } from "@mui/icons-material";
 import { AmenitiesView } from "../../assets-views";
 import { ServerContext } from "../../../context";
 import { PrimaryText } from "../../../styled-components";
+import { Asset } from "../../../../types";
+import { useContext, useEffect, useState } from "react";
 
 interface ListingPageProps {
   _id?: string;

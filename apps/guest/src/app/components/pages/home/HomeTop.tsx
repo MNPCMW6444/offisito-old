@@ -1,11 +1,10 @@
-import { Grid, IconButton, Typography } from '@mui/material';
-import { LocationOn, Search } from '@mui/icons-material';
-import { findMe } from '@monorepo/utils';
-import { useContext, useEffect, useState } from 'react';
-import { ServerContext } from '@monorepo/server-provider';
+import { LocationOn, Search } from "@mui/icons-material";
+import { useContext, useEffect, useState } from "react";
+import { findMe, ServerContext } from "@monorepo/shared";
+import { Grid } from "@mui/material";
 
 const HomeTop = () => {
-  const [address, setAddress] = useState('Current Address');
+  const [address, setAddress] = useState("Current Address");
   const server = useContext(ServerContext);
   const axiosInstance = server?.axiosInstance;
 
@@ -15,8 +14,8 @@ const HomeTop = () => {
         location &&
         axiosInstance &&
         axiosInstance
-          .get('/api/geo/getAddress/' + location.lat + ',' + location.long)
-          .then((r) => setAddress(r.data || 'Current Address'))
+          .get("/api/geo/getAddress/" + location.lat + "," + location.long)
+          .then((r) => setAddress(r.data || "Current Address")),
     );
   }, [axiosInstance]);
 

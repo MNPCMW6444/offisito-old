@@ -3,7 +3,7 @@
 // import multer from "multer";
 // import { Upload } from "@aws-sdk/lib-storage";
 // import { S3 } from "@aws-sdk/client-s3";
-// // import { Asset } from "@monorepo/types";
+// // import { Asset } from "@monorepo/shared";
 // import settings from "../../../../config";
 
 // declare module "express-serve-static-core" {
@@ -11,7 +11,7 @@
 //     file?: Express.Multer.File;
 //   }
 // }
- 
+
 // const s3 = new S3({
 //   credentials: {
 //     accessKeyId: settings.aws.keyID,

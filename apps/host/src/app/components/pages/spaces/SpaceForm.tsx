@@ -1,16 +1,17 @@
-import { Asset, Company } from "@monorepo/types";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { ServerContext } from "@monorepo/server-provider";
 import {
+  Asset,
   axiosErrorToaster,
+  Company,
+  PrimaryText,
   renderSwitchGroup,
   renderTextField,
+  ServerContext,
 } from "@monorepo/shared";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import debounce from "lodash.debounce";
 import { Grid } from "@mui/material";
-import { PrimaryText } from "@monorepo/react-styles";
 
 const SpaceForm = () => {
   const [formState, setFormState] = useState<Asset>();

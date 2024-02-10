@@ -1,9 +1,8 @@
 import { Response } from "express";
 import { Request } from "../../../middleware";
-import { Types } from "mongoose";
-
-import { Company, CreateEditCompanyReq } from "@monorepo/types";
 import { isValidObjectId } from "mongoose";
+
+import { Company, CreateEditCompanyReq } from "@monorepo/shared";
 import BuildingModel from "../../../../mongo/assets/buildingModel";
 import CompanyContractModel from "../../../../mongo/assets/companyContractModel";
 import { crudResponse } from "../crudResponse";

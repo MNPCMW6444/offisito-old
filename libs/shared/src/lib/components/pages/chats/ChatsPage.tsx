@@ -1,11 +1,11 @@
 import { Grid } from "@mui/material";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { axiosErrorToaster } from "../../utils";
-import { Conversation } from "@monorepo/types";
 import { ConversationButton } from "./components/ConversationButton";
 import ConversationView from "./components/ConversationView";
 import { ServerContext } from "../../../context";
 import { PrimaryText } from "../../../styled-components";
+import { Conversation } from "../../../../types";
 
 export const ChatsPage = () => {
   const server = useContext(ServerContext);

@@ -1,7 +1,7 @@
 import { connection } from "../connection";
 import mongoose from "mongoose";
 import { versioning } from "@mnpcmw6444/mongoose-auto-versioning";
-import { Error } from "@monorepo/types";
+import { Error } from "@monorepo/shared";
 
 export default () => {
   const name = "error";

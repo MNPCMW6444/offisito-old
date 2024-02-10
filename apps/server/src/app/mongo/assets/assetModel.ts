@@ -1,15 +1,12 @@
 import { connection } from "../connection";
 import mongoose, { Types } from "mongoose";
 import { versioning } from "@mnpcmw6444/mongoose-auto-versioning";
-import { AssetPubStatus, AssetType, LeaseType } from "@monorepo/types";
 import { AvailabilitySchema } from "./availabilitySchema";
-import { Asset } from "@monorepo/types";
 import createModel from "../createModel";
+import { Asset, AssetPubStatus, AssetType, LeaseType } from "@monorepo/shared";
 
-
-export default() => {
-  
-  const name = "Asset"
+export default () => {
+  const name = "Asset";
 
   const assetSchema = new mongoose.Schema(
     {
@@ -26,27 +23,26 @@ export default() => {
       publishingStatus: { type: String, enum: Object.values(AssetPubStatus) },
       peopleCapacity: [{ type: Number }],
       leaseCondition: {
-        dailyPrice: { type: Number},
+        dailyPrice: { type: Number },
         leaseType: {
           type: String,
           enum: Object.values(LeaseType),
         },
       },
-      leasingCompany: { type: Types.ObjectId , ref: "companyContract", required:true},
+      leasingCompany: {
+        type: Types.ObjectId,
+        ref: "companyContract",
+        required: true,
+      },
     },
     {
       timestamps: true,
     },
   ).plugin(versioning, { collection: name + ".history", mongoose });
 
-
-
   if (!connection) throw new Error("Database not initialized");
 
-   
-  const AssetModel = createModel<Asset>(name,assetSchema )
+  const AssetModel = createModel<Asset>(name, assetSchema);
 
-    return AssetModel
-  }
-
-
+  return AssetModel;
+};

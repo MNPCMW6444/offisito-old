@@ -1,10 +1,13 @@
-import { Button, Grid, Typography } from "@mui/material";
-import { AssetCard } from "@monorepo/shared";
+import { Button, Grid } from "@mui/material";
+import {
+  Asset,
+  AssetCard,
+  axiosErrorToaster,
+  findMe,
+  PrimaryText,
+  ServerContext,
+} from "@monorepo/shared";
 import { useContext, useEffect, useState } from "react";
-import { Asset } from "@monorepo/types";
-import { findMe } from "@monorepo/utils";
-import { ServerContext } from "@monorepo/server-provider";
-import { axiosErrorToaster } from "@monorepo/shared";
 
 const NearSpaces = () => {
   const [assetsNear, setassetsNear] = useState<Asset[]>([]);

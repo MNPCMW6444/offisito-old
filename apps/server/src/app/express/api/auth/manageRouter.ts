@@ -1,12 +1,15 @@
 import { Router } from "express";
-import { PassResetFin, PassResetReq } from "@monorepo/types";
+import {
+  MIN_PASSWORD_STRENGTH,
+  PassResetFin,
+  PassResetReq,
+} from "@monorepo/shared";
 import userModel from "../../../mongo/auth/userModel";
 import { v4 } from "uuid";
 import settings from "../../../../config";
 import { resetPassword } from "../../../../assets/email-templates/authEmails";
 import { sendEmail } from "../../../email/sendEmail";
 import zxcvbn from "zxcvbn";
-import { MIN_PASSWORD_STRENGTH } from "@monorepo/utils";
 import bcrypt from "bcrypt";
 import jsonwebtoken from "jsonwebtoken";
 import passResetRequestModel from "../../../mongo/auth/passResetRequestModel";

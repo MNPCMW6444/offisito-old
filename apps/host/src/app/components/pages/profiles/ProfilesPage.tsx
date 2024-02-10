@@ -1,12 +1,10 @@
-import { Company, CreateEditCompanyReq } from "@monorepo/types";
-import { AuthContext, axiosErrorToaster } from "@monorepo/shared";
-import { useContext, useEffect, useState } from "react";
-import { ServerContext } from "@monorepo/server-provider";
-import { useNavigate } from "react-router-dom";
-import { Grid, IconButton } from "@mui/material";
-import { Add, Delete, Edit } from "@mui/icons-material";
-import { OFAB, PrimaryText } from "@monorepo/react-styles";
-import { ObjectId } from "mongoose";
+import { AuthContext, axiosErrorToaster, Company, CreateEditCompanyReq, OFAB, PrimaryText } from '@monorepo/shared';
+import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Grid, IconButton } from '@mui/material';
+import { Add, Delete, Edit } from '@mui/icons-material';
+import { ObjectId } from 'mongoose';
+import { ServerContext } from'@monorepo/shared'";
 
 const ProfilesPage = () => {
   const [myProfiles, setMyProfiles] = useState<Company[]>([]);

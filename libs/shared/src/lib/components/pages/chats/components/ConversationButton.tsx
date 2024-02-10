@@ -1,7 +1,7 @@
-import { Conversation } from "@monorepo/types";
 import { Avatar, Grid } from "@mui/material";
 import { Dispatch, SetStateAction } from "react";
 import { PrimaryText } from "../../../../";
+import { Conversation } from "../../../../../types";
 
 interface ConversationButtonProps {
   conversation: Conversation;

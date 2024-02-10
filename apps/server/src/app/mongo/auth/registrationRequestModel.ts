@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { versioning } from "@mnpcmw6444/mongoose-auto-versioning";
 import { connection } from "../connection";
-import { RegistrationRequest } from "@monorepo/types";
+import { RegistrationRequest } from "@monorepo/shared";
 
 export default () => {
   const name = "registrationRequest";

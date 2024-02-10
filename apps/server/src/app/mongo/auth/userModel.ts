@@ -1,7 +1,7 @@
 import { connection } from "../connection";
 import mongoose from "mongoose";
 import { versioning } from "@mnpcmw6444/mongoose-auto-versioning";
-import { User } from "@monorepo/types";
+import { User } from "@monorepo/shared";
 
 export default () => {
   const name = "user";
