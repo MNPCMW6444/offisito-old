@@ -1,0 +1,60 @@
+const {
+  backGroundColor,
+  themeColor,
+} = require("../../libs/shared/src/lib/themes/index");
+
+const manifest = (env: "PreProd" | "Local" | "" = ``) => ({
+  short_name: `Offisito${env}`,
+  name: `Offisito App${!env ? "" : " " + env}`,
+  icons: [
+    {
+      src: `/images/icons-192.png`,
+      type: `image/png`,
+      sizes: `192x192`,
+    },
+    {
+      src: `/images/icons-512.png`,
+      type: `image/png`,
+      sizes: `512x512`,
+    },
+  ],
+  id: `/?source=pwa`,
+  start_url: `/?source=pwa`,
+  background_color: backGroundColor,
+  display: `standalone`,
+  scope: `/`,
+  theme_color: themeColor,
+  shortcuts: [
+    {
+      name: `How's weather today?`,
+      short_name: `Today`,
+      description: `View weather information for today`,
+      url: `/today?source=pwa`,
+      icons: [{ src: `/images/today.png`, sizes: `192x192` }],
+    },
+    {
+      name: `How's weather tomorrow?`,
+      short_name: `Tomorrow`,
+      description: `View weather information for tomorrow`,
+      url: `/tomorrow?source=pwa`,
+      icons: [{ src: `/images/tomorrow.png`, sizes: `192x192` }],
+    },
+  ],
+  description: `Weather forecast information`,
+  screenshots: [
+    {
+      src: `/images/screenshot1.png`,
+      type: `image/png`,
+      sizes: `540x720`,
+      form_factor: `narrow`,
+    },
+    {
+      src: `/images/screenshot2.jpg`,
+      type: `image/jpg`,
+      sizes: `720x540`,
+      form_factor: `wide`,
+    },
+  ],
+});
+
+module.exports = { manifest };

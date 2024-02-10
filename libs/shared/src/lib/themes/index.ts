@@ -5,11 +5,14 @@ export const isNight = () => {
   return hour < 6 || hour >= 18;
 };
 
+export const themeColor = "#4e6500";
+export const backGroundColor = "#cfdcce";
+
 export const themeForMVP: ThemeOptions = {
   palette: {
     mode: isNight() ? "dark" : "light",
     primary: {
-      main: isNight() ? "#badeab" : "#4e6500",
+      main: isNight() ? "#badeab" : themeColor,
       contrastText: isNight() ? "#101714" : "#ffffff",
     },
     secondary: {
@@ -38,7 +41,7 @@ export const themeForMVP: ThemeOptions = {
     },
     background: {
       default: isNight() ? "#101714" : "#f3f3f0",
-      paper: isNight() ? "#024910" : "#cfdcce",
+      paper: isNight() ? "#024910" : backGroundColor,
     },
   },
   typography: {

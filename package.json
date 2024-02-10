@@ -6,8 +6,9 @@
     "clean": "rm -rf node_modules dist package-lock.json ./.nx/cache",
     "update": "npx npm-check-updates -u",
     "audit": "npm audit fix",
-    "build:guest": "tsc --outDir dist/apps/guest apps/guest/server.ts",
-    "build:host": "tsc --outDir dist/apps/host apps/host/server.ts"
+    "build:guest": "tsc -p gueststsc.json",
+    "build:host": "tsc -p hoststsc.json",
+    "build:admin": "tsc -p adminstsc.json"
   },
   "private": true,
   "devDependencies": {
@@ -35,7 +36,7 @@
     "@types/jsonwebtoken": "^9.0.5",
     "@types/lodash.debounce": "^4.0.9",
     "@types/multer": "^1.4.11",
-    "@types/node": "20.11.17",
+    "@types/node": "^20.11.17",
     "@types/react": "18.2.55",
     "@types/react-dom": "18.2.19",
     "@types/uuid": "^9.0.8",

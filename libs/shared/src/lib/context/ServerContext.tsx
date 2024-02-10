@@ -7,6 +7,7 @@ export const frontendSettings = () => {
     const envConfig = document.getElementById("env-config")?.textContent;
     return JSON.parse(envConfig || "{}");
   } catch (e) {
+    // @ts-ignore
     return import.meta.env;
   }
 };

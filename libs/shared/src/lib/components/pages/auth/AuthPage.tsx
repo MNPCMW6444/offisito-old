@@ -1,5 +1,3 @@
-// eslint-disable-next-line @nx/enforce-module-boundaries
-import { version } from "../../../../../../../package.json";
 import { useContext, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -343,7 +341,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
           <PrimaryText variant="h6">Welcome to</PrimaryText>
         </Grid>
         <Grid item>
-          <Tooltip title={version} placement="right-start">
+          <Tooltip title={server?.version} placement="right-start">
             <Box {...{} /*component="img" src={} */} width="100%" height="100%">
               Application Logo
             </Box>

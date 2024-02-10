@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "outDir": "dist/apps/guest-server",
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "module": "NodeNext",
+    "target": "ESNext",
+    "moduleResolution": "NodeNext",
+    "paths": {
+      "@monorepo/shared": [
+        "./libs/shared/src/index.ts"
+      ]
+    },
+    "types": [
+      "vitest/importMeta",
+      "node"
+    ],
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "apps/guest/**/*",
+    "libs/shared/src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/__tests__/*",
+    "**/**/ServerContext.tsx"
+  ]
+}
