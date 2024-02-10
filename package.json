@@ -85,6 +85,7 @@
     "multer": "^1.4.5-lts.1",
     "sendgrid": "^5.2.3",
     "stripe": "^14.16.0",
+    "swiper": "^6.8.4",
     "typescript-json-schema": "^0.62.0",
     "web-push": "^3.6.7",
     "zxcvbn": "^4.4.2"
