@@ -1,5 +1,5 @@
 import { Types, Document, ObjectId } from "mongoose";
-import { Availability } from "./AvailabilityType";
+import { Availability } from "./Availability";
 import { Company } from "./companyType";
 
 

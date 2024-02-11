@@ -1,6 +1,6 @@
 import { Types, Document } from "mongoose";
 import { GeoPoint } from "../geo";
-import { Availability } from "./AvailabilityType";
+import { Availability } from "./Availability";
 import { Asset } from "./AssetType";
 
 
