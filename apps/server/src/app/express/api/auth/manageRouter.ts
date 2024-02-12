@@ -17,8 +17,11 @@ import jsonwebtoken from "jsonwebtoken";
 import passResetRequestModel from "../../../mongo/auth/passResetRequestModel";
 import PassResetRequestModel from "../../../mongo/auth/passResetRequestModel";
 import multer from "multer";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../../../s3";
+import sharp from "sharp";
+import fs from "fs";
+import path from "path";
 
 const router = Router();
 
@@ -165,27 +168,48 @@ router.put(
   async (req: Request, res, next) => {
     try {
       if (!req.user) return res.status(401).send("Please Login");
-      if (!req.file) {
-        return res.status(400).send("No file received");
-      }
-      const key = `user/${req.user._id.toString()}/profile-pictures/${req.file.originalname}`;
+      if (!req.file) return res.status(400).send("No file received");
 
-      const command = new PutObjectCommand({
-        Bucket: bucketName,
-        Key: key,
-        Body: req.file.buffer,
-        ContentType: req.file.mimetype,
-      });
+      const userId = req.user._id.toString(); // Assuming _id is available and toString() is valid
+      const originalKey = `user/${userId}/profile-pictures/${req.file.originalname}`;
+      const resizedKey = `user/${userId}/profile-pictures/128_${req.file.originalname}`;
 
-      await s3Client.send(command);
+      // Resize the image to 128 pixels width
+      const resizedImageBuffer = await sharp(req.file.buffer)
+        .resize(128)
+        .toBuffer();
 
-      req.user.profilePictureUrlKey = key;
+      // Upload the original image
+      await s3Client.send(
+        new PutObjectCommand({
+          Bucket: bucketName,
+          Key: originalKey,
+          Body: req.file.buffer,
+          ContentType: req.file.mimetype,
+        }),
+      );
+
+      // Upload the resized image
+      await s3Client.send(
+        new PutObjectCommand({
+          Bucket: bucketName,
+          Key: resizedKey,
+          Body: resizedImageBuffer,
+          ContentType: req.file.mimetype,
+        }),
+      );
+
+      // Assuming you have a way to save the URL or key in your user model
+      // For example, saving the key of the original image
+      req.user.profilePictureUrlKey = originalKey;
       await req.user.save();
 
       res.status(201).send("Photo updated successfully");
     } catch (error) {
+      console.error(error);
       next(error);
     }
   },
 );
+
 export default router;

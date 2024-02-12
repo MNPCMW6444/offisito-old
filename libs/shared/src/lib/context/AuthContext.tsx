@@ -42,7 +42,7 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
       const response = await server?.axiosInstance.get<User>("api/auth/log");
       response?.data && setUser(response?.data);
       const urlResponse = await server?.axiosInstance.get(
-        "api/auth/get-signed-profile-picture",
+        "api/auth/get-signed-profile-picture/128",
       );
       urlResponse?.data && setProfilePictureUrl(urlResponse.data);
     } catch (error) {

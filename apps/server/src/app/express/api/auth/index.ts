@@ -13,25 +13,36 @@ router.use("/log", logRouter);
 router.use("/manage", manageRouter);
 router.use("/register", registerRouter);
 
-router.get("/get-signed-profile-picture", async (req: Request, res, next) => {
-  if (!req.user) return res.status(401).send("Unauthorized");
+router.get(
+  "/get-signed-profile-picture/:size",
+  async (req: Request, res, next) => {
+    if (!req.user) return res.status(401).send("Unauthorized");
 
-  if (!req.user || !req.user.profilePictureUrlKey)
-    return res.status(404).send("Profile picture not found");
+    if (!req.user.profilePictureUrlKey) {
+      return res.status(404).send("Profile picture not found");
+    }
 
-  const command = new GetObjectCommand({
-    Bucket: bucketName,
-    Key: req.user.profilePictureUrlKey,
-  });
+    const imageSize = req.params.size as "128" | undefined;
+    let key = req.user.profilePictureUrlKey;
 
-  try {
-    const signedUrl = await getSignedUrl(s3Client, command, {
-      expiresIn: 1800,
+    if (imageSize === "128") {
+      key = key.replace(/(\/profile-pictures\/)/, `$1128_`);
+    }
+
+    const command = new GetObjectCommand({
+      Bucket: bucketName,
+      Key: key,
     });
-    res.status(200).send(signedUrl);
-  } catch (error) {
-    next(error);
-  }
-});
+
+    try {
+      const signedUrl = await getSignedUrl(s3Client, command, {
+        expiresIn: 1800,
+      });
+      res.status(200).send(signedUrl);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 export default router;
