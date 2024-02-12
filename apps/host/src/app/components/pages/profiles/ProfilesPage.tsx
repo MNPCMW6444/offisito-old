@@ -8,11 +8,12 @@ import {
 } from "@monorepo/shared";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Grid, IconButton } from "@mui/material";
+import { Box, Grid, IconButton } from "@mui/material";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { ObjectId } from "mongoose";
 import { ServerContext } from "@monorepo/shared";
 import toast from "react-hot-toast";
+import { property } from "lodash.debounce";
 
 const ProfilesPage = () => {
   const [myProfiles, setMyProfiles] = useState<Company[]>();
@@ -66,7 +67,7 @@ const ProfilesPage = () => {
       </OFAB>
       {myProfiles ? (
         myProfiles.length > 0 ? (
-          <Grid container direction="column" rowSpacing={4}>
+          <Grid container direction="column" padding="5%">
             {myProfiles.map((profile) => (
               <Grid
                 id={profile._id}
@@ -74,10 +75,36 @@ const ProfilesPage = () => {
                 width="100%"
                 container
                 alignItems="center"
+                border="1px solid black"
+                borderRadius="5px"
+                bgcolor={(theme) => theme.palette.background.default}
                 wrap="nowrap"
+                margin="2%"
               >
-                <Grid item>
-                  <PrimaryText>{JSON.stringify(profile)}</PrimaryText>
+                <Grid
+                  item
+                  container
+                  direction="column"
+                  rowSpacing={2}
+                  justifyContent="center"
+                  alignItems="center"
+                  padding="1%"
+                >
+                  <Grid item>
+                    <PrimaryText>
+                      {profile.companyInHold || profile.companyName}
+                    </PrimaryText>
+                  </Grid>
+                  <Grid item>
+                    <PrimaryText>
+                      Building: {profile.building.toString()}
+                    </PrimaryText>
+                  </Grid>
+                  <Grid item>
+                    <PrimaryText>
+                      Floor Number: {profile.floorNumber}
+                    </PrimaryText>
+                  </Grid>
                 </Grid>
                 <Grid item>
                   <IconButton
