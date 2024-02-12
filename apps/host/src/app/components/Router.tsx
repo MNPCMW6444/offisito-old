@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { AuthContext, AuthPage } from "@monorepo/shared";
+import { AuthContext, AuthPage, SettingPage } from "@monorepo/shared";
 import DashboardPage from "./pages/home/DashboardPage";
 import SpacesPage from "./pages/spaces/SpacesPage";
 import SpaceForm from "./pages/spaces/SpaceForm";
@@ -57,6 +57,7 @@ const Router = () => {
                 <Route path="/spaces" element={<SpacesPage />} />
                 <Route path="/space" element={<SpaceForm />} />
                 <Route path="/chats" element={<ChatsPage />} />
+                <Route path="/settings" element={<SettingPage />} />
               </Routes>
             </Grid>
           </Grid>

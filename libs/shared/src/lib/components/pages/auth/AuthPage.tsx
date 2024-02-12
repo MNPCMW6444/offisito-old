@@ -14,7 +14,7 @@ import {
 import { useLocation } from "react-router-dom";
 import zxcvbn from "zxcvbn";
 import { Flag } from "@mui/icons-material";
-import { LoginReq, RegisterFin, RegisterReq } from "../../../../types";
+import { RegisterReq } from "../../../../types";
 
 enum Step {
   login,
@@ -160,7 +160,7 @@ export const AuthPage = ({ client }: AuthPageProps) => {
             setButtonLabel("DOING");
             axiosInstance &&
               axiosInstance
-                .post<undefined, undefined, LoginReq>("api/auth/log/in", {
+                .post("api/auth/log/in", {
                   email,
                   password,
                   client,
@@ -191,16 +191,13 @@ export const AuthPage = ({ client }: AuthPageProps) => {
               setButtonLabel("DOING");
               axiosInstance &&
                 axiosInstance
-                  .post<undefined, undefined, RegisterFin>(
-                    "api/auth/register/fin",
-                    {
-                      key,
-                      password,
-                      passwordAgain,
-                      fullName,
-                      type: client === "guest" ? "member" : "host",
-                    },
-                  )
+                  .post("api/auth/register/fin", {
+                    key,
+                    password,
+                    passwordAgain,
+                    fullName,
+                    type: client === "guest" ? "member" : "host",
+                  })
                   .then(() => refreshUserData())
                   .catch((error) => axiosErrorToaster(error))
                   .finally(() => setButtonLabel("IDLE"));

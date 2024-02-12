@@ -16,6 +16,7 @@ interface AuthContextProps {
 
 export const AuthContext = createContext<{
   user?: User;
+  profilePictureUrl?: string;
   refreshUserData: () => Promise<void>;
   logout: () => Promise<void>;
 }>({
@@ -30,6 +31,8 @@ export const AuthContext = createContext<{
 
 export const AuthContextProvider = ({ children }: AuthContextProps) => {
   const [user, setUser] = useState<User>();
+  const [profilePictureUrl, setProfilePictureUrl] = useState<string>();
+
   const [loading, setLoading] = useState(true);
 
   const server = useContext(ServerContext);
@@ -38,6 +41,10 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
     try {
       const response = await server?.axiosInstance.get<User>("api/auth/log");
       response?.data && setUser(response?.data);
+      const urlResponse = await server?.axiosInstance.get(
+        "api/auth/get-signed-profile-picture",
+      );
+      urlResponse?.data && setProfilePictureUrl(urlResponse.data);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -67,6 +74,7 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
         user,
         refreshUserData,
         logout,
+        profilePictureUrl,
       }}
     >
       {loading ? (

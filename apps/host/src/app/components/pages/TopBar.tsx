@@ -11,7 +11,7 @@ import { MouseEvent, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const TopBar = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout, profilePictureUrl } = useContext(AuthContext);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -30,6 +30,7 @@ const TopBar = () => {
     { name: "Profiles", route: "profiles" },
     { name: "Spaces", route: "spaces" },
     { name: "Chats", route: "chats" },
+    { name: "Settings", route: "settings" },
     { name: "Logout", route: "logout" },
   ];
 
@@ -44,7 +45,7 @@ const TopBar = () => {
       <Grid item>
         <Tooltip title="Open settings">
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-            <Avatar alt={user?.name || "username"} src={"imagepath"}>
+            <Avatar alt={user?.name || "username"} src={profilePictureUrl}>
               {user?.name ? user?.name[0] : "?"}
             </Avatar>
           </IconButton>
