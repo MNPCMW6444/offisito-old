@@ -13,7 +13,7 @@ import zxcvbn from "zxcvbn";
 import jsonwebtoken from "jsonwebtoken";
 import {
   MIN_PASSWORD_STRENGTH,
-  RegisterFin,
+  RegisterFinReq,
   RegisterReq,
 } from "@monorepo/shared";
 
@@ -57,7 +57,7 @@ router.post("/req", async (req, res, next) => {
   }
 });
 
-router.post<RegisterFin, string>("/fin", async (req, res, next) => {
+router.post<RegisterFinReq, string>("/fin", async (req, res, next) => {
   try {
     const User = userModel();
     const RegistrationRequest = registrationRequestModel();

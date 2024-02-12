@@ -8,6 +8,7 @@ export interface User extends Document {
   passwordHash?: string;
   name?: string;
   type: UserType;
+  profilePictureUrlKey?: string;
 }
 
 export interface RegistrationRequest extends Document {

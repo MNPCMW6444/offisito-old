@@ -21,6 +21,7 @@ export default () => {
         enum: ["admin", "host", "member"],
         required: true,
       },
+      profilePictureUrlKey: String,
     },
     {
       timestamps: true,

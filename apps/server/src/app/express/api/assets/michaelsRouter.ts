@@ -91,7 +91,7 @@
 //       return res.status(400).send();
 //     }
 //     const { id } = req.params;
-//     const key = `${id}/${req.file.originalname}`;
+//     const key = `asset/${id}/${req.file.originalname}`;
 //     const params = {
 //       Bucket:
 //         settings.whiteEnv === "prod"

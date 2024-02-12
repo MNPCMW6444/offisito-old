@@ -14,7 +14,7 @@ export interface RegisterReq {
   client: WhiteClient;
 }
 
-export interface RegisterFin {
+export interface RegisterFinReq {
   key: string;
   password: string;
   passwordAgain: string;
@@ -22,13 +22,19 @@ export interface RegisterFin {
   type: UserType;
 }
 
-export interface PassResetReq {
+export interface PassResetReqReq {
   email: string;
   client: string;
 }
 
-export interface PassResetFin {
+export interface PassResetFinReq {
   key: string;
   password: string;
   passwordAgain: string;
+}
+
+export interface UpdatePasswordReq {
+  currentPassword: string;
+  newPassword: string;
+  newPasswordAgain: string;
 }
