@@ -6,33 +6,68 @@ import {
   OFAB,
   PrimaryText,
 } from "@monorepo/shared";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Grid, IconButton } from "@mui/material";
+import { Grid, IconButton } from "@mui/material";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { ObjectId } from "mongoose";
 import { ServerContext } from "@monorepo/shared";
 import toast from "react-hot-toast";
-import { property } from "lodash.debounce";
 
 const ProfilesPage = () => {
   const [myProfiles, setMyProfiles] = useState<Company[]>();
   const server = useContext(ServerContext);
   const [creating, setCreating] = useState(false);
-  const fetchedProfiles = async () => {
+
+  const [buildings, setBuildings] = useState<
+    { value: string; label: string }[]
+  >([]);
+
+  const fetchBuildings = useCallback(async () => {
+    try {
+      const res = await server?.axiosInstance.get(
+        "/api/host/building/autocomplete_building_add",
+      );
+      setBuildings([
+        {
+          label: res?.data?.data?.address?.street,
+          value: res?.data?.data?._id,
+        },
+      ]);
+    } catch (e) {
+      axiosErrorToaster(e);
+    }
+  }, [server?.axiosInstance]);
+
+  useEffect(() => {
+    fetchBuildings().then();
+  }, [fetchBuildings]);
+
+  const fetchedProfiles = useCallback(async () => {
     try {
       const res = await server?.axiosInstance.get(
         "/api/host/company/get_companies_list/",
       );
-      res && setMyProfiles(res.data.data);
+      res &&
+        setMyProfiles(
+          res.data.data.map((company: Company) => {
+            const building = buildings.find(
+              ({ value }) => value.toString() === company.building.toString(),
+            );
+            return {
+              ...company,
+              building: building?.label || building?.value || company.building,
+            };
+          }),
+        );
     } catch (e) {
       axiosErrorToaster(e);
     }
-  };
+  }, [buildings]);
 
   useEffect(() => {
     fetchedProfiles().then();
-  }, [server?.axiosInstance]);
+  }, [fetchedProfiles]);
 
   const navigate = useNavigate();
 

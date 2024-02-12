@@ -44,7 +44,12 @@ const Router = () => {
             >
               <TopBar />
             </Grid>
-            <Grid item padding="20px 25px 0 25px" height="100%">
+            <Grid
+              item
+              padding="20px 25px 0 25px"
+              height="100%"
+              overflow="scroll"
+            >
               <Routes>
                 <Route path="/*" element={<DashboardPage />} />
                 <Route path="/profiles" element={<ProfilesPage />} />
