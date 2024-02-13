@@ -12,8 +12,8 @@ router.get("/conversationMessages/:id", async (req: Request, res, next) => {
     const Conversation = conversationModel();
     const conversation = await Conversation.findById(req.params.id);
     if (
-      req.user._id !== conversation.hostId &&
-      req.user._id !== conversation.memberId
+      req.user._id.toString() !== conversation.hostId &&
+      req.user._id.toString() !== conversation.memberId
     )
       return res.status(401).send("You are not part of the conversation");
     const messages = await Message.find({
@@ -37,12 +37,12 @@ router.post("/", async (req: Request, res, next) => {
           ? { hostId: req.user._id }
           : { memberId: req.user._id }),
         ...(req.user.type === "member"
-          ? { memberId: conversationIdOrAddressee }
-          : { hostId: conversationIdOrAddressee }),
+          ? { hostId: conversationIdOrAddressee }
+          : { memberId: conversationIdOrAddressee }),
       }).save();
     if (
-      req.user._id !== conversation.hostId &&
-      req.user._id !== conversation.memberId
+      req.user._id.toString() !== conversation.hostId &&
+      req.user._id.toString() !== conversation.memberId
     )
       return res.status(401).send("You are not part of the conversation");
     const newMessage = new Message({

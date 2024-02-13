@@ -15,7 +15,7 @@ export const sendMessage = (
   axiosInstance: AxiosInstance | undefined,
   conversationIdOrAddressee: string,
   message: string,
-  cb: () => void,
+  cb: () => void = () => {},
 ) => {
   axiosInstance &&
     axiosInstance

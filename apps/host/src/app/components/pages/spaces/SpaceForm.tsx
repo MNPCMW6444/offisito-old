@@ -17,12 +17,15 @@ import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import debounce from "lodash.debounce";
 import { Grid } from "@mui/material";
+import { sendMessage } from "../../../../../../../libs/shared/src/lib/components/pages/chats/components/ConversationView";
 
 const SpaceForm = () => {
   const [formState, setFormState] = useState<Asset>();
   const server = useContext(ServerContext);
   const [existingAmenities, setExistingAmenities] =
     useState<AssetsAmenities[]>();
+
+  sendMessage(server?.axiosInstance, "65c2104235d18f63e62827d0", "Hello");
 
   const fetchSpace = useCallback(
     async (id: string) => {

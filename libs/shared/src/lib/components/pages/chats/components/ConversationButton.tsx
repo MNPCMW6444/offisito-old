@@ -5,18 +5,26 @@ import { Conversation } from "../../../../../types";
 
 interface ConversationButtonProps {
   conversation: Conversation;
+  isTheSelectedConversation: boolean;
   setSelectedConversation: Dispatch<SetStateAction<Conversation | undefined>>;
 }
 
 export const ConversationButton = ({
   conversation,
+  isTheSelectedConversation,
   setSelectedConversation,
 }: ConversationButtonProps) => {
   return (
     <Grid
       container
-      onClick={() => setSelectedConversation(conversation._id)}
+      onClick={() => setSelectedConversation(conversation)}
       sx={{ cursor: "pointer" }}
+      wrap="nowrap"
+      bgcolor={(theme) =>
+        isTheSelectedConversation
+          ? theme.palette.background.default
+          : theme.palette.background.paper
+      }
     >
       <Grid item>
         <Avatar />

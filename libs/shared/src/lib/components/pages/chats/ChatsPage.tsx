@@ -16,7 +16,7 @@ export const ChatsPage = () => {
 
   const fetchConversations = useCallback(async () => {
     try {
-      const res = await server?.axiosInstance.get("api/chats/conversations");
+      const res = await server?.axiosInstance.get("api/chat/conversations");
       res?.data && setConversations(res?.data);
     } catch (e) {
       axiosErrorToaster(e);
@@ -35,6 +35,9 @@ export const ChatsPage = () => {
             <ConversationButton
               key={conversation._id}
               conversation={conversation}
+              isTheSelectedConversation={
+                conversation._id === selectedConversation?._id
+              }
               setSelectedConversation={setSelectedConversation}
             />
           ))

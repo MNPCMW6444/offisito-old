@@ -9,7 +9,10 @@ router.get("/", async (req: Request, res, next) => {
     if (!req.user) return res.status(401).send("Please Log In First");
     const Conversation = conversationModel();
     const conversations = await Conversation.find({
-      [req.user.type]: req.user._id.toString(),
+      $or: [
+        { hostId: req.user._id.toString() },
+        { memberId: req.user._id.toString() },
+      ],
     });
     return res.status(200).json(conversations);
   } catch (e) {
