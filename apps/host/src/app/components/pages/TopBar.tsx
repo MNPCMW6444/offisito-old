@@ -1,17 +1,22 @@
 import {
   Avatar,
+  Box,
   Grid,
   IconButton,
   Menu,
   MenuItem,
-  SvgIcon,
   Tooltip,
 } from "@mui/material";
-import { AuthContext, PrimaryText } from "@monorepo/shared";
+import {
+  AuthContext,
+  PrimaryText,
+  useIsNight,
+  useResponsiveness,
+} from "@monorepo/shared";
 import { MouseEvent, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-// eslint-disable-next-line @nx/enforce-module-boundaries
-import { ReactComponent as Logo } from "../../../../../../libs/shared/src/assets/branded/logo.svg";
+import dayLogo from "../../../../../../libs/shared/src/assets/branded/dayLogo.svg";
+import nightLogo from "../../../../../../libs/shared/src/assets/branded/nightLogo.svg";
 
 const TopBar = () => {
   const { user, logout, profilePictureUrl } = useContext(AuthContext);
@@ -37,6 +42,9 @@ const TopBar = () => {
     { name: "Logout", route: "logout" },
   ];
 
+  const isNight = useIsNight();
+  const { isMobile } = useResponsiveness();
+
   return (
     <Grid
       container
@@ -45,10 +53,10 @@ const TopBar = () => {
       wrap="nowrap"
     >
       <Grid item>
-        <SvgIcon
-          component={Logo}
-          style={{ color: "green" }}
-          viewBox="0 0 600 476.6"
+        <Box
+          component="img"
+          src={isNight ? nightLogo : dayLogo}
+          width={isMobile ? "30%" : "70%"}
         />
       </Grid>
       <Grid item>
