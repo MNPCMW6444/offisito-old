@@ -1,16 +1,29 @@
-import { Box, Grid, Modal, TextField } from "@mui/material";
+import { Box, Button, Grid, Modal, TextField } from "@mui/material";
 import {
+  axiosErrorToaster,
   Building,
+  createBuildingReq,
   format,
   PrimaryText,
   renderSwitch,
   renderTextField,
   ServerContext,
 } from "@monorepo/shared";
-import { useContext, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 
-const BuildingFormModal = () => {
-  const [formState, setFormState] = useState<Building>({});
+interface BuildingFormModalProps {
+  setBuildingForm: Dispatch<SetStateAction<boolean>>;
+}
+
+const BuildingFormModal = ({ setBuildingForm }: BuildingFormModalProps) => {
+  const [formState, setFormState] = useState<createBuildingReq>({
+    buildingName: "New",
+    address: {
+      street: "Please",
+      city: "Enter",
+      country: "the Address",
+    },
+  });
   const server = useContext(ServerContext);
 
   const handleChange = (
@@ -38,8 +51,7 @@ const BuildingFormModal = () => {
             `/api/geo/autocomplete-address/${value}`,
           );
           setSuggestions(data.predictions);
-        } else throw new Error();
-        ("No server");
+        } else throw new Error("No server");
       } catch (error) {
         console.error("Error fetching autocomplete suggestions:", error);
       }
@@ -54,6 +66,17 @@ const BuildingFormModal = () => {
         key={index}
         onClick={() => {
           setLocation(suggestion.description);
+          const { main_text, secondary_text } =
+            suggestion.structured_formatting;
+          setFormState(((prev: Building) => ({
+            ...prev,
+            address: {
+              street: main_text,
+              city: secondary_text.split(", ")[0],
+              country: secondary_text.split(", ")[1],
+              geoLocalisation: { type: "Point", coordinates: [1, 2] },
+            },
+          })) as any);
           setSuggestions([]);
         }}
       >
@@ -83,6 +106,7 @@ const BuildingFormModal = () => {
           width="80%"
           marginLeft="10%"
           bgcolor={(theme) => theme.palette.background.default}
+          overflow="scroll"
         >
           <Grid item>
             <PrimaryText variant="h4">Building</PrimaryText>
@@ -129,6 +153,19 @@ const BuildingFormModal = () => {
               "vip_service",
               format("vip_service") + " ?",
             )}
+          </Grid>
+          <Grid item>
+            <Button
+              variant="contained"
+              onClick={() =>
+                server?.axiosInstance
+                  .post("api/host/building/add_building", formState)
+                  .then(() => setBuildingForm(false))
+                  .catch((e) => axiosErrorToaster(e))
+              }
+            >
+              Save New Building
+            </Button>
           </Grid>
         </Grid>
       </Grid>

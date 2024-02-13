@@ -15,7 +15,6 @@ import { useLocation } from "react-router-dom";
 import debounce from "lodash.debounce";
 import toast from "react-hot-toast";
 import { Add } from "@mui/icons-material";
-import buildingFormModal from "./BuildingFormModal";
 import BuildingFormModal from "./BuildingFormModal";
 
 const ProfileForm = () => {
@@ -114,7 +113,7 @@ const ProfileForm = () => {
       wrap="nowrap"
       alignItems="center"
     >
-      {buildingForm && <BuildingFormModal />}
+      {buildingForm && <BuildingFormModal setBuildingForm={setBuildingForm} />}
       <Grid item>
         <PrimaryText variant="h4">Company Profile</PrimaryText>
       </Grid>

@@ -1,6 +1,7 @@
 import {
   autocompleteAddress,
   getAddressByPoint,
+  getPointByAddress,
 } from "../../../google-geocoding";
 import { Router } from "express";
 
@@ -13,7 +14,22 @@ router.get<{ pointInString: string }, string>(
       const [lat, long] = req.params.pointInString
         .split(",")
         .map((str) => parseFloat(str));
-      return res.send(await getAddressByPoint(lat, long));
+      return res.status(200).send(await getAddressByPoint(lat, long));
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.get<{ addressInDescriptionString: string }, string>(
+  "/getLocation/:addressInDescriptionString",
+  async (req, res, next) => {
+    try {
+      const result = await getPointByAddress(
+        req.params.addressInDescriptionString,
+      );
+      console.log(result);
+      return res.status(200).send(result);
     } catch (error) {
       next(error);
     }
