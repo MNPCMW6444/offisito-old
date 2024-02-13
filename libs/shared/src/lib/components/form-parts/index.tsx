@@ -293,7 +293,7 @@ export const renderDropdown = <T,>(
     onChange={(e) => handleChange(name, e.target.value as string)}
   >
     {options.map(({ label, value }) => (
-      <MenuItem key={value as string} value={value as string}>
+      <MenuItem key={value.toString()} value={value as string}>
         {label || (value as string)}
       </MenuItem>
     ))}

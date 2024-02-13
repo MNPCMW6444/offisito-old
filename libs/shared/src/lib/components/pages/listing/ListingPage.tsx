@@ -79,22 +79,6 @@ export const ListingPage = ({ _id }: ListingPageProps) => {
       <Grid item>
         <PrimaryText>Availability</PrimaryText>
       </Grid>
-      {/*    {listing.availability && (
-        <Grid item container columnSpacing={2}>
-          {Object.keys(listing.availability).map((key) => (
-            <Grid item>
-              <AvailabilityBox
-                name={key}
-                isFilled={
-                  listing.availability
-                    ? listing.availability[key as keyof Availability]
-                    : undefined
-                }
-              />
-            </Grid>
-          ))}
-        </Grid>
-      )}*/}
       <Grid item>
         <PrimaryText>Space includes:</PrimaryText>
       </Grid>

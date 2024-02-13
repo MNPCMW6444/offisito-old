@@ -13,7 +13,7 @@ export const AmenitiesView = ({ amenities }: AmenitiesProps) =>
       {Object.keys(amenities).map(
         (amenity) =>
           amenities[amenity] && (
-            <Grid item id={amenity}>
+            <Grid item key={amenity}>
               {renderAmenityIcon(amenity)}
             </Grid>
           ),

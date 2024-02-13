@@ -49,17 +49,17 @@ const ProfilesPage = () => {
         "/api/host/company/get_companies_list/",
       );
       res &&
-      setMyProfiles(
-        res.data.data.map((company: Company) => {
-          const building = buildings.find(
-            ({ value }) => value.toString() === company.building.toString(),
-          );
-          return {
-            ...company,
-            building: building?.label || building?.value || company.building,
-          };
-        }),
-      );
+        setMyProfiles(
+          res.data.data.map((company: Company) => {
+            const building = buildings.find(
+              ({ value }) => value.toString() === company.building.toString(),
+            );
+            return {
+              ...company,
+              building: building?.label || building?.value || company.building,
+            };
+          }),
+        );
     } catch (e) {
       axiosErrorToaster(e);
     }
@@ -105,7 +105,7 @@ const ProfilesPage = () => {
           <Grid container direction="column" padding="5%">
             {myProfiles.map((profile) => (
               <Grid
-                id={profile._id}
+                key={profile._id}
                 item
                 width="100%"
                 container

@@ -67,7 +67,7 @@ const SpacesPage = () => {
           <Grid container direction="column" rowSpacing={4}>
             {myAssets.map((asset) => (
               <Grid
-                id={asset._id}
+                key={asset._id}
                 item
                 width="100%"
                 container

@@ -1,14 +1,18 @@
 import {
   Avatar,
+  Box,
   Grid,
   IconButton,
   Menu,
   MenuItem,
+  SvgIcon,
   Tooltip,
 } from "@mui/material";
 import { AuthContext, PrimaryText } from "@monorepo/shared";
 import { MouseEvent, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import logo from "../../../../../../libs/shared/src/assets/branded/logo.svg";
 
 const TopBar = () => {
   const { user, logout, profilePictureUrl } = useContext(AuthContext);
@@ -41,7 +45,9 @@ const TopBar = () => {
       alignItems="center"
       wrap="nowrap"
     >
-      <Grid item>Logo</Grid>
+      <Grid item>
+        <SvgIcon color="primary">{logo}</SvgIcon>
+      </Grid>
       <Grid item>
         <Tooltip title="Open settings">
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

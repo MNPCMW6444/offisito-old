@@ -33,6 +33,7 @@ export const ChatsPage = () => {
         {conversations.length > 0 ? (
           conversations.map((conversation) => (
             <ConversationButton
+              key={conversation._id}
               conversation={conversation}
               setSelectedConversation={setSelectedConversation}
             />

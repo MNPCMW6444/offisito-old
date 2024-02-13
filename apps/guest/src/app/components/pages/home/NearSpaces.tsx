@@ -54,7 +54,7 @@ const NearSpaces = () => {
         wrap="nowrap"
       >
         {assetsNear.map((asset) => (
-          <Grid item width="100%">
+          <Grid key={asset._id} item width="100%">
             <AssetCard asset={asset} />
           </Grid>
         ))}
