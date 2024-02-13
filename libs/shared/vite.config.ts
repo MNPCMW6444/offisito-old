@@ -12,6 +12,9 @@ export default defineConfig({
 
   plugins: [
     react(),
+    svgrPlugin({
+      // svgr options (optional)
+    }),
     nxViteTsPaths(),
     dts({
       entryRoot: "src",

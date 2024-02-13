@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Box,
   Grid,
   IconButton,
   Menu,
@@ -46,9 +45,11 @@ const TopBar = () => {
       wrap="nowrap"
     >
       <Grid item>
-        <SvgIcon>
-          <SvgIcon component={Logo} />;
-        </SvgIcon>
+        <SvgIcon
+          component={Logo}
+          style={{ color: "green" }}
+          viewBox="0 0 600 476.6"
+        />
       </Grid>
       <Grid item>
         <Tooltip title="Open settings">
