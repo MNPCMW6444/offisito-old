@@ -117,6 +117,7 @@ const ProfileForm = () => {
           handleChange,
           "companyName",
           "Company Name",
+          false,
         )}
       </Grid>
       <Grid item>
@@ -125,6 +126,7 @@ const ProfileForm = () => {
           handleChange,
           "companyInHold",
           "Company in Hold",
+          false,
         )}
       </Grid>
       <Grid item>
@@ -133,6 +135,7 @@ const ProfileForm = () => {
           handleChange,
           "floorNumber",
           "Floor Number",
+          false,
         )}
       </Grid>
       <Grid item>

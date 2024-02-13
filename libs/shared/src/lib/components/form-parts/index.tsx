@@ -21,9 +21,12 @@ export const renderTextField = <T,>(
   handleChange: (name: keyof T, value: string | Date | boolean) => void,
   name: keyof T,
   label: string,
+  mutliline: boolean,
 ) => (
   <TextField
-    multiline
+    multiline={mutliline}
+    fullWidth={mutliline}
+    minRows={mutliline ? 2 : undefined}
     variant="outlined"
     label={label}
     value={formState ? formState[name] : ""}

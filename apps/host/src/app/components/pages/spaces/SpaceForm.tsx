@@ -1,9 +1,12 @@
 import {
   Asset,
   AssetsAmenities,
+  AssetType,
   axiosErrorToaster,
   Company,
+  format,
   PrimaryText,
+  renderDropdown,
   renderSwitchGroupArray,
   renderSwitchGroupComplex,
   renderTextField,
@@ -109,10 +112,17 @@ const SpaceForm = () => {
           handleChange,
           "assetDescription",
           "Description",
+          true,
         )}
       </Grid>
       <Grid item>
-        {renderTextField(formState, handleChange, "roomNumber", "Room Number")}
+        {renderTextField(
+          formState,
+          handleChange,
+          "roomNumber",
+          "Room Number",
+          false,
+        )}
       </Grid>
       {renderSwitchGroupComplex(
         formState,
@@ -133,6 +143,29 @@ const SpaceForm = () => {
             name,
           })),
         )}
+      <Grid
+        item
+        container
+        justifyContent="center"
+        alignItems="center"
+        columnSpacing={2}
+      >
+        <Grid item>
+          <PrimaryText>Space Type: </PrimaryText>
+        </Grid>
+        <Grid item>
+          {renderDropdown(
+            formState,
+            handleChange,
+            "assetType",
+            "Asset Type",
+            Object.values(AssetType).map((value) => ({
+              value,
+              label: format(value),
+            })),
+          )}
+        </Grid>
+      </Grid>
     </Grid>
   ) : (
     <PrimaryText>{hasFetched.current ? "Error" : "Loading..."}</PrimaryText>
