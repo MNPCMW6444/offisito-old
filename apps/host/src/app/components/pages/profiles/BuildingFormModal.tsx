@@ -64,17 +64,25 @@ const BuildingFormModal = ({ setBuildingForm }: BuildingFormModalProps) => {
     return suggestions.map((suggestion: any, index) => (
       <div
         key={index}
-        onClick={() => {
+        onClick={async () => {
           setLocation(suggestion.description);
           const { main_text, secondary_text } =
             suggestion.structured_formatting;
+
+          const cords = await server?.axiosInstance.get(
+            "api/geo/getLocation/" + suggestion.description,
+          );
+
           setFormState(((prev: Building) => ({
             ...prev,
             address: {
               street: main_text,
               city: secondary_text.split(", ")[0],
               country: secondary_text.split(", ")[1],
-              geoLocalisation: { type: "Point", coordinates: [1, 2] },
+              geoLocalisation: {
+                type: "Point",
+                coordinates: Object.values(cords?.data),
+              },
             },
           })) as any);
           setSuggestions([]);

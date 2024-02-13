@@ -28,7 +28,6 @@ router.get<{ addressInDescriptionString: string }, string>(
       const result = await getPointByAddress(
         req.params.addressInDescriptionString,
       );
-      console.log(result);
       return res.status(200).send(result);
     } catch (error) {
       next(error);
