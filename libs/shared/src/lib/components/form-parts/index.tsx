@@ -6,13 +6,23 @@ import {
   Switch,
   TextField,
 } from "@mui/material";
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { PrimaryText } from "../../styled-components";
-import { Asset, WeekDays } from "../../../types";
+import { Asset, Company, WeekDays } from "../../../types";
 import { format } from "../../utils";
+import { axiosErrorToaster } from "../utils";
+import { ServerContext } from "../../context";
 
 export * from "./switches";
 export * from "./labels";
@@ -33,18 +43,17 @@ export const renderTextField = <T,>(
   const options = {
     ...{
       label: format(name as string),
-      mutliline: false,
+      multiline: false,
       number: false,
       customMinRows: 2,
     },
     ...optionalParams,
   };
-
   return (
     <TextField
-      multiline={options.mutliline}
-      fullWidth={options.mutliline}
-      minRows={options.mutliline ? options.customMinRows : undefined}
+      multiline={options.multiline}
+      fullWidth={options.multiline}
+      minRows={options.multiline ? options.customMinRows : undefined}
       variant="outlined"
       label={options.label}
       value={formState ? formState[name] : ""}
@@ -280,7 +289,7 @@ export const renderDropdown = <T,>(
   <Select
     name={name as string}
     label={label}
-    value={formState ? formState[name] : ""}
+    value={formState ? (formState[name] as any)._id || formState[name] : ""}
     onChange={(e) => handleChange(name, e.target.value as string)}
   >
     {options.map(({ label, value }) => (

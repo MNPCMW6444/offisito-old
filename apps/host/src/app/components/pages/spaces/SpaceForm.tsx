@@ -64,6 +64,22 @@ const SpaceForm = () => {
     fetchExistingAmenities().then();
   }, [query, fetchSpace, fetchExistingAmenities]);
 
+  const [myProfiles, setMyProfiles] = useState<Company[]>();
+  const fetchedProfiles = useCallback(async () => {
+    try {
+      const res = await server?.axiosInstance.get(
+        "/api/host/company/get_companies_list/",
+      );
+      res && setMyProfiles(res.data.data);
+    } catch (e) {
+      axiosErrorToaster(e);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchedProfiles().then();
+  }, [fetchedProfiles]);
+
   const handleUpdate = useCallback(
     async (updatedState: Company) => {
       try {
@@ -106,6 +122,32 @@ const SpaceForm = () => {
       <Grid item>
         <PrimaryText variant="h4">List your Space</PrimaryText>
       </Grid>
+      <Grid
+        item
+        container
+        justifyContent="center"
+        alignItems="center"
+        columnSpacing={2}
+      >
+        <Grid item>
+          <PrimaryText>Profile: </PrimaryText>
+        </Grid>
+        {myProfiles && (
+          <Grid item>
+            {renderDropdown(
+              formState,
+              handleChange,
+              "leasingCompany",
+              format("leasingCompany"),
+              myProfiles.map(({ _id, companyName }) => ({
+                value: _id,
+                label: companyName,
+              })),
+            )}
+          </Grid>
+        )}
+      </Grid>
+
       <Grid item>
         {renderTextField(formState, handleChange, "assetDescription", {
           label: "Description",
@@ -147,7 +189,7 @@ const SpaceForm = () => {
             formState,
             handleChange,
             "assetType",
-            "Asset Type",
+            format("assetType"),
             Object.values(AssetType).map((value) => ({
               value,
               label: format(value),

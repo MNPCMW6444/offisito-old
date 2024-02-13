@@ -49,17 +49,17 @@ const ProfilesPage = () => {
         "/api/host/company/get_companies_list/",
       );
       res &&
-        setMyProfiles(
-          res.data.data.map((company: Company) => {
-            const building = buildings.find(
-              ({ value }) => value.toString() === company.building.toString(),
-            );
-            return {
-              ...company,
-              building: building?.label || building?.value || company.building,
-            };
-          }),
-        );
+      setMyProfiles(
+        res.data.data.map((company: Company) => {
+          const building = buildings.find(
+            ({ value }) => value.toString() === company.building.toString(),
+          );
+          return {
+            ...company,
+            building: building?.label || building?.value || company.building,
+          };
+        }),
+      );
     } catch (e) {
       axiosErrorToaster(e);
     }

@@ -3,6 +3,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import {
   axiosErrorToaster,
   Company,
+  format,
   PrimaryText,
   renderDatePicker,
   renderDropdown,
@@ -144,7 +145,7 @@ const ProfileForm = () => {
           formState,
           handleChange,
           "building",
-          "Building",
+          format("building"),
           buildings,
         )}
       </Grid>
