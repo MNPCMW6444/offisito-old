@@ -15,8 +15,10 @@ import {
 } from "@monorepo/shared";
 import { MouseEvent, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import dayLogo from "../../../../../../libs/shared/src/assets/branded/dayLogo.svg";
-import nightLogo from "../../../../../../libs/shared/src/assets/branded/nightLogo.svg";
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import dayLogo from "../../../../../../libs/shared/src/assets/branded/dayLogo.png";
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import nightLogo from "../../../../../../libs/shared/src/assets/branded/nightLogo.png";
 
 const TopBar = () => {
   const { user, logout, profilePictureUrl } = useContext(AuthContext);
@@ -56,7 +58,7 @@ const TopBar = () => {
         <Box
           component="img"
           src={isNight ? nightLogo : dayLogo}
-          width={isMobile ? "30%" : "70%"}
+          width={isMobile ? "45%" : "65%"}
         />
       </Grid>
       <Grid item>
