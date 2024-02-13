@@ -107,23 +107,12 @@ const SpaceForm = () => {
         <PrimaryText variant="h4">List your Space</PrimaryText>
       </Grid>
       <Grid item>
-        {renderTextField(
-          formState,
-          handleChange,
-          "assetDescription",
-          "Description",
-          true,
-        )}
+        {renderTextField(formState, handleChange, "assetDescription", {
+          label: "Description",
+          multiline: true,
+        })}
       </Grid>
-      <Grid item>
-        {renderTextField(
-          formState,
-          handleChange,
-          "roomNumber",
-          "Room Number",
-          false,
-        )}
-      </Grid>
+      <Grid item>{renderTextField(formState, handleChange, "roomNumber")}</Grid>
       {renderSwitchGroupComplex(
         formState,
         "Availability",
@@ -165,6 +154,11 @@ const SpaceForm = () => {
             })),
           )}
         </Grid>
+      </Grid>
+      <Grid item>
+        {renderTextField(formState, handleChange, "peopleCapacity", {
+          number: true,
+        })}
       </Grid>
     </Grid>
   ) : (

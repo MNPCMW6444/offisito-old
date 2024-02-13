@@ -12,30 +12,50 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { PrimaryText } from "../../styled-components";
 import { Asset, WeekDays } from "../../../types";
+import { format } from "../../utils";
 
 export * from "./switches";
 export * from "./labels";
+
+interface Options {
+  label: string;
+  multiline: boolean;
+  number: boolean;
+  customMinRows: number;
+}
 
 export const renderTextField = <T,>(
   formState: T,
   handleChange: (name: keyof T, value: string | Date | boolean) => void,
   name: keyof T,
-  label: string,
-  mutliline: boolean,
-) => (
-  <TextField
-    multiline={mutliline}
-    fullWidth={mutliline}
-    minRows={mutliline ? 2 : undefined}
-    variant="outlined"
-    label={label}
-    value={formState ? formState[name] : ""}
-    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-      handleChange(name, e.target.value);
-    }}
-    name={name as string}
-  />
-);
+  optionalParams: Partial<Options> = {},
+) => {
+  const options = {
+    ...{
+      label: format(name as string),
+      mutliline: false,
+      number: false,
+      customMinRows: 2,
+    },
+    ...optionalParams,
+  };
+
+  return (
+    <TextField
+      multiline={options.mutliline}
+      fullWidth={options.mutliline}
+      minRows={options.mutliline ? options.customMinRows : undefined}
+      variant="outlined"
+      label={options.label}
+      value={formState ? formState[name] : ""}
+      onChange={(e: ChangeEvent<HTMLInputElement>) => {
+        handleChange(name, e.target.value);
+      }}
+      name={name as string}
+      type={options.number ? "number" : undefined}
+    />
+  );
+};
 
 export const renderSwitch = <T,>(
   formState: T,

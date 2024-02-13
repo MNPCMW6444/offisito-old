@@ -112,31 +112,13 @@ const ProfileForm = () => {
         <PrimaryText variant="h4">Company Profile</PrimaryText>
       </Grid>
       <Grid item>
-        {renderTextField(
-          formState,
-          handleChange,
-          "companyName",
-          "Company Name",
-          false,
-        )}
+        {renderTextField(formState, handleChange, "companyName")}
       </Grid>
       <Grid item>
-        {renderTextField(
-          formState,
-          handleChange,
-          "companyInHold",
-          "Company in Hold",
-          false,
-        )}
+        {renderTextField(formState, handleChange, "companyInHold")}
       </Grid>
       <Grid item>
-        {renderTextField(
-          formState,
-          handleChange,
-          "floorNumber",
-          "Floor Number",
-          false,
-        )}
+        {renderTextField(formState, handleChange, "floorNumber")}
       </Grid>
       <Grid item>
         {renderSwitch(formState, handleChange, "fullFloor", "Full Floor?")}
