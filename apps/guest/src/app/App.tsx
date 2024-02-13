@@ -5,9 +5,10 @@ import {
   PrimaryText,
   ServerProvider,
   useResponsiveness,
+  useThemeForMVP,
 } from "@monorepo/shared";
 import styled from "@emotion/styled";
-import { Box, Grid } from "@mui/material";
+import { Box, createTheme, Grid, ThemeProvider } from "@mui/material";
 import { Toaster } from "react-hot-toast";
 
 const MobileContainer = styled(Box)`
@@ -40,27 +41,35 @@ const App = () => {
       </ServerProvider>
     </>
   );
+  const theme = useThemeForMVP();
 
   return (
-    <EnvBorder>
-      {isMobile ? (
-        app
-      ) : (
-        <Grid container justifyContent="center" columnSpacing={8} wrap="nowrap">
-          <Grid item>
-            <MobileContainer>{app}</MobileContainer>
+    <ThemeProvider theme={createTheme(theme)}>
+      <EnvBorder>
+        {isMobile ? (
+          app
+        ) : (
+          <Grid
+            container
+            justifyContent="center"
+            columnSpacing={8}
+            wrap="nowrap"
+          >
+            <Grid item>
+              <MobileContainer>{app}</MobileContainer>
+            </Grid>
+            <Grid item>
+              <DesktopMessage>
+                <PrimaryText variant="h5">
+                  For the best experience please use offisito app on a mobile
+                  device
+                </PrimaryText>
+              </DesktopMessage>
+            </Grid>
           </Grid>
-          <Grid item>
-            <DesktopMessage>
-              <PrimaryText variant="h5">
-                For the best experience please use offisito app on a mobile
-                device
-              </PrimaryText>
-            </DesktopMessage>
-          </Grid>
-        </Grid>
-      )}
-    </EnvBorder>
+        )}
+      </EnvBorder>
+    </ThemeProvider>
   );
 };
 

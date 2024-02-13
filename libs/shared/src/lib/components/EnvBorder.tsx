@@ -1,7 +1,6 @@
 import { ReactNode, useEffect } from "react";
 import Box from "@mui/material/Box";
 import { frontendSettings } from "../context";
-import { themeForMVP } from "../themes";
 
 interface EnvBorderContextProps {
   children: ReactNode;
@@ -41,7 +40,7 @@ export const EnvBorder = ({ children }: EnvBorderContextProps) => {
   };
 
   return (
-    <Box {...props} bgcolor={themeForMVP?.palette?.background?.default}>
+    <Box {...props} bgcolor={(theme) => theme.palette.background.default}>
       {children}
     </Box>
   );

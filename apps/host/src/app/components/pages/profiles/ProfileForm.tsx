@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Grid, Button } from "@mui/material";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import {
   axiosErrorToaster,
@@ -14,6 +14,9 @@ import {
 import { useLocation } from "react-router-dom";
 import debounce from "lodash.debounce";
 import toast from "react-hot-toast";
+import { Add } from "@mui/icons-material";
+import buildingFormModal from "./BuildingFormModal";
+import BuildingFormModal from "./BuildingFormModal";
 
 const ProfileForm = () => {
   const [formState, setFormState] = useState<Company>();
@@ -21,6 +24,8 @@ const ProfileForm = () => {
   const [buildings, setBuildings] = useState<
     { value: string; label: string }[]
   >([]);
+
+  const [buildingForm, setBuildingForm] = useState(false);
 
   const fetchBuildings = useCallback(async () => {
     try {
@@ -109,6 +114,7 @@ const ProfileForm = () => {
       wrap="nowrap"
       alignItems="center"
     >
+      {buildingForm && <BuildingFormModal />}
       <Grid item>
         <PrimaryText variant="h4">Company Profile</PrimaryText>
       </Grid>
@@ -140,14 +146,30 @@ const ProfileForm = () => {
           "I have a legal sublease permission",
         )}
       </Grid>
-      <Grid item>
-        {renderDropdown(
-          formState,
-          handleChange,
-          "building",
-          format("building"),
-          buildings,
-        )}
+      <Grid
+        item
+        container
+        justifyContent="center"
+        alignItems="center"
+        columnSpacing={2}
+      >
+        <Grid item>
+          <PrimaryText>Building: </PrimaryText>
+        </Grid>
+        <Grid item>
+          {renderDropdown(
+            formState,
+            handleChange,
+            "building",
+            format("building"),
+            buildings,
+          )}
+        </Grid>
+        <Grid item>
+          <Button onClick={() => setBuildingForm(true)}>
+            <Add /> Other
+          </Button>
+        </Grid>
       </Grid>
     </Grid>
   ) : (
