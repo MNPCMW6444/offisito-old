@@ -1,15 +1,66 @@
-import { Grid, Modal } from "@mui/material";
+import { Box, Grid, Modal, TextField } from "@mui/material";
 import {
   Building,
-  Company,
+  format,
   PrimaryText,
+  renderSwitch,
+  renderTextField,
   ServerContext,
 } from "@monorepo/shared";
 import { useContext, useState } from "react";
 
 const BuildingFormModal = () => {
-  const [formState, setFormState] = useState<Building>();
+  const [formState, setFormState] = useState<Building>({});
   const server = useContext(ServerContext);
+
+  const handleChange = (
+    name: keyof Building,
+    value: string | Date | boolean,
+  ) => {
+    formState &&
+      setFormState(((prevState: Building) => ({
+        ...prevState,
+        [name]: value,
+      })) as any);
+  };
+
+  const [location, setLocation] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+
+  const handleLocationChange = async (event: any) => {
+    const value = event.target.value;
+    setLocation(value);
+
+    if (value.length > 2) {
+      try {
+        if (server) {
+          const { data } = await server?.axiosInstance.get(
+            `/api/geo/autocomplete-address/${value}`,
+          );
+          setSuggestions(data.predictions);
+        } else throw new Error();
+        ("No server");
+      } catch (error) {
+        console.error("Error fetching autocomplete suggestions:", error);
+      }
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const renderSuggestions = () => {
+    return suggestions.map((suggestion: any, index) => (
+      <div
+        key={index}
+        onClick={() => {
+          setLocation(suggestion.description);
+          setSuggestions([]);
+        }}
+      >
+        <PrimaryText>{suggestion.description}</PrimaryText>
+      </div>
+    ));
+  };
 
   return (
     <Modal open>
@@ -35,6 +86,49 @@ const BuildingFormModal = () => {
         >
           <Grid item>
             <PrimaryText variant="h4">Building</PrimaryText>
+          </Grid>
+          <Grid item>
+            {renderTextField(formState, handleChange, "buildingName")}
+          </Grid>
+          <Grid item>
+            <TextField
+              id="autocomplete"
+              label="Address"
+              variant="outlined"
+              fullWidth
+              value={location}
+              onChange={handleLocationChange}
+            />
+            {renderSuggestions()}
+          </Grid>
+          <Grid item>
+            {renderTextField(formState, handleChange, "buildingDescription", {
+              multiline: true,
+            })}
+          </Grid>
+          <Grid item>
+            {renderSwitch(
+              formState,
+              handleChange,
+              "doorman",
+              format("doorman") + " ?",
+            )}
+          </Grid>
+          <Grid item>
+            {renderSwitch(
+              formState,
+              handleChange,
+              "security",
+              format("security") + " ?",
+            )}
+          </Grid>
+          <Grid item>
+            {renderSwitch(
+              formState,
+              handleChange,
+              "vip_service",
+              format("vip_service") + " ?",
+            )}
           </Grid>
         </Grid>
       </Grid>

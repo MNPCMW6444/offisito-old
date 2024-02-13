@@ -24,5 +24,6 @@ export const findMe = (): Promise<null | { lat: number; long: number }> => {
 export const format = (str: string): string =>
   str
     .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/_/g, " ")
     .toLowerCase()
     .replace(/\b\w/g, (letter) => letter.toUpperCase());

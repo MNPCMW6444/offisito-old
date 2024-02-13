@@ -33,3 +33,16 @@ export const getPointByAddress = async (address: string) => {
     return null;
   }
 };
+
+export const autocompleteAddress = async (query: string) => {
+  try {
+    return (
+      await axios.get(
+        `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(query)}&key=${settings.googleGeoCoding}`,
+      )
+    ).data;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+};

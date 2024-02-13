@@ -25,7 +25,6 @@ import { axiosErrorToaster } from "../utils";
 import { ServerContext } from "../../context";
 
 export * from "./switches";
-export * from "./labels";
 
 interface Options {
   label: string;
