@@ -25,8 +25,6 @@ const SpaceForm = () => {
   const [existingAmenities, setExistingAmenities] =
     useState<AssetsAmenities[]>();
 
-  sendMessage(server?.axiosInstance, "65c2104235d18f63e62827d0", "Hello");
-
   const fetchSpace = useCallback(
     async (id: string) => {
       try {
