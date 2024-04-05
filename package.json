@@ -1,6 +1,6 @@
 {
   "name": "@offisito/source",
-  "version": "4.0.125",
+  "version": "4.0.126",
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf node_modules dist tmp package-lock.json ./.nx/cache",
