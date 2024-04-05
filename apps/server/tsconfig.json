@@ -5,11 +5,12 @@
   "references": [
     {
       "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
     }
   ],
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "esModuleInterop": true,
-    "resolveJsonModule": true
+    "esModuleInterop": true
   }
 }

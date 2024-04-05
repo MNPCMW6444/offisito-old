@@ -1,17 +1,17 @@
-import { UserType } from "../../mongo";
+import {UserType} from "../../mongo";
+
 // import { Amenities, Availability } from "../index";
 
-export type WhiteClient = "host" | "guest";
 
 export interface LoginReq {
   email: string;
   password: string;
-  client: WhiteClient;
+  client: UserType;
 }
 
 export interface RegisterReq {
   email: string;
-  client: WhiteClient;
+  client: UserType;
 }
 
 export interface RegisterFinReq {

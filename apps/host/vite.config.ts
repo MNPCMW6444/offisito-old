@@ -1,30 +1,23 @@
 /// <reference types='vitest' />
-import vite from "vite";
-import react from "@vitejs/plugin-react";
-import { nxViteTsPaths } from "@nx/vite/plugins/nx-tsconfig-paths.plugin";
-import svgrPlugin from "vite-plugin-svgr";
+import {defineConfig} from 'vite';
+import react from '@vitejs/plugin-react';
+import {nxViteTsPaths} from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 
-export default vite.defineConfig({
+export default defineConfig({
   root: __dirname,
-  cacheDir: "../../node_modules/.vite/apps/host",
+  cacheDir: '../../node_modules/.vite/apps/host',
 
   server: {
     port: 4200,
-    host: "localhost",
+    host: 'localhost',
   },
 
   preview: {
     port: 4302,
-    host: "localhost",
+    host: 'localhost',
   },
 
-  plugins: [
-    react(),
-    svgrPlugin({
-      // svgr options (optional)
-    }),
-    nxViteTsPaths(),
-  ],
+  plugins: [react(), nxViteTsPaths()],
 
   // Uncomment this if you are using workers.
   // worker: {
@@ -32,7 +25,7 @@ export default vite.defineConfig({
   // },
 
   build: {
-    outDir: "../../dist/apps/host",
+    outDir: '../../dist/apps/host',
     reportCompressedSize: true,
     commonjsOptions: {
       transformMixedEsModules: true,
@@ -42,15 +35,15 @@ export default vite.defineConfig({
   test: {
     globals: true,
     cache: {
-      dir: "../../node_modules/.vitest",
+      dir: '../../node_modules/.vitest',
     },
-    environment: "jsdom",
-    include: ["src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+    environment: 'jsdom',
+    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
 
-    reporters: ["default"],
+    reporters: ['default'],
     coverage: {
-      reportsDirectory: "../../coverage/apps/host",
-      provider: "v8",
+      reportsDirectory: '../../coverage/apps/host',
+      provider: 'v8',
     },
   },
 });

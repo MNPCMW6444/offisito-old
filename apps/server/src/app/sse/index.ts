@@ -1,13 +1,9 @@
-export const subscribe = (req, res) => {
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
+import chat from "./chat";
+import listings from "./listings";
+import bookings from "./bookings";
 
-  setTimeout(() => {
-    res.write(`data: ${JSON.stringify({ message: "watching db..." })}\n\n`);
-  }, 1000);
-
-  req.on("close", () => {
-    /*stop watching*/
-  });
+export const watchDB = () => {
+  chat();
+  listings();
+  bookings();
 };

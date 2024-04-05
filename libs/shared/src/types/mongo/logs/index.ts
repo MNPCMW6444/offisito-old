@@ -1,5 +1,5 @@
-import { Document } from "mongoose";
+import {Document} from "mongoose";
 
-export interface Error extends Document {
+export interface ErrorLog extends Document {
   stringifiedError: string;
 }

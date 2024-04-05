@@ -1,41 +1,29 @@
-import { connection } from "../connection";
-import mongoose from "mongoose";
-import { versioning } from "@mnpcmw6444/mongoose-auto-versioning";
-import { User } from "@monorepo/shared";
+import { getModel } from "..";
+import { User } from "@offisito/shared";
 
-export default () => {
-  const name = "user";
-  const userModel = new mongoose.Schema(
-    {
-      email: {
-        type: String,
-        unique: true,
-      },
-      passwordHash: { type: String, required: false },
-      name: {
-        type: String,
-        required: false,
-      },
-      type: {
-        type: String,
-        enum: ["admin", "host", "member"],
-        required: true,
-      },
-      profilePictureUrlKey: String,
+export default () =>
+  getModel<User>("user", {
+    email: {
+      type: String,
+      unique: true,
     },
-    {
-      timestamps: true,
+    phone: {
+      type: String,
+      unique: false,
     },
-  ).plugin(versioning, { collection: name + "s.history", mongoose });
-
-  if (!connection) throw new Error("Database not initialized");
-
-  let userModelR;
-  if (mongoose.models.user) {
-    userModelR = connection.model<User>(name);
-  } else {
-    userModelR = connection.model<User>(name, userModel);
-  }
-
-  return userModelR;
-};
+    passwordHash: { type: String },
+    name: {
+      type: String,
+    },
+    fname: {
+      type: String,
+    },
+    lname: {
+      type: String,
+    },
+    type: {
+      type: String,
+      enum: ["admin", "host", "guest"],
+    },
+    profilePictureUrlKey: String,
+  });

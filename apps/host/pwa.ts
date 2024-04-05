@@ -1,9 +1,7 @@
-const {
-  backGroundColor,
-  themeColor,
-} = require("../../libs/shared/src/lib/themes/index");
+const backGroundColor = "#000000";
+export const themeColor = "#ABE5F7";
 
-const manifest = (env: "PreProd" | "Local" | "" = ``) => ({
+export const manifest = (env: "PreProd" | "Local" | "" = ``) => ({
   short_name: `Offisito Host${!env ? "" : " " + env}`,
   name: `Offisito Host App${!env ? "" : " " + env}`,
   icons: [
@@ -26,5 +24,3 @@ const manifest = (env: "PreProd" | "Local" | "" = ``) => ({
   theme_color: themeColor,
   description: `Offisito Host Web App for Hosts`,
 });
-
-module.exports = { manifest };

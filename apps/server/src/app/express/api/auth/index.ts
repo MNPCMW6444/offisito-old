@@ -2,7 +2,7 @@ import { Router } from "express";
 import logRouter from "./logRouter";
 import registerRouter from "./registerRouter";
 import manageRouter, { bucketName } from "./manageRouter";
-import { Request } from "../../middleware";
+import { AuthenticatedRequest } from "../../middleware";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../../../s3";
@@ -15,7 +15,7 @@ router.use("/register", registerRouter);
 
 router.get(
   "/get-signed-profile-picture/:size",
-  async (req: Request, res, next) => {
+  async (req: AuthenticatedRequest, res, next) => {
     if (!req.user) return res.status(401).send("Unauthorized");
 
     if (!req.user.profilePictureUrlKey) {

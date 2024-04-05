@@ -1,61 +1,119 @@
+import { Message, Rule, Rules } from "@offisito/shared";
 import messageModel from "../mongo/chats/messageModel";
-import sessionModel from "../mongo/chats/conversationModel";
-import { sendPushNotification } from "../push";
+import PubSub from "pubsub-js";
+import { Types } from "mongoose";
 import userModel from "../mongo/auth/userModel";
+import settings from "../../config";
+import { newMessage } from "../../content/email-templates/notifications";
+import notificationRuleModel from "../mongo/notifications/notificationRuleModel";
+import { sendPushNotification } from "../push";
+import pushDeviceModel from "../mongo/notifications/pushDeviceModel";
+import { sendEmail } from "../email/sendEmail";
 
-export default () => {
-  /*  messageModel()
-      .watch()
-      .on("change", async (event) => {
-        await pubsub.publish("newMessage", { newMessage: null });
-        const sessionId = event.fullDocument?.sessionId;
-        if (sessionId) {
-          const session = await sessionModel().findById(sessionId);
-          const pair = await pairModel().findById(session.pairId);
-          const side1 = pair.initiator.toString();
-          const side2 = pair.acceptor.toString();
-          const side1Subscription = await pushModel().findOne({ userId: side1 });
-          const side2Subscription = await pushModel().findOne({ userId: side2 });
-          event.operationType === "insert" &&
-            side1Subscription &&
-            event.fullDocument.ownerid !== side1 &&
-            sendPushNotification(
-              side1Subscription.subscription,
-              {
-                title:
-                  "New Message From" + event.fullDocument.ownerid === "ai"
-                    ? "Dual Chat GPT"
-                    : (await userModel().findById(side2)).phone,
-                body: event.fullDocument.message,
+export default () =>
+  messageModel()
+    .watch()
+    .on(
+      "change",
+      async (data: {
+        _id: {
+          _data: string;
+        };
+        operationType: "insert" | "update" | string;
+        clusterTime: { $timestamp: number };
+        wallTime: Date;
+        fullDocument: Message;
+        ns: { db: "offisito"; coll: "messages" };
+        documentKey: { _id: Types.ObjectId };
+      }) => {
+        try {
+          PubSub.publish("chats", JSON.stringify(data.clusterTime));
+          const User = userModel();
+          if (data.operationType === "insert") {
+            const sender = await User.findById(data?.fullDocument?.ownerId);
+            const domain =
+              sender?.type === "host"
+                ? settings.clientDomains.guest
+                : settings.clientDomains.host;
+            const rule: Rule<{
+              conversationId: string;
+              domain: string;
+            }> = {
+              key: Rules.ChatEvent,
+              push: {
+                payload: {
+                  title: sender?.name || "",
+                  body: data?.fullDocument?.message,
+                },
+                data: {
+                  domain,
+                  conversationId: data?.fullDocument?.conversationId,
+                },
               },
-              {
-                pairId: session.pairId,
-                sessionId: sessionId,
+              email: {
+                ...newMessage(
+                  sender?.name || "",
+                  data?.fullDocument?.message,
+                  domain + "/chats",
+                ),
               },
-            ).then();
-          event.operationType === "insert" &&
-            side2Subscription &&
-            event.fullDocument.ownerid !== side2 &&
-            sendPushNotification(
-              side1Subscription.subscription,
-              {
-                title:
-                  "New Message From" + event.fullDocument.ownerid === "ai"
-                    ? "Dual Chat GPT"
-                    : (await userModel().findById(side1)).phone,
-                body: event.fullDocument.message,
+              sms: {
+                message:
+                  "New Message from " +
+                  sender?.name +
+                  " go to " +
+                  settings.clientDomains +
+                  "/chats" +
+                  " to read and repley",
               },
-              {
-                pairId: session.pairId,
-                sessionId: sessionId,
-              },
-            ).then();
+            };
+            notificationRuleModel()
+              .find()
+              .then((subscriptions) =>
+                Promise.all(
+                  subscriptions.map(async (subscription) => {
+                    if (
+                      Rules[
+                        subscription.key as unknown as keyof typeof Rules
+                      ] === rule.key
+                    ) {
+                      subscription.push &&
+                        (
+                          await pushDeviceModel().find({
+                            userId: subscription.userId,
+                          })
+                        ).forEach((device) =>
+                          sendPushNotification(
+                            device.subscription,
+                            rule.push.payload,
+                            rule.push.data,
+                          ),
+                        );
+                      subscription?.email &&
+                        sendEmail(
+                          (await User.findById(subscription.userId))?.email ||
+                            "",
+                          rule.email.subject,
+                          rule.email.html,
+                        );
+                      /* (subscription.email) &&
+                       sendSMS();*/
+                    }
+                  }),
+                ),
+              )
+              .then(() => {
+                console.log("All notifications processed successfully.");
+              })
+              .catch((error) => {
+                console.log(
+                  "An error occurred while processing notifications:",
+                  error,
+                );
+              });
+          }
+        } catch (e) {
+          console.log("error on new message side effects: ", e);
         }
-      });
-
-    const Session = sessionModel();
-    Session.watch().on("change", async (event) => {
-      event.operationType === "insert" &&
-        (await pubsub.publish("newSession", { newSession: event.fullDocument }));
-    });*/
-};
+      },
+    );

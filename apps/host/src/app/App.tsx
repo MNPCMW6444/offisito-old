@@ -3,7 +3,7 @@ import {
   EnvBorder,
   ServerProvider,
   useThemeForMVP,
-} from "@monorepo/shared";
+} from "@offisito/shared-react";
 import Router from "./components/Router";
 import { Toaster } from "react-hot-toast";
 import { createTheme, ThemeProvider } from "@mui/material";
@@ -16,7 +16,7 @@ const App = () => {
       <EnvBorder>
         <Toaster />
         <ServerProvider>
-          <AuthContextProvider>
+          <AuthContextProvider client="host">
             <Router />
           </AuthContextProvider>
         </ServerProvider>

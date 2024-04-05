@@ -1,18 +1,19 @@
 import { Router } from "express";
-import { Request } from "../../middleware";
+import { AuthenticatedRequest } from "../../middleware";
 import {
   MIN_PASSWORD_STRENGTH,
   PassResetFinReq,
   PassResetReqReq,
+  TODO,
   UpdatePasswordReq,
-} from "@monorepo/shared";
+} from "@offisito/shared";
 import userModel from "../../../mongo/auth/userModel";
 import { v4 } from "uuid";
 import settings from "../../../../config";
-import { resetPassword } from "../../../../assets/email-templates/authEmails";
+import { resetPassword } from "../../../../content/email-templates/auth";
 import { sendEmail } from "../../../email/sendEmail";
 import zxcvbn from "zxcvbn";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 import passResetRequestModel from "../../../mongo/auth/passResetRequestModel";
 import PassResetRequestModel from "../../../mongo/auth/passResetRequestModel";
@@ -20,8 +21,6 @@ import multer from "multer";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../../../s3";
 import sharp from "sharp";
-import fs from "fs";
-import path from "path";
 
 const router = Router();
 
@@ -34,6 +33,10 @@ router.post<PassResetReqReq, string>(
       const { email, client } = req.body as PassResetReqReq;
       if (!email || !client)
         return res.status(400).send("email and client are required");
+
+      const user = await userModel().findOne({ email });
+      if (!user || user.type === "admin")
+        return res.status(400).send("No host or guest found with this email");
 
       const key = v4();
       await new PassResetRequest({
@@ -102,15 +105,15 @@ router.post<PassResetFinReq, string>(
         .cookie("jwt", token, {
           httpOnly: true,
           sameSite:
-            process.env.NODE_ENV === "development"
+            settings.nodeEnv === "development"
               ? "lax"
-              : process.env.NODE_ENV === "production"
+              : settings.nodeEnv === "production"
                 ? "none"
                 : "lax",
           secure:
-            process.env.NODE_ENV === "development"
+            settings.nodeEnv === "development"
               ? false
-              : process.env.NODE_ENV === "production" && true,
+              : settings.nodeEnv === "production" && true,
         })
         .send();
     } catch (error) {
@@ -119,7 +122,7 @@ router.post<PassResetFinReq, string>(
   },
 );
 
-router.put("/update-password", async (req: Request, res, next) => {
+router.put("/update-password", async (req: AuthenticatedRequest, res, next) => {
   try {
     if (!req.user) return res.status(401).send("Please Login");
     const { currentPassword, newPassword, newPasswordAgain } =
@@ -155,6 +158,38 @@ router.put("/update-password", async (req: Request, res, next) => {
   }
 });
 
+router.put("/update-phone", async (req: AuthenticatedRequest, res, next) => {
+  try {
+    if (!req.user) return res.status(401).send("Please Login");
+    const { phone } = req.body;
+    if (!phone) return res.status(400).send("phone is required");
+
+    req.user.phone = phone;
+
+    await req.user.save();
+
+    return res.status(201).send("Phone successfully updated");
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.put("/update-name", async (req: AuthenticatedRequest, res, next) => {
+  try {
+    if (!req.user) return res.status(401).send("Please Login");
+    const { name } = req.body;
+    if (!name) return res.status(400).send("name is required");
+
+    req.user.name = name;
+
+    await req.user.save();
+
+    return res.status(201).send("Name successfully updated");
+  } catch (error) {
+    next(error);
+  }
+});
+
 const upload = multer({ storage: multer.memoryStorage() });
 
 export const bucketName =
@@ -165,7 +200,7 @@ export const bucketName =
 router.put(
   "/update-profile-picture",
   upload.single("file"),
-  async (req: Request, res, next) => {
+  async (req: TODO, res, next) => {
     try {
       if (!req.user) return res.status(401).send("Please Login");
       if (!req.file) return res.status(400).send("No file received");
@@ -206,7 +241,6 @@ router.put(
 
       res.status(201).send("Photo updated successfully");
     } catch (error) {
-      console.error(error);
       next(error);
     }
   },

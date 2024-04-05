@@ -1,13 +1,16 @@
 import settings from "../../config";
 import axios from "axios";
 
-export const getAddressByPoint = async (lat: number, long: number) => {
+export const getAddressByPoint = async (
+  lat: number,
+  lng: number,
+): Promise<string> => {
   try {
     const res = await axios.get(
       "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
         lat +
         "," +
-        long +
+        lng +
         "&key=" +
         settings.googleGeoCoding,
     );
@@ -18,7 +21,9 @@ export const getAddressByPoint = async (lat: number, long: number) => {
   }
 };
 
-export const getPointByAddress = async (address: string) => {
+export const getPointByAddress = async (
+  address: string,
+): Promise<{ lat: number; lng: number }> => {
   try {
     const res = await axios.get(
       "https://maps.googleapis.com/maps/api/geocode/json?address=" +
@@ -26,6 +31,7 @@ export const getPointByAddress = async (address: string) => {
         "&key=" +
         settings.googleGeoCoding,
     );
+
     return res.data.results[0].geometry.location;
   } catch (e) {
     console.log(e);
@@ -33,13 +39,14 @@ export const getPointByAddress = async (address: string) => {
   }
 };
 
-export const autocompleteAddress = async (query: string) => {
+export const autocompleteAddress = async (query: string, onlyCity = false) => {
   try {
-    return (
-      await axios.get(
-        `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(query)}&key=${settings.googleGeoCoding}`,
-      )
-    ).data;
+    const url = onlyCity
+      ? `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(query)}&types=(cities)&key=${settings.googleGeoCoding}`
+      : `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(query)}&key=${settings.googleGeoCoding}`;
+    const { error_message, predictions } = (await axios.get(url)).data;
+    error_message && console.log(error_message);
+    return error_message ? null : predictions;
   } catch (e) {
     console.log(e);
     return null;

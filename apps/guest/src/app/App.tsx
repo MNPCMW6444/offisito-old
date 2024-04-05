@@ -6,10 +6,14 @@ import {
   ServerProvider,
   useResponsiveness,
   useThemeForMVP,
-} from "@monorepo/shared";
+  InstallModal,
+} from "@offisito/shared-react";
 import styled from "@emotion/styled";
 import { Box, createTheme, Grid, ThemeProvider } from "@mui/material";
 import { Toaster } from "react-hot-toast";
+import { useEffect, useState } from "react";
+import { SearchContextProvider } from "@offisito/shared-react";
+import { TODO } from "@offisito/shared";
 
 const MobileContainer = styled(Box)`
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -17,6 +21,7 @@ const MobileContainer = styled(Box)`
   height: 96vh;
   width: calc(98vh / 16 * 9);
   margin-top: 2vh;
+  overflow: hidden;
 `;
 
 const DesktopMessage = styled(Box)`
@@ -29,20 +34,60 @@ const DesktopMessage = styled(Box)`
 `;
 
 const App = () => {
-  const { isMobile } = useResponsiveness();
+  const { isMobile } = useResponsiveness(false /*This is not a mistake*/);
+  const [installPrompt, setInstallPrompt] = useState<TODO>(null);
+  const [isAppInstalled, setIsAppInstalled] = useState(false);
+
+  useEffect(() => {
+    window.addEventListener("appinstalled", () => {
+      setIsAppInstalled(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: TODO) => {
+      e.preventDefault();
+      if (!isAppInstalled) {
+        setInstallPrompt(e);
+      }
+    };
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    return () => {
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt,
+      );
+    };
+  }, [isAppInstalled]);
+
+  const showInstallPrompt = () => {
+    installPrompt.prompt();
+    installPrompt.userChoice.then((choiceResult: TODO) => {
+      if (choiceResult.outcome === "accepted") {
+        console.log("User accepted the install prompt");
+      } else {
+        console.log("User dismissed the install prompt");
+      }
+      setInstallPrompt(null);
+    });
+  };
 
   const app = (
     <>
+      {installPrompt && !isAppInstalled && (
+        <InstallModal onInstallClicked={showInstallPrompt} />
+      )}
       <Toaster />
       <ServerProvider>
-        <AuthContextProvider>
-          <Router />
+        <AuthContextProvider client="guest">
+          <SearchContextProvider>
+            <Router />
+          </SearchContextProvider>
         </AuthContextProvider>
       </ServerProvider>
     </>
   );
   const theme = useThemeForMVP();
-
   return (
     <ThemeProvider theme={createTheme(theme)}>
       <EnvBorder>
@@ -72,5 +117,4 @@ const App = () => {
     </ThemeProvider>
   );
 };
-
 export default App;

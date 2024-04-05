@@ -1,12 +1,21 @@
+import { Document, ObjectId } from "mongoose";
+import { AcceptedLeaseType } from "../assets";
 
-import { Document } from "mongoose";
-import { User } from "../auth";
-import { Asset } from "../assets";
+export enum RequestStatus {
+  Draft = "draft",
+  Offer = "offer",
+  CounterOffer = "counter_offer",
+  Active = "active",
+  Suspended = "suspended",
+  Paused = "paused",
+  Archived = "archived",
+  Declined = "declined",
+}
 
 export interface Booking extends Document {
-  guest: User;
-  asset: Asset;
-  daysInWeek: {
+  guest?: ObjectId;
+  asset?: ObjectId;
+  daysInWeek?: {
     sun: boolean;
     mon: boolean;
     tues: boolean;
@@ -15,8 +24,13 @@ export interface Booking extends Document {
     fri: boolean;
     sat: boolean;
   };
-  //payment: Payment TODO: Add the Payment model interface when ready michael@offisito.com
-  startDate: Date;
-  endDate: Date;
-  
+  payment?: string;
+  startDate?: Date;
+  endDate?: Date;
+  leaseType?: AcceptedLeaseType;
+  contractLength?: number;
+  requestStatus?: RequestStatus;
+  readTS?: number[];
+  note?: string;
+  name?: string;
 }

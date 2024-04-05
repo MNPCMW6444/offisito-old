@@ -1,19 +1,28 @@
-import { ObjectId, Types } from "mongoose";
-import { AssetPubStatus, Availability, LeaseType } from "../../../mongo";
+import { Status, AssetType, AcceptedLeaseType } from "../../../mongo";
+import { ObjectId } from "mongoose";
+import { Company } from "../../../mongo";
+import { Asset } from "../../../mongo";
+import { AccessedAmenity } from "..";
 
+export interface StartAssetReq {
+  companyId: ObjectId | Company;
+}
 
-export interface CreateEditAssetReq {
+export interface AddEditAssetReq {
+  asset_id: ObjectId | Asset;
   assetDescription?: string;
   roomNumber: string;
-  assetAvailability?: Availability[];
-  amenities?: Types.ObjectId[];
-  photoURLs?: string[];
-  assetType: string;
-  publishingStatus?: AssetPubStatus;
-  peopleCapacity?: number[];
-  leaseCondition: {
-    dailyPrice?: number;
-    leaseType?: LeaseType;
+  floorNumber: string;
+  photos?: string[];
+  assetType: AssetType;
+  publishingStatus: Status;
+  peopleCapacity?: number;
+  roomSize?: string;
+  leaseCondition?: {
+    monthlyPrice?: number;
+    leaseType?: AcceptedLeaseType[];
+    minLeaseContract?: number;
   };
-  leasingCompany: ObjectId;
+  assetAmenities?: AccessedAmenity[];
+  companyId: ObjectId | Company;
 }

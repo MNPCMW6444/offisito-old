@@ -1,48 +1,64 @@
-import { connection } from "../connection";
-import mongoose, { Types } from "mongoose";
-import { versioning } from "@mnpcmw6444/mongoose-auto-versioning";
-import { AvailabilitySchema } from "./availabilitySchema";
-import createModel from "../createModel";
-import { Asset, AssetPubStatus, AssetType, LeaseType } from "@monorepo/shared";
+import { getModel } from "..";
+import mongoose from "mongoose";
+import {
+  AcceptedLeaseType,
+  AmenityAccess,
+  Asset,
+  Status,
+  AssetType,
+} from "@offisito/shared";
 
-export default () => {
-  const name = "Asset";
-
-  const assetSchema = new mongoose.Schema(
+export default () =>
+  getModel<Asset>(
+    "asset",
     {
       assetDescription: { type: String },
-      roomNumber: { type: String, required: true },
-      assetAvailability: [AvailabilitySchema],
-      amenities: [{ type: Types.ObjectId, ref: "assetAmenities" }],
-      photoURLs: [{ type: String }],
-      assetType: {
-        type: [String],
-        enum: Object.values(AssetType),
-        required: true,
-      },
-      publishingStatus: { type: String, enum: Object.values(AssetPubStatus) },
-      peopleCapacity: [{ type: Number }],
+      roomNumber: { type: String },
+      floorNumber: { type: String },
+      photos: [{ type: String }],
+      assetType: { type: String, enum: Object.values(AssetType) },
+      publishingStatus: { type: String, enum: Object.values(Status) },
+      peopleCapacity: { type: Number },
+      roomSize: { type: String },
       leaseCondition: {
-        dailyPrice: { type: Number },
-        leaseType: {
-          type: String,
-          enum: Object.values(LeaseType),
+        monthlyPrice: { type: Number },
+        leaseType: [
+          {
+            type: String,
+            enum: Object.values(AcceptedLeaseType),
+          },
+        ],
+        minLeaseContractInMonths: { type: Number },
+      },
+      address: {
+        type: {
+          street: { type: String },
+          city: { type: String },
+          country: { type: String },
         },
       },
-      leasingCompany: {
-        type: Types.ObjectId,
-        ref: "companyContract",
-        required: true,
+      location: {
+        type: {
+          type: String,
+          enum: ["Point"],
+          required: true,
+        },
+        coordinates: {
+          type: [Number],
+          required: true,
+        },
+      },
+      assetAmenities: {
+        name: { type: String },
+        access: {
+          type: String,
+          enum: Object.values(AmenityAccess),
+        },
+      },
+      companyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Company",
       },
     },
-    {
-      timestamps: true,
-    },
-  ).plugin(versioning, { collection: name + ".history", mongoose });
-
-  if (!connection) throw new Error("Database not initialized");
-
-  const AssetModel = createModel<Asset>(name, assetSchema);
-
-  return AssetModel;
-};
+    { location: "2dsphere" },
+  );

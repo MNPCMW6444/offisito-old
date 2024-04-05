@@ -1,11 +1,22 @@
 import { ObjectId } from "mongoose";
+import { User, Building, Asset } from "../../../mongo";
+import { AccessedAmenity } from "../index";
 
-export interface CreateEditCompanyReq {
+export interface AddEditCompanyReq {
+  company_id: string;
+  host: ObjectId | User;
   companyName: string;
   companyInHold?: string;
-  floorNumber: string;
-  fullFloor?: boolean;
+  owner?: boolean;
   contractEndDate?: Date;
   subleasePermission?: boolean;
-  building: ObjectId;
+  building: ObjectId | Building;
+  floor: {
+    floorNumber: string;
+    fullFloor?: boolean;
+    floorMap?: string[];
+    floorAmenities?: AccessedAmenity[][];
+    kitchenAmenities?: string[];
+    assetsList?: ObjectId[] | Asset;
+  }[];
 }

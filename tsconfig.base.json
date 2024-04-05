@@ -16,13 +16,21 @@
     ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
-      "@monorepo/shared": [
+      "@offisito/shared": [
         "libs/shared/src/index.ts"
+      ],
+      "@offisito/shared-react": [
+        "libs/shared-react/src/index.ts"
       ]
     }
   },
+  "include": [
+    "apps/**/*",
+    "libs/**/*"
+  ],
   "exclude": [
     "node_modules",
     "tmp"

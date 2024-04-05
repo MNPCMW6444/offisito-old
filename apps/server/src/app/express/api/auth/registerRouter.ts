@@ -4,18 +4,18 @@ import registrationRequestModel from "../../../mongo/auth/registrationRequestMod
 import { sendEmail } from "../../../email/sendEmail";
 import {
   hostRegisterReq,
-  memberRegisterReq,
-} from "../../../../assets/email-templates/authEmails";
+  guestRegisterReq,
+} from "../../../../content/email-templates/auth";
 import settings from "../../../../config";
 import { v4 } from "uuid";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import zxcvbn from "zxcvbn";
 import jsonwebtoken from "jsonwebtoken";
 import {
   MIN_PASSWORD_STRENGTH,
   RegisterFinReq,
   RegisterReq,
-} from "@monorepo/shared";
+} from "@offisito/shared";
 
 const router = Router();
 
@@ -42,10 +42,10 @@ router.post("/req", async (req, res, next) => {
       key,
     }).save();
 
-    const url = `${client === "guest" ? settings.clientDomains.guest : client === "host" ? settings.clientDomains.host : settings.clientDomains.admin}/?regcode=${key}`;
+    const url = `${client === "guest" ? settings.clientDomains.guest : client === "host" ? settings.clientDomains.host : settings.clientDomains.admin}/?regcode=${key}&e=${email}`;
 
     const { subject, body } =
-      client === "guest" ? memberRegisterReq(url) : hostRegisterReq(url);
+      client === "guest" ? guestRegisterReq(url) : hostRegisterReq(url);
     sendEmail(email, subject, body).then(
       () =>
         settings.whiteEnv === "local" &&
@@ -61,7 +61,15 @@ router.post<RegisterFinReq, string>("/fin", async (req, res, next) => {
   try {
     const User = userModel();
     const RegistrationRequest = registrationRequestModel();
-    const { key, fullName, password, passwordAgain, type } = req.body;
+    const {
+      key,
+      fullName,
+      firstName,
+      lastName,
+      password,
+      passwordAgain,
+      type,
+    } = req.body;
     if (!key || !fullName || !password || !passwordAgain || !type)
       return res
         .status(400)
@@ -91,9 +99,14 @@ router.post<RegisterFinReq, string>("/fin", async (req, res, next) => {
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
+
+    if (type === "admin") return res.status(400).send("Please contact the CTO");
+
     const savedUser = await new User({
       email: existingRegistrationRequest.email,
       name: fullName,
+      fname: firstName,
+      lname: lastName,
       passwordHash,
       type,
     }).save();
@@ -109,15 +122,15 @@ router.post<RegisterFinReq, string>("/fin", async (req, res, next) => {
       .cookie("jwt", token, {
         httpOnly: true,
         sameSite:
-          process.env.NODE_ENV === "development"
+          settings.nodeEnv === "development"
             ? "lax"
-            : process.env.NODE_ENV === "production"
+            : settings.nodeEnv === "production"
               ? "none"
               : "lax",
         secure:
-          process.env.NODE_ENV === "development"
+          settings.nodeEnv === "development"
             ? false
-            : process.env.NODE_ENV === "production" && true,
+            : settings.nodeEnv === "production" && true,
       })
       .send();
   } catch (error) {

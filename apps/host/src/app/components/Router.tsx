@@ -1,17 +1,33 @@
 import { useContext } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { AuthContext, AuthPage, SettingPage } from "@monorepo/shared";
-import DashboardPage from "./pages/home/DashboardPage";
-import SpacesPage from "./pages/spaces/SpacesPage";
-import SpaceForm from "./pages/spaces/SpaceForm";
-import ProfilesPage from "./pages/profiles/ProfilesPage";
-import ProfileForm from "./pages/profiles/ProfileForm";
+import {
+  AuthContext,
+  AuthPage,
+  NotificationsPage,
+  SettingPage,
+  TopBar,
+} from "@offisito/shared-react";
+import SummeryPage from "./pages/summery/SummeryPage";
 import { Grid } from "@mui/material";
-import TopBar from "./pages/TopBar";
-import { ChatsPage } from "@monorepo/shared";
+import { ChatsPage } from "@offisito/shared-react";
+import { ListingsContextProvider } from "../context/ListingsContext";
+import { ChatContextProvider } from "@offisito/shared-react";
+import DashboardPage from "./pages/dashboard/DashboardPage";
+import { BookingsContextProvider } from "../context/BookingsContext";
+
+const routes = [
+  { name: "Summery", route: "summery" },
+  { name: "Dashboard", route: "dashboard" },
+  {
+    name: "Chats",
+    route: "chats",
+  },
+  { name: "Settings", route: "settings" },
+  { name: "Logout", route: "logout" },
+];
 
 const Router = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   return (
     <BrowserRouter>
@@ -30,40 +46,40 @@ const Router = () => {
             width="1000px"
             container
             direction="column"
-            bgcolor={(theme) => theme.palette.background.paper}
+            bgcolor={(theme) => theme.palette.background.default}
             wrap="nowrap"
             overflow="hidden"
           >
-            <Grid
-              item
-              height="90px"
-              bgcolor={(theme) => theme.palette.secondary.contrastText}
-              border={(theme) => "0.1vw solid " + theme.palette.text.secondary}
-              borderRadius="5px"
-              padding="20px 25px 0 25px"
-            >
-              <TopBar />
-            </Grid>
-            <Grid
-              item
-              padding="20px 25px 0 25px"
-              height="100%"
-              overflow="scroll"
-            >
-              <Routes>
-                <Route path="/*" element={<DashboardPage />} />
-                <Route path="/profiles" element={<ProfilesPage />} />
-                <Route path="/profile" element={<ProfileForm />} />
-                <Route path="/spaces" element={<SpacesPage />} />
-                <Route path="/space" element={<SpaceForm />} />
-                <Route path="/chats" element={<ChatsPage />} />
-                <Route path="/settings" element={<SettingPage />} />
-              </Routes>
-            </Grid>
+            <ChatContextProvider>
+              <Grid item>
+                <TopBar routes={routes} />
+              </Grid>
+              <Grid item height="calc(100% - 90px)" overflow="scroll">
+                <Routes>
+                  <Route path="/*" element={<SummeryPage />} />
+                  <Route
+                    path="/dashboard"
+                    element={
+                      <ListingsContextProvider>
+                        <BookingsContextProvider>
+                          <DashboardPage />
+                        </BookingsContextProvider>
+                      </ListingsContextProvider>
+                    }
+                  ></Route>
+                  <Route path="/chats" element={<ChatsPage />} />
+                  <Route path="/settings" element={<SettingPage />} />
+                  <Route
+                    path="/notifications"
+                    element={<NotificationsPage />}
+                  />
+                </Routes>
+              </Grid>
+            </ChatContextProvider>
           </Grid>
         </Grid>
       ) : (
-        <AuthPage client="host" />
+        <AuthPage />
       )}
     </BrowserRouter>
   );

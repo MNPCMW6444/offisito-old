@@ -1,44 +1,36 @@
-import mongoose, { Types } from "mongoose";
-import { connection } from "../connection";
-import { Building } from "@monorepo/shared";
-import { AvailabilitySchema } from "./availabilitySchema";
-import createModel from "../createModel";
+import { getModel } from "..";
+import mongoose from "mongoose";
+import { AmenityAccess, Building, WeekDays } from "@offisito/shared";
 
-export default () => {
-  const name = "Building";
-
-  const AssetBuildingSchema = new mongoose.Schema({
-    buildingName: { type: String, required: true },
+export default () =>
+  getModel<Building>("building", {
+    buildingName: { type: String },
     address: {
-      street: { type: String, require: true },
-      city: { type: String, required: true },
-      country: { type: String, required: true },
-      geoLocalisation: {
-        type: {
+      street: { type: String },
+      city: { type: String },
+      country: { type: String },
+    },
+    buildingAmenities: [
+      {
+        name: { type: String },
+        access: {
           type: String,
-          enum: ["Point"],
-          required: true,
-        },
-        coordinates: {
-          type: [Number],
-          required: true,
+          enum: Object.values(AmenityAccess),
         },
       },
-    },
-    buildingAmenities: { type: Types.ObjectId, ref: "buildingAmenities" },
-    buildingAccess: [AvailabilitySchema],
+    ],
+    buildingAccess: [
+      {
+        dayOfWeek: { type: String, enum: Object.values(WeekDays) },
+        time_range: {
+          start: { type: String },
+          end: { type: String },
+        },
+      },
+    ],
     buildingDescription: { type: String },
+    buildingImages: [{ type: String }],
     doorman: { type: Boolean },
     security: { type: Boolean },
     vip_service: { type: Boolean },
-    assets: [{ type: Types.ObjectId, ref: "asset" }],
   });
-
-  if (!connection) throw new Error("Database not initialized");
-
-  const AssetBuildingModel = createModel<Building>(name, AssetBuildingSchema);
-
-  return AssetBuildingModel;
-  //  export default AssetBuildingModel;
-  //
-};

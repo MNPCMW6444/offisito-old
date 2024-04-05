@@ -1,12 +1,14 @@
 import { Document } from "mongoose";
 
-export type UserType = "admin" | "host" | "member";
+export type UserType = "admin" | "host" | "guest";
 
 export interface User extends Document {
   phone: string;
   email: string;
   passwordHash?: string;
   name?: string;
+  fname?: string;
+  lname?: string;
   type: UserType;
   profilePictureUrlKey?: string;
 }

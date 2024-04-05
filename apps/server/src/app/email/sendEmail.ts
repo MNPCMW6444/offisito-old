@@ -43,8 +43,9 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
       html,
     });
 
-    console.log("Successfully sent email to " + to);
+    settings.whiteEnv === "local" &&
+      console.log("Successfully sent email to " + to);
   } catch (error) {
-    console.error("Error sending email:", error);
+    settings.whiteEnv !== "local" && console.log("Error sending email:", error);
   }
 };

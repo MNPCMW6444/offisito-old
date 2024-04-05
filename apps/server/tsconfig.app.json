@@ -2,22 +2,16 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "module": "es2022",
+    "module": "commonjs",
     "types": [
-      "node",
-      "@nx/react/typings/cssmodule.d.ts",
-      "@nx/react/typings/image.d.ts",
-      "vite/client",
-      "express"
+      "node"
     ]
   },
   "exclude": [
-    "jest.config.ts",
     "src/**/*.spec.ts",
-    "src/**/*.test.ts",
-    "src/**/*.tsx"
+    "src/**/*.test.ts"
   ],
   "include": [
-    "src/**/*"
+    "src/**/*.ts"
   ]
 }

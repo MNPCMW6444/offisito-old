@@ -2,8 +2,11 @@ import { Document } from "mongoose";
 
 export interface Conversation extends Document {
   hostId: string;
-  memberId: string;
+  guestId: string;
+  name: string;
   hiddenFor?: string[];
+  lastMessage?: Message;
+  unReadNumber: number;
 }
 
 export interface Message extends Document {
@@ -12,4 +15,6 @@ export interface Message extends Document {
   message: string;
   whenQueried?: number;
   whenMarked?: number;
+  createdAt: string;
+  updatedAt: string;
 }

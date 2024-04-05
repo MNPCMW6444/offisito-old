@@ -1,9 +1,10 @@
 import webpush from "web-push";
 import settings from "../../config";
+import { TODO } from "@offisito/shared";
 
 const vapidKeys = {
   publicKey:
-    "BFGe7oDdXd6dQYvCdBsu_46CBUmtAZ-viJsQX3P5r9S78Pp_3nL5X8D57WLebwn-xG8W9559a2UbahoWh4DT0Fs",
+    "BH1R9v3i49K6RwINhRAIGDWeD5Qc4P8goayR9Zse5GHr8P6TftjYECx98M-C7YBpA-DPbnM_k_QdZgQc5QnWgU8",
   privateKey: settings.push,
 };
 
@@ -16,10 +17,10 @@ webpush.setVapidDetails(
     })(),
 );
 
-export const sendPushNotification = async (
-  subscription: any,
+export const sendPushNotification = async <D extends { domain: string }>(
+  subscription: TODO,
   payload: { title: string; body: string },
-  data = {},
+  data: D,
 ) => {
   try {
     await webpush.sendNotification(
@@ -28,6 +29,6 @@ export const sendPushNotification = async (
     );
     console.log("Notification sent successfully.");
   } catch (error) {
-    console.error("Error sending notification:", error);
+    console.log("Error sending notification:", error);
   }
 };

@@ -1,3 +1,5 @@
+import { TODO } from "../..";
+
 export interface X {
-  x: any;
+  x: TODO;
 }

@@ -1,16 +1,16 @@
-import errorModel from "../../mongo/logs/errorModel";
+import errorLogModel from "../../mongo/logs/errorLogModel";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import settings from "../../../config";
 import userModel from "../../mongo/auth/userModel";
 import { Request as ExpressRequest } from "express";
-import { User } from "@monorepo/shared";
+import { User } from "@offisito/shared";
 
-export interface Request extends ExpressRequest {
+export interface AuthenticatedRequest extends ExpressRequest {
   user: User | null;
 }
 
 export const serverErrorHandler = async (err, res) => {
-  const Error = errorModel();
+  const Error = errorLogModel();
   if (res.statusCode === 500 && Error) {
     try {
       await new Error({ stringifiedError: JSON.stringify(err) }).save();
@@ -34,3 +34,8 @@ export const authRequester = async (req, _, next) => {
   }
   next();
 };
+
+export const adminAuth = async (req: AuthenticatedRequest, res, next) =>
+  req.user.type === "admin"
+    ? next()
+    : res.status(401).send("You are not an Admin");
