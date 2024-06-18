@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box } from "@mui/material";
+import { Box, BoxProps, CircularProgress } from "@mui/material";
 import p1 from "../../../assets/images/mock/colorfull-x-s/mock1.png";
 import p2 from "../../../assets/images/mock/colorfull-x-s/mock2.png";
 import { TODO } from "@offisito/shared";
@@ -22,12 +22,17 @@ const defaultImages = [
 
 interface ImageCarouselProps {
   imagesArray?: { label: string; alt: string; imgPath: string }[];
+  boxprops?: BoxProps;
+  imgprops?: BoxProps;
 }
 
-export const ImageCarousel = ({ imagesArray }: ImageCarouselProps) => {
+export const ImageCarousel = ({
+  imagesArray,
+  boxprops,
+  imgprops,
+}: ImageCarouselProps) => {
   const [Swiper, setSwiper] = useState<TODO>(null);
   const [SwiperSlide, setSwiperSlide] = useState<TODO>(null);
-  const [Pagination, setPagination] = useState<TODO>(null);
   const images = imagesArray || defaultImages;
 
   useEffect(() => {
@@ -42,11 +47,11 @@ export const ImageCarousel = ({ imagesArray }: ImageCarouselProps) => {
   }, []);
 
   if (!Swiper || !SwiperSlide) {
-    return <div>Loading...</div>; // Or TODO other loading state representation
+    return <CircularProgress />;
   }
 
   return (
-    <Box sx={{ maxWidth: 400, flexGrow: 1 }}>
+    <Box sx={{ maxWidth: "100%", flexGrow: 1 }} {...boxprops}>
       <Swiper
         pagination={{
           clickable: true,
@@ -61,12 +66,13 @@ export const ImageCarousel = ({ imagesArray }: ImageCarouselProps) => {
               sx={{
                 height: 255,
                 display: "block",
-                maxWidth: 400,
+                maxWidth: "100%",
                 overflow: "hidden",
                 width: "100%",
               }}
               src={image.imgPath}
               alt={image.label}
+              {...imgprops}
             />
           </SwiperSlide>
         ))}

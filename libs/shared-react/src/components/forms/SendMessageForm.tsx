@@ -48,7 +48,7 @@ const SendMessageForm = ({
           <CloseButton onClick={close} />
         </Grid>
         <Grid item>
-          <PrimaryText variant="h3">
+          <PrimaryText variant="h5">
             Send a message to the {amIaGuest ? "host" : "guest"}
           </PrimaryText>
         </Grid>
@@ -57,7 +57,7 @@ const SendMessageForm = ({
             message,
             (name, value) => setMessage({ msg: value as string }),
             ["msg"],
-            { multiline: true },
+            { multiline: true, label: "Message:" },
           )}
         </Grid>
         <Grid item>

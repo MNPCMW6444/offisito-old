@@ -9,7 +9,7 @@ import {
   axiosErrorToaster,
   Btn,
   CloseButton,
-  MICO,
+  IconColorer,
   PrimaryText,
   renderDropdown,
   SearchContext,
@@ -154,9 +154,9 @@ const SearchBackdrop = () => {
           wrap="nowrap"
         >
           <Grid item width="11%">
-            <MICO>
+            <IconColorer>
               <SearchOutlined />
-            </MICO>
+            </IconColorer>
           </Grid>
           <Grid item width="99%">
             <TextField

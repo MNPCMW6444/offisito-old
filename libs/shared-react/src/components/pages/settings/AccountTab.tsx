@@ -10,6 +10,7 @@ import {
   SettingsTabContainer,
   StyledPaper,
 } from "../../../";
+import { TODO } from "@offisito/shared";
 
 export const AccountTab: FC = () => {
   const { user, refreshUserData, profilePictureUrl } = useContext(AuthContext);
@@ -34,14 +35,18 @@ export const AccountTab: FC = () => {
               action={async (_, value: string | undefined) => {
                 try {
                   value &&
-                    server?.axiosInstance?.put("api/auth/manage/update-phone", {
-                      phone: value,
-                    });
+                    (await server?.axiosInstance?.put(
+                      "api/auth/manage/update-phone",
+                      {
+                        phone: value,
+                      },
+                    ));
                 } catch (e) {
                   axiosErrorToaster(e);
                 }
               }}
               cb={() => refreshUserData()}
+              plus
             />
           </Grid>
           <Grid item>
@@ -51,9 +56,12 @@ export const AccountTab: FC = () => {
               action={async (_, value: string | undefined) => {
                 try {
                   value &&
-                    server?.axiosInstance?.put("api/auth/manage/update-name", {
-                      name: value,
-                    });
+                    (await server?.axiosInstance?.put(
+                      "api/auth/manage/update-name",
+                      {
+                        name: value,
+                      },
+                    ));
                 } catch (e) {
                   axiosErrorToaster(e);
                 }
@@ -67,6 +75,14 @@ export const AccountTab: FC = () => {
               endpoint="api/auth/manage/update-profile-picture"
               actionName="Update Profile Picture"
               previewUrls={profilePictureUrl ? [profilePictureUrl] : []}
+              deletePicture={{
+                fn: () =>
+                  server?.axiosInstance
+                    .delete("api/auth/manage/profile-picture")
+                    .then(() => refreshUserData()),
+                deleting: false,
+                setDeleting: ((p: boolean) => {}) as TODO,
+              }}
             />
           </Grid>
         </Grid>

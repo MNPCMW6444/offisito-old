@@ -1,7 +1,8 @@
-import { Document } from "mongoose";
+import { Document, ObjectId } from "mongoose";
 import { Rules } from "../..";
 
 export interface PushDevice extends Document {
+  _id: ObjectId;
   userId: string;
   name: string;
   subscription: {

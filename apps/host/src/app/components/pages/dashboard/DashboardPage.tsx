@@ -15,7 +15,7 @@ import {
   GenericTableProps,
   PrimaryText,
 } from "@offisito/shared-react";
-import { ListingsContext } from "../../../context/ListingsContext";
+import { ListingsContext } from "../../../../../../../libs/shared-react/src/context/ListingsContext";
 import ProfileForm from "../../forms/ProfileForm";
 import { TODO } from "@offisito/shared";
 import SpaceForm from "../../forms/SpaceForm";

@@ -1,6 +1,6 @@
 import { Computer, Domain, LocalParking, Wifi } from "@mui/icons-material";
 import toast from "react-hot-toast";
-import { Box, CircularProgress, Grid, useTheme } from "@mui/material";
+import { Box, BoxProps, CircularProgress, Grid, useTheme } from "@mui/material";
 import { PrimaryText } from "../../styled-components";
 import { TODO } from "@offisito/shared";
 import { cloneElement, forwardRef, useState } from "react";
@@ -38,34 +38,59 @@ export const MainMessage = ({ text }: { text: string }) => (
     alignItems="center"
   >
     <Grid item>
-      <PrimaryText fontWeight="bold" fontSize="150%">
+      <PrimaryText fontWeight="bold" fontSize="150%" textAlign="center">
         {text}
       </PrimaryText>
     </Grid>
   </Grid>
 );
 
-export const Img = forwardRef((props: TODO, ref) => {
+interface ImgProps extends BoxProps {
+  src?: string;
+  alt?: string;
+  bg?: boolean;
+}
+
+export const Img = forwardRef<TODO, ImgProps>((props, ref) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isRatio16by9, setIsRatio16by9] = useState(false);
+  const [error, setError] = useState(false);
 
-  const handleImageLoad = (event: TODO) => {
+  const handleImageLoad = (event: React.SyntheticEvent<TODO, Event>) => {
     setIsLoading(false);
-    const { naturalWidth, naturalHeight } = event.target;
+    const { naturalWidth, naturalHeight } = event.currentTarget;
     const ratio = naturalWidth / naturalHeight;
     setIsRatio16by9(Math.abs(ratio - 16 / 9) < 0.01);
   };
 
-  const handleClick = (event: TODO) => {
-    if (!isRatio16by9 && props.onClick) {
+  const handleImageError = (
+    event: React.SyntheticEvent<HTMLImageElement, Event>,
+  ) => {
+    handleImageLoad(event);
+    setError(true);
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (!props.bg && !isRatio16by9 && props.onClick) {
       props.onClick(event);
     }
   };
+
+  const backgroundStyle: React.CSSProperties = props.bg
+    ? {
+        width: "100%",
+        height: "100%", // Ensures the image covers the full height of its container
+        objectFit: "cover", // Ensures the image covers the area without distorting aspect ratio
+        objectPosition: "center", // Centers the image in the container
+      }
+    : {};
 
   return (
     <Box
       position="relative"
       display="inline-block"
+      width="100%" // Ensures the container takes the full width of its parent
+      height="100%" // Ensures the container takes the full height of its parent
       {...props}
       onClick={handleClick}
     >
@@ -76,28 +101,41 @@ export const Img = forwardRef((props: TODO, ref) => {
             position: "absolute",
             top: "50%",
             left: "50%",
-            marginTop: "-12px",
-            marginLeft: "-12px",
+            transform: "translate(-50%, -50%)",
           }}
         />
       )}
-      <Box
-        component="img"
-        ref={ref}
-        src={props.src}
-        alt={props.alt}
-        onLoad={handleImageLoad}
-        style={{
-          display: isLoading ? "none" : "inline",
-          ...(props.style || {}),
-        }}
-        {...props}
-      />
+      {error ? (
+        <Grid
+          width="100%"
+          height="100%"
+          container
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Grid item>
+            <PrimaryText color="error">Error loading picture</PrimaryText>
+          </Grid>
+        </Grid>
+      ) : (
+        <Box
+          component="img"
+          ref={ref}
+          onLoad={handleImageLoad}
+          onError={handleImageError}
+          style={{
+            display: isLoading ? "none" : "inline",
+            ...backgroundStyle,
+            ...props.style,
+          }}
+          {...props}
+        />
+      )}
     </Box>
   );
 });
 
-export const MICO = ({ children }: TODO) => {
+export const IconColorer = ({ children }: TODO) => {
   const theme = useTheme();
   const styledChild = cloneElement(children, {
     style: { color: theme.palette.primary.contrastText },

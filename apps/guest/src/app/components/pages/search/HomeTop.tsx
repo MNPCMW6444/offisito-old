@@ -6,7 +6,11 @@ import {
   useEffect,
   useState,
 } from "react";
-import { MICO, PrimaryText, ServerContext } from "@offisito/shared-react";
+import {
+  IconColorer,
+  PrimaryText,
+  ServerContext,
+} from "@offisito/shared-react";
 import { Grid, IconButton } from "@mui/material";
 import { findMe } from "@offisito/shared-react";
 
@@ -34,17 +38,17 @@ const HomeTop = ({ setSearch }: HomeTopProps) => {
     <Grid container justifyContent="space-between">
       <Grid item>
         <IconButton>
-          <MICO>
+          <IconColorer>
             <LocationOn />
-          </MICO>
+          </IconColorer>
           <PrimaryText>{address}</PrimaryText>
         </IconButton>
       </Grid>
       <Grid item>
         <IconButton onClick={() => setSearch(true)}>
-          <MICO>
+          <IconColorer>
             <Search />
-          </MICO>
+          </IconColorer>
         </IconButton>
       </Grid>
     </Grid>

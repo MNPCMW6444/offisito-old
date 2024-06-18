@@ -11,6 +11,7 @@ export interface User extends Document {
   lname?: string;
   type: UserType;
   profilePictureUrlKey?: string;
+  createdAt: Date;
 }
 
 export interface RegistrationRequest extends Document {

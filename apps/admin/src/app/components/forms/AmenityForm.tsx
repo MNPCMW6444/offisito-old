@@ -27,10 +27,8 @@ const AmenityForm = ({ closeModal, editId }: AmenityFormProps) => {
   const fetchAmenity = useCallback(async () => {
     if (editId && server) {
       try {
-        const { data } = await server.axiosInstance.get("api/admin/amenities");
-        setFormState(
-          data.find(({ _id }: Amenity) => _id.toString() === editId),
-        );
+        const { data } = await server.axiosInstance.get("api/amenities");
+        setFormState(data.find(({ _id }: Amenity) => String(_id) === editId));
       } catch (e) {
         axiosErrorToaster(e);
       }

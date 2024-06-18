@@ -6,3 +6,4 @@ export * from "./themes";
 export * from "./assets";
 export * from "./utils";
 export * from "./types";
+export * from "./wrappers";

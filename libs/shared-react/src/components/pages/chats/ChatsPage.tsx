@@ -82,7 +82,7 @@ export const ChatsPage = ({ isGuest }: ChatsPageProps) => {
               <Grid key={conversation._id.toString()} item>
                 <br />
                 <ConversationButton
-                  key={conversation._id}
+                  key={conversation._id.toString()}
                   wide={wide}
                   conversation={conversation}
                   isTheSelectedConversation={

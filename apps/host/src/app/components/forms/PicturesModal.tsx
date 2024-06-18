@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import { Asset } from "@offisito/shared";
 import "react-image-crop/dist/ReactCrop.css";
 import ReactCrop, { type Crop } from "react-image-crop";
+import axios from "axios";
 
 interface PicturesModalModalProps {
   setPicturesModal: Dispatch<SetStateAction<boolean>>;
@@ -29,6 +30,8 @@ const PicturesModal = ({
   const [selectedPreview, setSelectedPreview] = useState<string>();
   const server = useContext(ServerContext);
   const [ready, setReady] = useState(false);
+
+  const [deleting, setDeleting] = useState(false);
 
   return (
     <Modal open>
@@ -59,11 +62,11 @@ const PicturesModal = ({
               <PictureUploader
                 cb={() => {
                   toast.success("Uploaded");
-                  fetchSpace(formState?._id.toString());
+                  fetchSpace(String(formState?._id));
                 }}
                 endpoint={
                   "api/host/assets/images/upload_asset_img/" +
-                  formState?._id.toString()
+                  String(formState?._id)
                 }
                 actionName="Upload a Picture of the Asset"
                 keys={formState.photos}
@@ -72,12 +75,34 @@ const PicturesModal = ({
                 setSelectedKey={setSelectedKey}
                 setSelectedPreview={setSelectedPreview}
                 setReady={setReady}
+                deletePicture={{
+                  fn: (key) => {
+                    setDeleting(true);
+                    server?.axiosInstance
+                      .delete(
+                        "api/host/assets/images/" +
+                          String(formState?._id) +
+                          "/" +
+                          btoa(key),
+                      )
+                      .then(() => {
+                        toast.success("Deleted");
+                        fetchSpace(String(formState?._id));
+                      })
+                      .finally(() => setDeleting(false));
+                  },
+                  deleting,
+                  setDeleting,
+                }}
               />
             </Grid>
             {!selectedKey && ready && (
               <Grid item>
-                <PrimaryText>
-                  Click on a picture to crop it (possible only once)
+                <PrimaryText textAlign="center">
+                  Click on a picture to crop it
+                </PrimaryText>
+                <PrimaryText textAlign="center">
+                  this action is not revertable unless you re-upload
                 </PrimaryText>
               </Grid>
             )}
@@ -96,7 +121,7 @@ const PicturesModal = ({
                   onClick={() =>
                     server?.axiosInstance
                       .put("api/host/assets/images/cropPicture", {
-                        assetId: formState?._id.toString(),
+                        assetId: String(formState?._id),
                         key: selectedKey,
                         crop,
                       })
@@ -106,7 +131,7 @@ const PicturesModal = ({
                         setSelectedPreview(undefined);
                         setSelectedKey(undefined);
                         setCrop(undefined);
-                        fetchSpace(formState?._id.toString());
+                        fetchSpace(String(formState?._id));
                       })
                   }
                 >

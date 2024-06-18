@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { Document } from "mongoose";
 import { ServerContext } from "../../context";
-import { axiosErrorToaster, MICO, OFAB } from "../../";
+import { axiosErrorToaster, IconColorer, OFAB } from "../../";
 import { Add } from "@mui/icons-material";
 import { TODO, guessValueType } from "@offisito/shared";
 
@@ -28,6 +28,7 @@ export interface GenericTableProps<D> {
   fab?: {
     modal: ActionModal;
   };
+  customRowId?: string;
 }
 
 const autoSumColumn = (dataArray: TODO[]) => {
@@ -42,6 +43,7 @@ export const GenericTable = <D extends Document>({
   customColumns,
   actions,
   fab,
+  customRowId,
 }: GenericTableProps<D>) => {
   const [data, setData] = useState<D[]>([]);
   const server = useContext(ServerContext);
@@ -120,10 +122,12 @@ export const GenericTable = <D extends Document>({
                   <IconButton
                     onClick={() => {
                       setOpenModal(i);
-                      setSelectedId(row._id.toString());
+                      setSelectedId(
+                        (row as TODO)[customRowId || "_id"].toString(),
+                      );
                     }}
                   >
-                    <MICO>{icon}</MICO>
+                    <IconColorer>{icon}</IconColorer>
                   </IconButton>
                 </TableCell>
               ))}
@@ -131,9 +135,9 @@ export const GenericTable = <D extends Document>({
           ))}
           {fab && (
             <OFAB onClick={() => setOpenModal(-1)}>
-              <MICO>
+              <IconColorer>
                 <Add />
-              </MICO>
+              </IconColorer>
             </OFAB>
           )}
         </TableBody>

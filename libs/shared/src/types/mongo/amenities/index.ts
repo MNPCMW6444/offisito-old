@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import { Document, ObjectId } from "mongoose";
 
 export enum AmenityAccess {
   free = "free",
@@ -14,6 +14,7 @@ export enum AmenityType {
 }
 
 export interface Amenity extends Document {
+  _id: ObjectId;
   name: string;
   type: AmenityType;
 }

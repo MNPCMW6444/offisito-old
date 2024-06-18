@@ -98,55 +98,56 @@ const ConversationView = ({
           <Grid item></Grid>
         </Grid>
       )}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          overflowX: "scroll",
-          height: `calc( 100% - ${80 + (isMobile ? 50 : 0)}px )`,
-        }}
+      <Grid
+        container
+        width="100%"
+        height="calc(100% - 60px)"
+        justifyContent="space-between"
       >
-        <Box
-          sx={{
-            overflow: "auto",
-            flexGrow: 1,
-            px: 2,
-          }}
-        >
+        <Grid item width="100%" height="calc(100% - 80px)" overflow="scroll">
           {messages?.map((message, i) => (
             <Box
               key={i}
               ref={i === messages.length - 1 ? messagesEndRef : null}
             >
-              <MessageRow key={message._id} message={message} />
+              <MessageRow key={message._id.toString()} message={message} />
             </Box>
           )) || <PrimaryText padded>Loading Messages...</PrimaryText>}
-        </Box>
-      </Box>
-      <Box sx={{ display: "flex", alignItems: "center", p: 1 }}>
-        <TextField
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          variant="outlined"
-          fullWidth
-          placeholder="Type a message..."
-        />
-        <Box sx={{ width: "1em" }} />
-        <Btn
-          onClick={() => {
-            sendMessage(
-              server?.axiosInstance,
-              conversation._id.toString(),
-              message,
-              () => fetchConversationMessages(),
-            );
-            setMessage("");
-          }}
+        </Grid>
+        <Grid
+          item
+          container
+          justifyContent="space-between"
+          alignItems="center"
+          width="100%"
+          height="80px"
         >
-          <Send />
-        </Btn>
-      </Box>
+          <Grid item width="80%">
+            <TextField
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              variant="outlined"
+              fullWidth
+              placeholder="Type a message..."
+            />
+          </Grid>
+          <Grid item>
+            <Btn
+              onClick={() => {
+                sendMessage(
+                  server?.axiosInstance,
+                  conversation._id.toString(),
+                  message,
+                  () => fetchConversationMessages(),
+                );
+                setMessage("");
+              }}
+            >
+              <Send />
+            </Btn>
+          </Grid>
+        </Grid>
+      </Grid>
     </>
   );
 };

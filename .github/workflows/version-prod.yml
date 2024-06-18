@@ -1,9 +1,9 @@
-name: prod - v3
+name: prod - release/*
 
 on:
   push:
     branches:
-      - release/v3
+      - 'release/*'
 
 permissions:
   actions: read

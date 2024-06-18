@@ -1,27 +1,27 @@
-import { Grid } from "@mui/material";
+import { CircularProgress, Grid } from "@mui/material";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import {
   AssetCard,
   Btn,
-  ImageCarousel,
   ListingPage,
-  MICO,
+  IconColorer,
   PrimaryText,
   ServerContext,
+  SearchContext,
+  ResultsMap,
+  ListingsContext,
 } from "@offisito/shared-react";
-import HomeTop from "./HomeTop";
-import NearSpaces from "./NearSpaces";
-import AvailableSpaces from "./AvailableSpaces";
-import { SearchContext } from "@offisito/shared-react";
-import { Asset } from "@offisito/shared";
-import ResultsMap from "./ResultsMap";
+import { Amenity, Asset, Query } from "@offisito/shared";
 import { useLocation } from "react-router-dom";
 import { LocationOn, Tune } from "@mui/icons-material";
 
 const FindPage = () => {
-  const { setSearch, results, setResults, fetch } = useContext(SearchContext);
+  const { setSearch, results, setResults, setQuery, fetch } =
+    useContext(SearchContext);
   const [selectedListing, setSelectedListing] = useState<Asset>();
   const [mapMode, setMapMode] = useState(false);
+
+  const { amenities } = useContext(ListingsContext);
 
   const server = useContext(ServerContext);
 
@@ -44,15 +44,127 @@ const FindPage = () => {
   );
 
   useEffect(() => {
-    fetch();
-  }, [fetch]);
-
-  useEffect(() => {
     const id = query.get("space");
     if (id) {
       fetchAsset(id);
-    } else setSelectedListing(undefined);
-  }, [query, fetchAsset, setResults]);
+    } else {
+      setSelectedListing(undefined);
+      !results && fetch();
+    }
+  }, [query, fetchAsset, setResults, results, fetch]);
+
+  const handleAmenityToggle = (amenity: Amenity) =>
+    setQuery((prev: Query) => ({
+      ...prev,
+      params: {
+        ...prev.params,
+        requiredAmenities: prev.params.requiredAmenities?.some(
+          (existing) => String(existing._id) === String(amenity._id),
+        )
+          ? prev.params.requiredAmenities?.filter(
+              (existing) => String(existing._id) !== String(amenity._id),
+            )
+          : [...(prev.params.requiredAmenities || []), amenity],
+      },
+    }));
+
+  const resultsJSX =
+    results?.length && results?.length > 0 ? (
+      <>
+        <Grid item width="100%" padding="5% 5% 0">
+          <Grid
+            item
+            container
+            width="100%"
+            height="50px"
+            alignItems="center"
+            wrap="nowrap"
+            borderRadius="35px"
+            boxShadow="1px 2px #bababa"
+            onClick={() => {
+              setSearch(true);
+              setResults(undefined);
+            }}
+          >
+            <Grid item width="10%" paddingLeft="5%">
+              <IconColorer>
+                <LocationOn />
+              </IconColorer>
+            </Grid>
+            <Grid item width="80%" paddingLeft="5%">
+              <PrimaryText>Search office places</PrimaryText>
+            </Grid>
+            <Grid item width="10%">
+              <IconColorer>
+                <Tune />
+              </IconColorer>
+            </Grid>
+          </Grid>
+        </Grid>
+        {mapMode ? (
+          <Grid item width="100%" height="calc(100% - 100px)">
+            <ResultsMap setMap={setMapMode} assets={results} />
+          </Grid>
+        ) : (
+          <>
+            <Grid
+              item
+              container
+              justifyContent="space-evenly"
+              alignItems="center"
+              paddingBottom={1}
+            >
+              {amenities.map((amenity: Amenity) => (
+                <Grid item key={String(amenity._id)}>
+                  <Btn onClick={() => handleAmenityToggle(amenity)}>
+                    {amenity.name}
+                  </Btn>
+                </Grid>
+              ))}
+            </Grid>
+            <Grid
+              item
+              container
+              direction="column"
+              width="100%"
+              marginTop="1%"
+              rowSpacing={4}
+              overflow="scroll"
+              wrap="nowrap"
+            >
+              {results.map((asset: Asset) => (
+                <Grid item width="100%" key={String(asset._id)}>
+                  <AssetCard asset={asset} />
+                </Grid>
+              ))}
+            </Grid>
+            <Grid item position="absolute" bottom={80}>
+              <Btn onClick={() => setMapMode(true)}>Map View</Btn>
+            </Grid>
+          </>
+        )}
+      </>
+    ) : (
+      <>
+        <Grid item width="100%" padding="5% 5% 0">
+          <PrimaryText>No Spaces found for selected filters</PrimaryText>
+        </Grid>
+        <Grid item width="100%" padding="5% 5% 0">
+          <Btn
+            onClick={() => {
+              setQuery({
+                config: {},
+                params: {},
+              });
+              setResults(undefined);
+              setSearch(true);
+            }}
+          >
+            Re-Search
+          </Btn>
+        </Grid>
+      </>
+    );
 
   return selectedListing ? (
     <ListingPage space={selectedListing} />
@@ -61,91 +173,27 @@ const FindPage = () => {
       container
       direction="column"
       width="100%"
-      height="100%"
+      height="calc(100vh - 100px)"
       alignItems="center"
       rowSpacing={4}
       paddingTop="20px"
-      overflow="scroll"
+      wrap="nowrap"
+      overflow="hidden"
     >
       {results ? (
-        results.length > 0 ? (
-          <>
-            <Grid item width="100%" height="90px" padding="5% 5% 0">
-              <Grid
-                item
-                container
-                width="100%"
-                height="100%"
-                alignItems="center"
-                wrap="nowrap"
-                borderRadius="35px"
-                boxShadow="1px 2px #bababa"
-                onClick={() => {
-                  setSearch(true);
-                  setResults(undefined);
-                }}
-              >
-                <Grid item width="10%" paddingLeft="5%">
-                  <MICO>
-                    <LocationOn />
-                  </MICO>
-                </Grid>
-                <Grid item width="80%" paddingLeft="5%">
-                  <PrimaryText>Click to open search</PrimaryText>
-                </Grid>
-                <Grid item width="10%">
-                  <MICO>
-                    <Tune />
-                  </MICO>
-                </Grid>
-              </Grid>
-            </Grid>
-            {/* <Grid item width="100%" padding="5% 5% 0">
-              <Btn onClick={() => setResults(undefined)}>Re-Search</Btn>
-            </Grid>*/}
-            {mapMode ? (
-              <Grid item width="100%" height="100%">
-                <ResultsMap setMap={setMapMode} assets={results} />
-              </Grid>
-            ) : (
-              <>
-                <Grid item>
-                  <Btn onClick={() => setMapMode(true)}>Map View</Btn>
-                </Grid>
-
-                {results.map((asset) => (
-                  <Grid item width="100%" key={asset._id.toString()}>
-                    <AssetCard asset={asset} />
-                  </Grid>
-                ))}
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            <Grid item width="100%" padding="5% 5% 0">
-              <PrimaryText>No Spaces found for selected filters</PrimaryText>
-            </Grid>
-            <Grid item width="100%" padding="5% 5% 0">
-              <Btn onClick={() => setResults(undefined)}>Re-Search</Btn>
-            </Grid>
-          </>
-        )
+        resultsJSX
       ) : (
-        <>
-          <Grid item width="100%" padding="5% 5% 0">
-            <HomeTop setSearch={setSearch} />
-          </Grid>
-          <Grid item paddingLeft="4%" paddingTop="2%" width="96%">
-            <ImageCarousel />
-          </Grid>
-          <Grid item width="100%">
-            <NearSpaces />
-          </Grid>
+        <Grid
+          height="calc(96vh - 60px)"
+          item
+          container
+          justifyContent="center"
+          alignItems="center"
+        >
           <Grid item>
-            <AvailableSpaces />
+            <CircularProgress />
           </Grid>
-        </>
+        </Grid>
       )}
     </Grid>
   );

@@ -26,6 +26,7 @@ export enum AcceptedLeaseType {
 }
 
 export interface Asset extends Document {
+  _id: ObjectId;
   assetDescription?: string;
   roomNumber: string;
   floorNumber: string;
@@ -40,17 +41,13 @@ export interface Asset extends Document {
     leaseType?: AcceptedLeaseType[];
     minLeaseContractInMonths?: number;
   };
-  address?: {
-    street?: string;
-    city?: string;
-    country?: string;
-  };
+  address?: Address;
   location: {
     type: "Point";
     coordinates: [number, number];
   };
   assetAmenities?: AccessedAmenity[];
-  companyId: ObjectId | Company;
+  companyId: ObjectId;
 }
 
 export interface Floor {
@@ -63,6 +60,7 @@ export interface Floor {
 }
 
 export interface Company extends Document {
+  _id: ObjectId;
   host: User;
   companyName: string;
   companyInHold?: string;
@@ -93,13 +91,15 @@ export type BuildingAccess = {
   time_range: TimeRange;
 }[];
 
+export interface Address {
+  street?: string;
+  city?: string;
+  country?: string;
+}
+
 export interface Building extends Document {
   buildingName: string;
-  address?: {
-    street?: string;
-    city?: string;
-    country?: string;
-  };
+  address?: Address;
   buildingAmenities?: {
     name: string;
     access: AmenityAccess;

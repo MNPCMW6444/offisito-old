@@ -3,20 +3,27 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import {
   AuthContext,
   AuthPage,
+  ChatContextProvider,
+  ChatsPage,
+  dashboard,
+  messages,
   NotificationsPage,
+  person,
   SettingPage,
+  timeline,
   TopBar,
 } from "@offisito/shared-react";
 import SummeryPage from "./pages/summery/SummeryPage";
 import { Grid } from "@mui/material";
-import { ChatsPage } from "@offisito/shared-react";
-import { ListingsContextProvider } from "../context/ListingsContext";
-import { ChatContextProvider } from "@offisito/shared-react";
+import { ListingsContextProvider } from "../../../../../libs/shared-react/src/context/ListingsContext";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import { BookingsContextProvider } from "../context/BookingsContext";
+import WizaedPage from "./pages/wizard/WizaedPage";
+import NavBar from "../../../../../libs/shared-react/src/components/global/NavBar";
 
 const routes = [
   { name: "Summery", route: "summery" },
+  { name: "Wizard", route: "wizard" },
   { name: "Dashboard", route: "dashboard" },
   {
     name: "Chats",
@@ -67,6 +74,16 @@ const Router = () => {
                       </ListingsContextProvider>
                     }
                   ></Route>
+                  <Route
+                    path="/wizard"
+                    element={
+                      <ListingsContextProvider>
+                        <BookingsContextProvider>
+                          <WizaedPage />
+                        </BookingsContextProvider>
+                      </ListingsContextProvider>
+                    }
+                  ></Route>
                   <Route path="/chats" element={<ChatsPage />} />
                   <Route path="/settings" element={<SettingPage />} />
                   <Route
@@ -75,6 +92,17 @@ const Router = () => {
                   />
                 </Routes>
               </Grid>
+              <NavBar
+                buttons={[
+                  { navPath: "/summery", iconSrc: dashboard },
+                  { navPath: "/dashboard", iconSrc: timeline },
+                  {
+                    navPath: "/chats",
+                    iconSrc: messages,
+                  },
+                  { navPath: "/settings", iconSrc: person },
+                ]}
+              />
             </ChatContextProvider>
           </Grid>
         </Grid>

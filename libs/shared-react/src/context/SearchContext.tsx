@@ -51,6 +51,7 @@ export const SearchContextProvider = ({ children }: SearchContextProps) => {
         "api/search/" + JSON.stringify(query),
       );
       res && setResults(res.data);
+      setSearch(false);
     } catch (e) {
       axiosErrorToaster(e);
     }

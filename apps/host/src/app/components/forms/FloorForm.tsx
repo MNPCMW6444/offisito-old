@@ -11,14 +11,14 @@ import {
 import { Grid, MenuItem, Modal, Select } from "@mui/material";
 import {
   Btn,
-  MICO,
+  IconColorer,
   PrimaryText,
   renderSwitch,
   renderSwitchGroup,
   renderTextField,
 } from "@offisito/shared-react";
 import { Save } from "@mui/icons-material";
-import { ListingsContext } from "../../context/ListingsContext";
+import { ListingsContext } from "../../../../../../libs/shared-react/src/context/ListingsContext";
 
 interface FloorFormProps {
   formState: Floor;
@@ -74,7 +74,10 @@ const FloorForm = ({ formState, setFormState, setFloors }: FloorFormProps) => {
             formState,
             ["floorAmenities"],
             format("floorAmenities"),
-            setFormState as TODO,
+            {
+              setter: setFormState as TODO,
+              //  postSetStateCb: () => handleUpdate(formState),
+            },
             amenities
               .filter(({ type }) => type === AmenityType.Floor)
               .map(({ name }) => ({
@@ -135,7 +138,10 @@ const FloorForm = ({ formState, setFormState, setFloors }: FloorFormProps) => {
             formState,
             ["kitchenAmenities"],
             format("kitchenAmenities"),
-            setFormState as TODO,
+            {
+              setter: setFormState as TODO,
+              //  postSetStateCb: () => handleUpdate(formState),
+            },
             amenities
               .filter(({ type }) => type === AmenityType.Kitchen)
               .map(({ name }) => ({
@@ -155,9 +161,9 @@ const FloorForm = ({ formState, setFormState, setFloors }: FloorFormProps) => {
             }
           >
             Save
-            <MICO>
+            <IconColorer>
               <Save />
-            </MICO>
+            </IconColorer>
           </Btn>
         </Grid>
       </Grid>

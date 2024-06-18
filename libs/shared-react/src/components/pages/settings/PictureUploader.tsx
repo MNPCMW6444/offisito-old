@@ -1,15 +1,15 @@
 import React, {
   ChangeEvent,
   Dispatch,
-  FormEvent,
   SetStateAction,
   useContext,
   useEffect,
   useState,
 } from "react";
-import { Grid, CircularProgress } from "@mui/material";
-import { Btn, Img, PrimaryText, ServerContext } from "../../../";
+import { Grid, CircularProgress, IconButton } from "@mui/material";
+import { Btn, Img, IconColorer, PrimaryText, ServerContext } from "../../../";
 import styled from "@emotion/styled";
+import { DeleteForever } from "@mui/icons-material";
 
 const Input = styled("input")({
   display: "none",
@@ -25,6 +25,11 @@ interface PictureUploaderProps {
   setSelectedKey?: Dispatch<SetStateAction<string | undefined>>;
   setSelectedPreview?: Dispatch<SetStateAction<string | undefined>>;
   setReady?: Dispatch<SetStateAction<boolean>>;
+  deletePicture: {
+    fn: (key: string) => void;
+    deleting: boolean;
+    setDeleting: Dispatch<SetStateAction<boolean>>;
+  };
 }
 
 export const PictureUploader = ({
@@ -37,6 +42,7 @@ export const PictureUploader = ({
   setSelectedKey,
   setSelectedPreview,
   setReady,
+  deletePicture,
 }: PictureUploaderProps) => {
   const server = useContext(ServerContext);
   const [files, setFiles] = useState<File[]>([]);
@@ -63,8 +69,7 @@ export const PictureUploader = ({
     }
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = async () => {
     if (files.length === 0) {
       alert("Please select a file.");
       return;
@@ -102,14 +107,24 @@ export const PictureUploader = ({
     setPreviews(previewUrls);
   };
 
+  useEffect(() => {
+    keys && handleRevert();
+  }, [keys]);
+
   return (
-    <Grid container direction="column" rowSpacing={2}>
+    <Grid container direction="column" alignItems="center" rowSpacing={2}>
+      <Grid item>
+        <PrimaryText variant="h6">{actionName}: </PrimaryText>
+      </Grid>
       <Grid item container alignItems="center" columnSpacing={2}>
-        <Grid item>
-          <PrimaryText variant="h6">{actionName}: </PrimaryText>
-        </Grid>
-        <Grid item>
-          <form onSubmit={handleSubmit} noValidate autoComplete="off">
+        <Grid
+          item
+          container
+          justifyContent="center"
+          alignItems="center"
+          columnSpacing={2}
+        >
+          <Grid item>
             <label htmlFor="contained-button-file">
               <Input
                 accept="image/*"
@@ -122,13 +137,17 @@ export const PictureUploader = ({
                 Choose File
               </Btn>
             </label>
+          </Grid>
+          <Grid item>
             <Btn
-              type="submit"
+              onClick={handleSubmit}
               disabled={isLoading || files.length === 0}
               sx={{ ml: 2 }}
             >
               Upload
             </Btn>
+          </Grid>
+          <Grid item>
             <Btn
               color="error"
               variant="outlined"
@@ -138,25 +157,49 @@ export const PictureUploader = ({
             >
               Revert
             </Btn>
+          </Grid>
+          <Grid item>
             {isLoading && <CircularProgress size={24} sx={{ ml: 2 }} />}
-          </form>
+          </Grid>
         </Grid>
       </Grid>
-      {previews.length > 0 &&
-        previews.map((preview, index) => (
-          <Grid item>
-            <Img
-              onClick={() => {
-                setSelectedKey && setSelectedKey(keys[index]);
-                setSelectedPreview && setSelectedPreview(preview);
-              }}
-              key={index}
-              src={preview}
-              alt="Preview"
-              style={{ width: 160, height: 90, marginRight: 10 }}
-            />
-          </Grid>
-        ))}
+      <Grid item>
+        {previews.length > 0 &&
+          previews.map((preview, index) => (
+            <Grid
+              item
+              container
+              justifyContent="space-around"
+              alignItems="center"
+            >
+              <Grid item>
+                <Img
+                  onClick={() => {
+                    setSelectedKey && setSelectedKey(keys[index]);
+                    setSelectedPreview && setSelectedPreview(preview);
+                  }}
+                  key={index}
+                  src={preview}
+                  alt="Preview"
+                  style={{ width: 160, height: 90, marginRight: 10 }}
+                />
+              </Grid>
+              {!isLoading && files.length === 0 && (
+                <Grid item>
+                  <IconButton
+                    onClick={() =>
+                      !deletePicture.deleting && deletePicture.fn(keys[index])
+                    }
+                  >
+                    <IconColorer>
+                      <DeleteForever />
+                    </IconColorer>
+                  </IconButton>
+                </Grid>
+              )}
+            </Grid>
+          ))}
+      </Grid>
     </Grid>
   );
 };

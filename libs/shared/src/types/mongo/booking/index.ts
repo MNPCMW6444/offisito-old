@@ -13,6 +13,7 @@ export enum RequestStatus {
 }
 
 export interface Booking extends Document {
+  _id: ObjectId;
   guest?: ObjectId;
   asset?: ObjectId;
   daysInWeek?: {

@@ -9,7 +9,7 @@ import {
 import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import debounce from "lodash.debounce";
-import { Grid } from "@mui/material";
+import { Grid, MenuItem, Select } from "@mui/material";
 import {
   axiosErrorToaster,
   PrimaryText,
@@ -30,8 +30,11 @@ import {
   format,
   StartAssetReq,
   TODO,
+  AccessedAmenity,
+  AmenityType,
+  AmenityAccess,
 } from "@offisito/shared";
-import { ListingsContext } from "../../context/ListingsContext";
+import { ListingsContext } from "../../../../../../libs/shared-react/src/context/ListingsContext";
 import PicturesModal from "./PicturesModal";
 
 interface SpaceFormProps {
@@ -43,7 +46,14 @@ const SpaceForm = ({ id, closeModal }: SpaceFormProps) => {
   const [picturesModal, setPicturesModal] = useState(false);
   const [formState, setFormState] = useState<Asset>();
   const server = useContext(ServerContext);
-  const { myProfiles } = useContext(ListingsContext);
+  const { myProfiles, amenities } = useContext(ListingsContext);
+
+  const [signal, signalSend] = useState(false);
+
+  useEffect(() => {
+    signal && formState && handleUpdate(formState);
+  }, [signal]);
+
   const fetchSpace = useCallback(
     async (id: string) => {
       try {
@@ -104,10 +114,16 @@ const SpaceForm = ({ id, closeModal }: SpaceFormProps) => {
         toast.success(res?.data.msg);
       } catch (error) {
         axiosErrorToaster(error);
+      } finally {
+        signalSend(false);
       }
     },
     [server?.axiosInstance],
   );
+
+  useEffect(() => {
+    console.log("asdasdasqd ", formState?.assetAmenities);
+  }, [formState]);
 
   const debouncedUpdate = useMemo(
     () => debounce(handleUpdate, 500),
@@ -200,7 +216,7 @@ const SpaceForm = ({ id, closeModal }: SpaceFormProps) => {
                     "companyId",
                     format("leasingCompany"),
                     myProfiles.map(({ _id, companyName }) => ({
-                      value: _id,
+                      value: String(_id.toString()),
                       label: companyName,
                     })),
                   )}
@@ -259,7 +275,8 @@ const SpaceForm = ({ id, closeModal }: SpaceFormProps) => {
                     myProfiles
                       .find(
                         ({ _id }: Company) =>
-                          _id.toString() === formState?.companyId.toString(),
+                          String(_id.toString()) ===
+                          formState?.companyId.toString(),
                       )
                       ?.floor?.map(({ floorNumber }: Floor) => ({
                         value: floorNumber,
@@ -275,6 +292,71 @@ const SpaceForm = ({ id, closeModal }: SpaceFormProps) => {
               )}
             </Grid>
             <Grid item>
+              {renderSwitchGroup<Asset, AccessedAmenity[]>(
+                formState,
+                ["assetAmenities"],
+                format("assetAmenities"),
+                {
+                  setter: setFormState as TODO,
+                  postSetStateCb: () => signalSend(true),
+                  signal,
+                },
+                amenities
+                  .filter(({ type }) => type === AmenityType.Asset)
+                  .map(({ name }) => ({
+                    label: format(name),
+                    value: name,
+                  })),
+                (value: string) =>
+                  formState?.assetAmenities?.find(
+                    (item: TODO) => item.name === value,
+                  ) && (
+                    <Select
+                      disabled={signal}
+                      label={"Access"}
+                      value={
+                        formState?.assetAmenities?.find(
+                          (item: TODO) => item.name === value,
+                        )?.access || Object.values(AmenityAccess)[0]
+                      }
+                      onChange={
+                        ((event: React.ChangeEvent<{ value: unknown }>) => {
+                          setFormState((prevState: Asset | undefined) => {
+                            const newState: TODO = { ...prevState };
+                            let targetArray: TODO = newState;
+                            ["assetAmenities"].slice(0, -1).forEach((key) => {
+                              if (!targetArray[key]) targetArray[key] = {};
+                              targetArray = targetArray[key];
+                            });
+                            const finalKey = ["assetAmenities"][
+                              ["assetAmenities"].length - 1
+                            ];
+                            const itemIndex = targetArray[finalKey].findIndex(
+                              (item: TODO) => item.name === value,
+                            );
+                            if (itemIndex !== -1) {
+                              targetArray[finalKey][itemIndex].access =
+                                event.target.value;
+                            }
+                            return newState;
+                          });
+                          handleUpdate(formState);
+                        }) as TODO
+                      }
+                    >
+                      {Object.values(AmenityAccess).map(
+                        (value) =>
+                          value && (
+                            <MenuItem key={value} value={value}>
+                              {format(value)}
+                            </MenuItem>
+                          ),
+                      )}
+                    </Select>
+                  ),
+              )}
+            </Grid>
+            <Grid item>
               <PrimaryText>Lease Condition:</PrimaryText>
             </Grid>
             <Grid item>
@@ -282,7 +364,11 @@ const SpaceForm = ({ id, closeModal }: SpaceFormProps) => {
                 formState,
                 ["leaseCondition", "leaseType"],
                 "Accepted Lease Types",
-                setFormState as TODO,
+                {
+                  setter: setFormState as TODO,
+                  postSetStateCb: () => handleUpdate(formState),
+                  signal,
+                },
                 Object.values(AcceptedLeaseType).map((value) => ({
                   value,
                   label: format(value),
@@ -340,9 +426,9 @@ const SpaceForm = ({ id, closeModal }: SpaceFormProps) => {
                     server?.axiosInstance
                       .put(
                         "api/host/assets/publish_asset/" +
-                          formState?._id.toString(),
+                          String(formState?._id),
                       )
-                      .finally(() => fetchSpace(formState?._id.toString()))
+                      .finally(() => fetchSpace(String(formState?._id)))
                   }
                 >
                   Publish
@@ -357,9 +443,9 @@ const SpaceForm = ({ id, closeModal }: SpaceFormProps) => {
                     server?.axiosInstance
                       .put(
                         "api/host/assets/withdraw_asset/" +
-                          formState?._id.toString(),
+                          String(formState?._id),
                       )
-                      .finally(() => fetchSpace(formState?._id.toString()))
+                      .finally(() => fetchSpace(String(formState?._id)))
                   }
                 >
                   Withdraw
@@ -367,16 +453,13 @@ const SpaceForm = ({ id, closeModal }: SpaceFormProps) => {
               </Grid>
               <Grid item>
                 <Btn
-                  disabled={
-                    true || formState?.publishingStatus !== Status.Active
-                  }
+                  disabled={formState?.publishingStatus !== Status.Active}
                   onClick={() =>
                     server?.axiosInstance
                       .put(
-                        "api/host/assets/pause_asset/" +
-                          formState?._id.toString(),
+                        "api/host/assets/pause_asset/" + String(formState?._id),
                       )
-                      .finally(() => fetchSpace(formState?._id.toString()))
+                      .finally(() => fetchSpace(String(formState?._id)))
                   }
                 >
                   Pause

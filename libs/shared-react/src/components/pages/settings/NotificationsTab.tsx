@@ -144,7 +144,8 @@ export const NotificationsTab = ({ isGuest }: NotificationsTabProps) => {
                   onClick={() =>
                     server?.axiosInstance
                       .delete(
-                        "api/notifications/settings/device/" + _id.toString(),
+                        "api/notifications/settings/device/" +
+                          String(_id.toString()),
                       )
                       .then(() => fetchDevices())
                   }

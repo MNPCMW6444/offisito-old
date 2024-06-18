@@ -1,13 +1,13 @@
-import { Container, Tab, Tabs, useMediaQuery, useTheme } from "@mui/material";
-import { SyntheticEvent, useState } from "react";
-import { Approval, Delete, Edit } from "@mui/icons-material";
+import {Container, Tab, Tabs, useMediaQuery, useTheme} from "@mui/material";
+import {SyntheticEvent, useState} from "react";
+import {Approval, Delete, Edit, Pause} from "@mui/icons-material";
 import {
   ActionModal,
   GenericTable,
   GenericTableProps,
 } from "@offisito/shared-react";
 import AmenityForm from "../../forms/AmenityForm";
-import { TODO } from "@offisito/shared";
+import {TODO} from "@offisito/shared";
 
 const HomePage = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -22,24 +22,38 @@ const HomePage = () => {
   };
 
   const tabs: ({ name: string } & GenericTableProps<TODO>)[] = [
-    { name: "All Listings", endpoint: "api/admin/listings/all", actions: [] },
+    {name: "All Listings", endpoint: "api/admin/listings/all", actions: [
+      {
+        name: "Suspend",
+        icon: <Pause/>,
+        modal: (closeModal: () => void, id?: string) => (
+          <ActionModal
+            closeModal={closeModal}
+            endpoint={"api/admin/listings/suspend/" + id}
+            method="put"
+            name={<Pause/>}
+            doingName="Suspending..."
+          />
+        ),
+      },
+    ]},
     {
       name: "Pending Listings",
       endpoint: "api/admin/listings/pending",
       customColumns: [
-        { name: "Status", path: ["publishingStatus"] },
-        { name: "Type", path: ["assetType"] },
+        {name: "Status", path: ["publishingStatus"]},
+        {name: "Type", path: ["assetType"]},
       ],
       actions: [
         {
           name: "Approve",
-          icon: <Approval />,
+          icon: <Approval/>,
           modal: (closeModal: () => void, id?: string) => (
             <ActionModal
               closeModal={closeModal}
               endpoint={"api/admin/listings/approve/" + id}
               method="put"
-              name={<Approval />}
+              name={<Approval/>}
               doingName="Approving..."
             />
           ),
@@ -50,26 +64,26 @@ const HomePage = () => {
       name: "Amenities",
       endpoint: "api/amenities",
       customColumns: [
-        { name: "Name", path: ["name"] },
-        { name: "Type", path: ["type"] },
+        {name: "Name", path: ["name"]},
+        {name: "Type", path: ["type"]},
       ],
       actions: [
         {
           name: "Edit",
-          icon: <Edit />,
+          icon: <Edit/>,
           modal: (closeModal: () => void, id?: string) => (
-            <AmenityForm closeModal={closeModal} editId={id} />
+            <AmenityForm closeModal={closeModal} editId={id}/>
           ),
         },
         {
           name: "Delete",
-          icon: <Delete />,
+          icon: <Delete/>,
           modal: (closeModal: () => void, id?: string) => (
             <ActionModal
               closeModal={closeModal}
               endpoint={"api/admin/amenities/" + id}
               method="delete"
-              name={<Delete />}
+              name={<Delete/>}
               doingName="Deleting.."
             />
           ),
@@ -77,16 +91,16 @@ const HomePage = () => {
       ],
       fab: {
         modal: (closeModal: () => void) => (
-          <AmenityForm closeModal={closeModal} />
+          <AmenityForm closeModal={closeModal}/>
         ),
       },
     },
     {
       name: "Buildings",
-      endpoint: "api/host/building/get_buildings_list",
+      endpoint: "api/host/buildings/get_buildings_list",
       customColumns: [
-        { name: "Name", path: ["name"] },
-        { name: "Address", path: ["address"] },
+        {name: "Name", path: ["name"]},
+        {name: "Address", path: ["address"]},
       ],
       actions: [
         /* {
@@ -98,13 +112,13 @@ const HomePage = () => {
          },*/
         {
           name: "Delete",
-          icon: <Delete />,
+          icon: <Delete/>,
           modal: (closeModal: () => void, id?: string) => (
             <ActionModal
               closeModal={closeModal}
               endpoint={"api/admin/buildings/" + id}
               method="delete"
-              name={<Delete />}
+              name={<Delete/>}
               doingName="Deleting.."
             />
           ),
@@ -122,13 +136,13 @@ const HomePage = () => {
         scrollButtons={isMobile ? "auto" : false}
         allowScrollButtonsMobile
       >
-        {tabs.map(({ name }) => (
-          <Tab key={name} label={name} />
+        {tabs.map(({name}) => (
+          <Tab key={name} label={name}/>
         ))}
       </Tabs>
-      <br />
-      <br />
-      <br />
+      <br/>
+      <br/>
+      <br/>
       <GenericTable {...tabs[activeTab]} />
     </Container>
   );

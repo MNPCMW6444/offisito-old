@@ -1,5 +1,5 @@
 # Dockerfile.base
-FROM node:lts as base
+FROM node:lts AS base
 WORKDIR /app
-COPY package.json ./
+COPY package.json .npmrc .eslintrc.json .eslintrc.json .eslintignore  ./
 RUN npm i

@@ -17,9 +17,9 @@ import {
   ServerContext,
 } from "@offisito/shared-react";
 
-import LocationOnIcon from "./location.svg";
+import LocationOnIcon from "../../../../../../../libs/shared-react/src/components/listings-parts/location.svg";
 
-const customIcon = L.icon({
+const custoMicon = L.icon({
   iconUrl: LocationOnIcon,
   iconSize: [40, 40],
   iconAnchor: [20, 40],
@@ -123,7 +123,7 @@ const SearchMap = ({ setMap: sm }: SearchMapProps) => {
       clearLayers();
       if (pinLocation) {
         const tempMarker = L.marker([pinLocation.lat, pinLocation.lng], {
-          icon: customIcon,
+          icon: custoMicon,
           opacity: interactionMode === "PIN_PLACEMENT" ? 0.5 : 1,
         }).addTo(map);
 

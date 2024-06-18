@@ -12,23 +12,35 @@ import {
 import { Add, Close } from "@mui/icons-material";
 import styled from "@emotion/styled";
 import { useResponsiveness } from "../hooks";
+import { useContext } from "react";
+import { AppContext } from "../context/AppContext";
 
 interface PrimaryTextProps extends TypographyProps {
   padded?: boolean;
 }
 
-export const PrimaryText = ({ padded, ...rest }: PrimaryTextProps) => (
-  <Typography
-    color={(theme) => theme.palette.primary.contrastText}
-    sx={{
-      wordBreak: "break-all",
-      ...(padded ? { padding: "20px 25px 0 25px" } : {}),
-    }}
-    {...rest}
-  >
-    {rest.children}
-  </Typography>
-);
+export const PrimaryText = ({ padded, ...rest }: PrimaryTextProps) => {
+  const { app } = useContext(AppContext);
+  const { isMobile } = useResponsiveness(app === "guest");
+
+  return (
+    <Typography
+      color={(theme) => theme.palette.primary.contrastText}
+      sx={{
+        wordBreak: "break-word",
+        ...(!isMobile && app === "guest"
+          ? { fontSize: "clamp(1rem, 1.5vw + 0.5rem, 2rem)" }
+          : {}),
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        ...(padded ? { padding: "20px 25px 0 25px" } : {}),
+      }}
+      {...rest}
+    >
+      {rest.children}
+    </Typography>
+  );
+};
 
 export const OFAB = (props: FabProps & { isGuest?: boolean }) => {
   const { isMobileOrTabl } = useResponsiveness(!!props.isGuest);
@@ -55,9 +67,7 @@ export const CloseButton = (props: IconButtonProps) => (
   </IconButton>
 );
 
-export const CloseAndSave = (props: ButtonProps) => (
-  <Btn {...props}>Save and Close</Btn>
-);
+export const CloseAndSave = (props: ButtonProps) => <Btn {...props}>Close</Btn>;
 
 export const AddButton = (props: IconButtonProps) => (
   <IconButton sx={{ bgcolor: "green", borderRadius: "10px" }} {...props}>
@@ -75,11 +85,12 @@ export const SettingsTabContainer = styled(Container)`
 export const Btn = (props: ButtonProps) => (
   <Button
     variant="contained"
+    {...props}
     sx={{
       color: "white",
       borderRadius: "18px",
+      ...props.sx,
     }}
-    {...props}
   >
     {props.children}
   </Button>

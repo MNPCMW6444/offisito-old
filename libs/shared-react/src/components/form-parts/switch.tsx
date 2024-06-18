@@ -7,6 +7,7 @@ interface Options {
   label?: { truthy: string; falsy?: string };
   negative?: boolean;
   customValue?: boolean;
+  disable?: boolean;
 }
 
 export const renderSwitch = <T,>(
@@ -25,6 +26,7 @@ export const renderSwitch = <T,>(
       sx={(theme) => ({ color: theme.palette.secondary.main })}
       control={
         <Switch
+          disabled={options?.disable}
           checked={options?.negative ? !value : value}
           onChange={(e: TODO) => {
             handleChange(
@@ -47,7 +49,11 @@ export const renderSwitchGroup = <T, S>(
   formState: T,
   pathToArray: string[],
   label: string,
-  setFormState: Dispatch<SetStateAction<T>>,
+  setFormState: {
+    setter: Dispatch<SetStateAction<T>>;
+    postSetStateCb?: () => void;
+    signal?: boolean;
+  },
   options: {
     value: string;
     label: string;
@@ -86,7 +92,7 @@ export const renderSwitchGroup = <T, S>(
         const switchComponent = renderSwitch(
           formState,
           ((_: keyof T, newValue: boolean) => {
-            setFormState((prevState: T) => {
+            setFormState.setter((prevState: T) => {
               const newState: TODO = { ...prevState };
               let targetArray: S = newState;
               pathToArray.slice(0, -1).forEach((key) => {
@@ -113,19 +119,21 @@ export const renderSwitchGroup = <T, S>(
               } else {
                 (targetArray as TODO)[finalKey] = (targetArray as TODO)[
                   finalKey
-                ].filter((item: string | { name: string }) =>
-                  anotherComponent
-                    ? item !== value
-                    : (item as { name: string }).name !== value,
+                ].filter(
+                  (item: string | { name: string }) =>
+                    ((item as { name: string }).name ||
+                      (item as { name: string })) !== value,
                 );
               }
               return newState;
             });
+            setFormState.postSetStateCb && setFormState.postSetStateCb();
           }) as TODO,
           [value],
           {
             label: { truthy: switchLabel },
             customValue: isChecked,
+            disable: setFormState.signal,
           },
         );
         return (

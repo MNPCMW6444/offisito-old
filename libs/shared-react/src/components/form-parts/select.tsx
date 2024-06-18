@@ -26,7 +26,7 @@ export const renderDropdown = <T,>(
     <Select
       name={lastKey}
       label={label}
-      value={(value as TODO)?._id?.toString() || value}
+      value={(value as TODO)?._id?.toString() || value || options[0].value}
       onChange={(e) => handleChange(path, e.target.value as string)}
     >
       {options.map(

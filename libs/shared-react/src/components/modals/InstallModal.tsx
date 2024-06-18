@@ -1,8 +1,16 @@
-import { Modal, Box, Typography } from "@mui/material";
+import { Modal, Box } from "@mui/material";
 import { TODO } from "@offisito/shared";
-import { Btn } from "../../styled-components";
+import { Btn, PrimaryText } from "../../styled-components";
 
-export const InstallModal = ({ onInstallClicked }: TODO) => {
+interface InstallModalProps {
+  onInstallClicked: TODO;
+  dismiss: () => void;
+}
+
+export const InstallModal = ({
+  onInstallClicked,
+  dismiss,
+}: InstallModalProps) => {
   return (
     <Modal open={true}>
       <Box
@@ -20,13 +28,19 @@ export const InstallModal = ({ onInstallClicked }: TODO) => {
           alignItems: "center",
         }}
       >
-        <Typography variant="h6" sx={{ mb: 2 }}>
+        <PrimaryText variant="h6" sx={{ mb: 2 }}>
           Install App
-        </Typography>
-        <Typography sx={{ mb: 2 }}>
+        </PrimaryText>
+        <PrimaryText sx={{ mb: 2 }} textAlign="center">
           Add this application to your home screen for a better experience.
-        </Typography>
-        <Btn onClick={onInstallClicked}>Install</Btn>
+        </PrimaryText>
+        <Btn onClick={onInstallClicked} sx={{ fontSize: "115%" }}>
+          Install
+        </Btn>
+        <br />
+        <Btn onClick={dismiss} sx={{ fontSize: "50%" }} color="error">
+          I'll do this later
+        </Btn>
       </Box>
     </Modal>
   );

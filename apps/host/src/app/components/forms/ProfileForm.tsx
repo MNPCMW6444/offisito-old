@@ -11,7 +11,7 @@ import {
   axiosErrorToaster,
   Btn,
   CloseAndSave,
-  MICO,
+  IconColorer,
   PrimaryText,
   renderDatePicker,
   renderDropdown,
@@ -25,7 +25,7 @@ import toast from "react-hot-toast";
 import { Add } from "@mui/icons-material";
 import BuildingForm from "./BuildingForm";
 import { Company, TODO, format } from "@offisito/shared";
-import { ListingsContext } from "../../context/ListingsContext";
+import { ListingsContext } from "../../../../../../libs/shared-react/src/context/ListingsContext";
 import FloorsForm from "./FloorsForm";
 
 interface ProfileFormProps {
@@ -203,10 +203,7 @@ const ProfileForm = ({ id, closeModal }: ProfileFormProps) => {
             </Grid>
             <Grid item>
               <Btn onClick={() => setBuildingForm(true)}>
-                <MICO>
-                  <Add />
-                </MICO>
-                Other
+                <Add sx={{ color: "white", paddingRight: "8px" }} /> Other
               </Btn>
             </Grid>
           </Grid>

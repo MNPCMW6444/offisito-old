@@ -121,6 +121,7 @@ const FloorsForm = ({
                   ),
                 },
               ]}
+              customRowId="floorNumber"
             />
           </Grid>
           <Grid item>

@@ -1,11 +1,11 @@
-import { Request, Response } from "express";
-import { manifest } from "./pwa";
+import {Request, Response} from "express";
+import {manifest} from "./pwa";
 import express from "express";
 import path from "path";
 import fs from "fs";
-import { config } from "dotenv";
+import {config} from "dotenv";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { version } = require(
+const {version} = require(
   path.join(__dirname, "..", "..", "..", "package.json"),
 );
 config();
@@ -17,7 +17,7 @@ const envVars = {
   VITE_NODE_ENV: process.env.VITE_NODE_ENV || "production",
   VITE_WHITE_ENV: process.env.VITE_WHITE_ENV || "prod",
   VITE_G_MAPS:
-    process.env.VITE_G_MAPS || "AIzaSyCF3iTH5nJBsdJMxzXeg208RS1Ab_yuE6E",
+    process.env.VITE_G_MAPS || "AIzaSyDKQ4Ve8D3LVdYImYSGVaIJ4wQTlZmT_Ns",
 };
 
 app.get("/version", (_, res) => res.status(200).send(version));
@@ -61,7 +61,7 @@ app.get("/icons/l512.png", (req: Request, res: Response) => {
   });
 });
 
-app.use(express.static(path.join(__dirname, ""), { index: false }));
+app.use(express.static(path.join(__dirname, ""), {index: false}));
 
 app.get("*", (req: Request, res: Response) => {
   fs.readFile(indexPath, "utf8", (err: any, htmlData: any) => {

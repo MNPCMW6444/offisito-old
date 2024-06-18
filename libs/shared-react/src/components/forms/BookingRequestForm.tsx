@@ -54,9 +54,8 @@ export const BookingRequestForm = ({
     async (asset: Asset) => {
       if (isBookingInitiated) return;
       setIsBookingInitiated(true);
-
       const resFound = await server?.axiosInstance.get(
-        "api/bookings/drafts/" + asset._id,
+        "api/bookings/draftsByAssetId/" + asset._id,
       );
       if (resFound?.data?.length > 0) {
         setFormState(resFound?.data[0]);
@@ -65,13 +64,13 @@ export const BookingRequestForm = ({
         const resID = await server?.axiosInstance.post(
           "api/bookings/" + asset._id.toString(),
         );
-        const resAll = await server?.axiosInstance.get("api/bookings");
         resID?.data &&
-          resAll?.data &&
           setFormState(
-            resAll.data.find(
-              ({ _id }: Booking) => _id.toString() === resID.data,
-            ),
+            (
+              await server?.axiosInstance.get(
+                "api/bookings/draftsByBookingId/" + resID.data,
+              )
+            )?.data[0],
           );
       }
     },
@@ -237,18 +236,18 @@ export const BookingRequestForm = ({
             {sendModal && (
               <ActionModal
                 closeModal={() => setSendModal(false)}
-                endpoint={"api/bookings/sendOffer/" + formState._id.toString()}
+                endpoint={"api/bookings/sendOffer/" + String(formState._id)}
                 name="Send to Host"
                 doingName="sending to host"
                 method="post"
                 cb={() => {
                   close();
-                  asset?.companyId &&
+                  /*  asset?.companyId &&
                     sendMessage(
-                      server?.axiosInstance,
-                      asset.companyId.toString(),
-                      NEW_BOOKING_MESSAGE,
-                    );
+                       server?.axiosInstance,
+                       asset.companyId.toString(),
+                       NEW_BOOKING_MESSAGE,
+                     );*/
                 }}
               />
             )}
@@ -260,7 +259,7 @@ export const BookingRequestForm = ({
             {deleteModal && (
               <ActionModal
                 closeModal={() => setDeleteModal(false)}
-                endpoint={"api/bookings/" + formState._id.toString()}
+                endpoint={"api/bookings/" + String(formState._id)}
                 name="Delete"
                 doingName="deleting"
                 method="delete"

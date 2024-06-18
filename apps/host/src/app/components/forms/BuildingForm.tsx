@@ -19,7 +19,7 @@ import {
   TODO,
   AccessedAmenity,
 } from "@offisito/shared";
-import { ListingsContext } from "../../context/ListingsContext";
+import { ListingsContext } from "../../../../../../libs/shared-react/src/context/ListingsContext";
 
 interface BuildingFormModalProps {
   setBuildingForm: Dispatch<SetStateAction<boolean>>;
@@ -164,7 +164,10 @@ const BuildingForm = ({ setBuildingForm }: BuildingFormModalProps) => {
             formState,
             ["buildingAmenities"],
             format("buildingAmenities"),
-            setFormState,
+            {
+              setter: setFormState as TODO,
+              //  postSetStateCb: () => handleUpdate(formState),
+            },
             amenities
               .filter(({ type }) => type === AmenityType.Building)
               .map(({ name }) => ({

@@ -3,11 +3,12 @@ import ReactDOM from "react-dom/client";
 import App from "./app/App";
 import axios from "axios";
 import { TODO } from "@offisito/shared";
+import { AppContextProvider } from "@offisito/shared-react";
 
 function loadGoogleFontsAsync() {
   const link = document.createElement("link");
   link.href =
-    "https://fonts.googleapis.com/css?family=Open+Sans:400,700|Inter:400,500,700&display=swap";
+    "https://fonts.googleapis.com/css?family=Roboto:400,700|Open+Sans:400,700|Inter:400,500,700&display=swap";
   link.rel = "stylesheet";
 
   document.head.appendChild(link);
@@ -49,6 +50,8 @@ if ("serviceWorker" in navigator) {
 
 root.render(
   <React.StrictMode>
-    <App />
+    <AppContextProvider app="guest">
+      <App />
+    </AppContextProvider>
   </React.StrictMode>,
 );

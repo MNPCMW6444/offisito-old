@@ -71,7 +71,9 @@ export const AuthPage = () => {
   const [emailReason, setEmailReason] = useState<boolean>(true);
   const { refreshUserData, client } = useContext(AuthContext);
 
-  const { isMobileOrTabl } = useResponsiveness(client === "guest");
+  const { isMobileOrTabl } = useResponsiveness(
+    client === "guest" || client === "host",
+  );
 
   const server = useContext(ServerContext);
   const axiosInstance = server?.axiosInstance;
@@ -324,35 +326,33 @@ export const AuthPage = () => {
 
     return (
       <Grid container direction="column" alignItems="center" rowSpacing={2}>
-        <Grid item width="100%">
-          <Btn type="submit" onClick={mainButton.clickHandler} fullWidth>
-            {mainButton.label}
-          </Btn>
+        <Grid
+          item
+          container
+          justifyContent="center"
+          alignItems="center"
+          width="100%"
+        >
+          <Grid item width="100%">
+            <Btn fullWidth onClick={mainButton.clickHandler}>
+              {mainButton.label}
+            </Btn>
+          </Grid>
         </Grid>
         {(navigateButton.exists || resetButton.exists) && (
           <Grid item container columnSpacing={2}>
             {navigateButton.exists && (
               <Grid item>
-                <Btn
-                  type="submit"
-                  variant="text"
-                  onClick={navigateButton.clickHandler}
-                  sx={{ fontSize: resetButton.exists ? "70%" : "90%" }}
-                >
+                <PrimaryText onClick={navigateButton.clickHandler}>
                   {navigateButton.label}
-                </Btn>
+                </PrimaryText>
               </Grid>
             )}
             {resetButton.exists && (
               <Grid item>
-                <Btn
-                  type="submit"
-                  variant="text"
-                  onClick={resetButton.clickHandler}
-                  sx={{ fontSize: navigateButton.exists ? "70%" : "90%" }}
-                >
+                <PrimaryText onClick={resetButton.clickHandler}>
                   {resetButton.label}
-                </Btn>
+                </PrimaryText>
               </Grid>
             )}
           </Grid>
@@ -398,24 +398,20 @@ export const AuthPage = () => {
                                 step !== Step.registerFin &&
                 */
                 step !== Step.passResetFin && step !== Step.login && (
-                  <>
-                    <TextField
-                      disabled={step === Step.registerFin}
-                      margin="dense"
-                      label="Email"
-                      type="email"
-                      fullWidth
-                      variant="standard"
-                      value={email}
-                      error={!validations.email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                    {!validations.email && (
-                      <PrimaryText color="error" variant="caption">
-                        {getErrorMessage("email")}
-                      </PrimaryText>
-                    )}
-                  </>
+                  <TextField
+                    disabled={
+                      step === Step.registerFin || step === Step.registerReq
+                    }
+                    margin="dense"
+                    label="Email"
+                    type="email"
+                    sx={{ width: "100%" }}
+                    helperText={!validations.email && getErrorMessage("email")}
+                    variant="standard"
+                    value={email}
+                    error={!validations.email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
                 )
               }
               {step === Step.registerFin && (
@@ -423,27 +419,27 @@ export const AuthPage = () => {
                   <TextField
                     margin="dense"
                     label="First Name"
-                    fullWidth
+                    sx={{ width: "100%" }}
+                    helperText={
+                      !validations.firstName && getErrorMessage(" firstName")
+                    }
                     variant="standard"
                     value={firstName}
                     error={!validations.firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                   />
-                  {!validations.firstName && (
-                    <PrimaryText>{getErrorMessage(" firstName")}</PrimaryText>
-                  )}
                   <TextField
                     margin="dense"
                     label="Last Name"
-                    fullWidth
+                    sx={{ width: "100%" }}
+                    helperText={
+                      !validations.lastName && getErrorMessage(" lastName")
+                    }
                     variant="standard"
                     value={lastName}
                     error={!validations.lastName}
                     onChange={(e) => setLastName(e.target.value)}
                   />
-                  {!validations.lastName && (
-                    <PrimaryText>{getErrorMessage(" lastName")}</PrimaryText>
-                  )}
                 </>
               )}
               {(step === Step.login ||
@@ -454,17 +450,15 @@ export const AuthPage = () => {
                     margin="dense"
                     label="Password"
                     type="password"
-                    fullWidth
+                    sx={{ width: "100%" }}
+                    helperText={
+                      !validations.password && getErrorMessage("password")
+                    }
                     variant="standard"
                     value={password}
                     error={!validations.password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
-                  {!validations.password && (
-                    <PrimaryText color="error" variant="caption">
-                      {getErrorMessage("password")}
-                    </PrimaryText>
-                  )}
                   {step === Step.registerFin ||
                     (step === Step.passResetFin && (
                       <Box
@@ -507,17 +501,16 @@ export const AuthPage = () => {
                     margin="dense"
                     label="Re-enter password"
                     type="password"
-                    fullWidth
+                    sx={{ width: "100%" }}
+                    helperText={
+                      !validations.passwordAgain &&
+                      getErrorMessage(" passwordAgain")
+                    }
                     variant="standard"
                     value={passwordAgain}
                     error={!validations.passwordAgain}
                     onChange={(e) => setPasswordAgain(e.target.value)}
                   />
-                  {!validations.passwordAgain && (
-                    <PrimaryText>
-                      {getErrorMessage(" passwordAgain")}
-                    </PrimaryText>
-                  )}
                 </>
               )}
             </>
@@ -540,11 +533,16 @@ export const AuthPage = () => {
       width="100%"
       height="100%"
       wrap="nowrap"
+      overflow="hidden"
     >
       <Grid
         item
         container
-        width={isMobileOrTabl || client === "guest" ? "100%" : "40%"}
+        width={
+          isMobileOrTabl || client === "guest" || client === "host"
+            ? "100%"
+            : "40%"
+        }
         height="100%"
         justifyContent="center"
         paddingTop="13%"
@@ -553,7 +551,7 @@ export const AuthPage = () => {
       </Grid>
       {client === "host" && !isMobileOrTabl && (
         <Grid item width="60%" height="100%">
-          <Img src={backgroundOffice} maxHeight="100%" width="auto" />
+          <Img src={backgroundOffice} bg />
         </Grid>
       )}
     </Grid>

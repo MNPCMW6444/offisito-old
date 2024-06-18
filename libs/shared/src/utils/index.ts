@@ -1,4 +1,4 @@
-import { TODO } from "../";
+import { Address, TODO } from "../";
 
 export const MIN_PASSWORD_STRENGTH = 2;
 
@@ -8,6 +8,12 @@ export const format = (str: string): string =>
     .replace(/_/g, " ")
     .toLowerCase()
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
+
+export const formatAddress = (address: Address) =>
+  Object.keys(address)
+    .filter((name) => name !== "_id")
+    .map((key) => (address ? address[key as keyof typeof address] : []))
+    .join(", ");
 
 const looksLikeDate = (str: string): boolean => {
   // Regular expression to match common date formats (e.g., YYYY-MM-DD, MM/DD/YYYY)

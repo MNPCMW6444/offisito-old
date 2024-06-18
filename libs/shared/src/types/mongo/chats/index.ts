@@ -1,6 +1,7 @@
-import { Document } from "mongoose";
+import { Document, ObjectId } from "mongoose";
 
 export interface Conversation extends Document {
+  _id: ObjectId;
   hostId: string;
   guestId: string;
   name: string;
@@ -10,6 +11,7 @@ export interface Conversation extends Document {
 }
 
 export interface Message extends Document {
+  _id: ObjectId;
   ownerId: string;
   conversationId: string;
   message: string;
